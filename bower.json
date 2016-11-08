@@ -1,0 +1,24 @@
+{
+  "name": "drawRINGS-js",
+  "description": "",
+  "main": "src/main.js",
+  "authors": [
+    "renji <renjiseminar@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "EaselJS": "^0.8.2",
+    "jquery": "1.11.3",
+    "bootstrap": "^3.3.7",
+    "responsive-bootstrap-toolkit": "^2.6.3",
+    "jquery-ui": "1.11.4"
+  }
+}
