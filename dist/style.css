@@ -1,0 +1,55 @@
+body{
+    /*text-align: center;*/
+    /*width: 1200px;*/
+    margin: 0px 25px auto 25px;
+}
+
+h1{
+    text-align: left;
+    font-size: 40px;
+    font-family:Arial, sans-serif;
+    font-weight: bold;
+}
+
+#canvas,#kcf_format{
+    border:1px solid gray;
+}
+
+.upper-menu {
+    margin-bottom: 50px;
+}
+
+.lower-menu {
+    height: 100px;
+    position:absolute;
+    bottom:0px;
+}
+
+.lower-menu-sm {
+    height: 100px;
+    margin-top: 25px;
+}
+
+.draw-area {
+    width: 100%;
+    height: auto;
+    max-height: 570px;
+}
+
+.form-control {
+    min-height: 100%;
+}
+
+#KCFForm {
+    min-height: 100%;
+}
+
+.hidden-menu {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.visible-menu {
+    display: block !important;
+    visibility: visible !important;
+}
