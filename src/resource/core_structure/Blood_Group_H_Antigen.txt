@@ -1,0 +1,7 @@
+ENTRY       Blood_Group_H_Antigen
+NODE        2
+            1     gal     17.0     6.0
+            2     fuc     9.0     6.0
+EDGE        1
+            1     2:a1     1:2
+///

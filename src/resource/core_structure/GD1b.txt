@@ -1,0 +1,15 @@
+ENTRY       GD1b        Glycan
+NODE        6
+            1     glc     27.0     2.0
+            2     gal     21.0     2.0
+            3     galnac     15.0     6.0
+            4     gal     8.0     6.0
+            5     neuac     15.0     -3.0
+            6     neuac     8.0     -3.0
+EDGE        5
+            1     2:b1     1:4
+            2     3:b1     2:4
+            3     4:b1     3:3
+            4     5:a2     2:3
+            5     6:a2     5:8
+///

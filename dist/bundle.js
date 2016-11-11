@@ -49,7 +49,8 @@
 	var _draw_app = __webpack_require__(1);
 	
 	var canvas = document.getElementById("canvas");
-	_draw_app.DrawApp.run(canvas);
+	var app = new _draw_app.DrawApp(canvas);
+	app.run();
 
 /***/ },
 /* 1 */
@@ -63,6 +64,16 @@
 	    value: true
 	});
 	exports.DrawApp = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	// 特定のオブジェクトだけ読み込むなら以下のように記述
+	// import { Stage, Ticker } from 'EaselJS';
+	
+	// Bootstrap 動作用 import
+	
+	// jQueryUI 動作用 import
+	
 	
 	var _jquery = __webpack_require__(2);
 	
@@ -98,21 +109,37 @@
 	
 	var _monosaccharide_helper = __webpack_require__(23);
 	
+	var _core_structure = __webpack_require__(24);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// 特定のオブジェクトだけ読み込むなら以下のように記述
-	// import { Stage, Ticker } from 'EaselJS';
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	// Bootstrap 動作用 import
-	var DrawApp = {};
-	// jQueryUI 動作用 import
+	var DrawApp = function () {
+	    function DrawApp(canvas) {
+	        _classCallCheck(this, DrawApp);
 	
+	        this.canvas = canvas;
+	    }
 	
-	DrawApp.run = function (canvas) {
+	    _createClass(DrawApp, [{
+	        key: 'run',
+	        value: function run() {
+	            __run(this.canvas, 10, 20, 30, 40, 50, 60);
+	        }
+	    }]);
+	
+	    return DrawApp;
+	}();
+	
+	function __run(canvas) {
 	    "use strict";
 	
+	    //let canvas = this.canvas;
+	
+	    console.log(arguments);
 	    var stage = new createjs.Stage(canvas);
 	    var structureKey = 0;
 	    var structures = new Array();
@@ -580,6 +607,9 @@
 	        if (mode === 8 || mode === 9) {
 	            CreateTree();
 	        }
+	        if (mode === 10) {
+	            DrawKCF(fileLoadTextareaId.value);
+	        }
 	    };
 	
 	    window.edits = edits;
@@ -612,95 +642,99 @@
 	            kindNode.draw(mouseX, mouseY);
 	        } else if (mode === 4) {
 	            if (mode != 4) return;
-	            if (kindStructure === "N-glycan_core") {
-	                nodeHashKey = 103;
-	                XY(e);
-	                var man1 = kindNode.draw(mouseX, mouseY);
-	                var man2 = kindNode.draw(mouseX - 100, mouseY - 50);
-	                var man3 = kindNode.draw(mouseX - 100, mouseY + 50);
-	                nodeHashKey = 202;
-	                var glcnac1 = kindNode.draw(mouseX + 100, mouseY);
-	                var glcnac2 = kindNode.draw(mouseX + 200, mouseY);
-	                var structure = new _structure2.default(structure_id, man1, man2, null);
-	                var line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(man1.x, man1.y);
-	                line.graphics.lineTo(man2.x, man2.y);
-	                stage.addChild(line);
-	                structure.edge = line;
-	                var edgeText = new createjs.Text("a1-6", "12px serif", "rgb(255,0,0)");
-	                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                stage.addChild(edgeText);
-	                structure.edgeInformamtion = edgeText;
-	                structures[structureKey] = structure;
-	                structureKey++;
-	                structure_id++;
+	            var coreStructureData = (0, _core_structure.getCoreStructure)(kindStructure);
+	            console.log(coreStructureData);
+	            DrawKCF(coreStructureData);
 	
-	                structure = new _structure2.default(structure_id, man1, man3, null);
-	                line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(man1.x, man1.y);
-	                line.graphics.lineTo(man3.x, man3.y);
-	                stage.addChild(line);
-	                structure.edge = line;
-	                edgeText = new createjs.Text("a1-3", "12px serif", "rgb(255,0,0)");
-	                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                stage.addChild(edgeText);
-	                structure.edgeInformamtion = edgeText;
-	                structures[structureKey] = structure;
-	                structureKey++;
-	                structure_id++;
-	
-	                structure = new _structure2.default(structure_id, man1, glcnac1, null);
-	                line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(man1.x, man1.y);
-	                line.graphics.lineTo(glcnac1.x, glcnac1.y);
-	                stage.addChild(line);
-	                structure.edge = line;
-	                edgeText = new createjs.Text("b1-4", "12px serif", "rgb(255,0,0)");
-	                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                stage.addChild(edgeText);
-	                structure.edgeInformamtion = edgeText;
-	                structures[structureKey] = structure;
-	                structureKey++;
-	                structure_id++;
-	
-	                structure = new _structure2.default(structure_id, glcnac1, glcnac2, null);
-	                line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(glcnac1.x, glcnac1.y);
-	                line.graphics.lineTo(glcnac2.x, glcnac2.y);
-	                stage.addChild(line);
-	                structure.edge = line;
-	                edgeText = new createjs.Text("b1-4", "12px serif", "rgb(255,0,0)");
-	                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                stage.addChild(edgeText);
-	                structure.edgeInformamtion = edgeText;
-	                structures[structureKey] = structure;
-	                structureKey++;
-	                structure_id++;
-	                stage.removeChild(man1);
-	                stage.removeChild(man2);
-	                stage.removeChild(man3);
-	                stage.removeChild(glcnac1);
-	                stage.removeChild(glcnac2);
-	                stage.addChild(man1);
-	                stage.addChild(man2);
-	                stage.addChild(man3);
-	                stage.addChild(glcnac1);
-	                stage.addChild(glcnac2);
-	                stage.update();
-	                (0, _positioning_helper.adjustPosition)(stage, structureKey, structures);
-	            }
+	            // if(kindStructure === "N-glycan_core"){
+	            //     nodeHashKey = 103;
+	            //     XY(e);
+	            //     let man1 = kindNode.draw(mouseX, mouseY);
+	            //     let man2 = kindNode.draw(mouseX-100, mouseY-50);
+	            //     let man3 = kindNode.draw(mouseX-100, mouseY+50);
+	            //     nodeHashKey = 202;
+	            //     let glcnac1 = kindNode.draw(mouseX+100, mouseY);
+	            //     let glcnac2 = kindNode.draw(mouseX+200, mouseY);
+	            //     let structure = new Structure(structure_id, man1, man2, null);
+	            //     let line = new createjs.Shape();
+	            //     line.graphics.setStrokeStyle(3);
+	            //     line.graphics.beginStroke("#000");
+	            //     line.graphics.moveTo(man1.x, man1.y);
+	            //     line.graphics.lineTo(man2.x, man2.y);
+	            //     stage.addChild(line);
+	            //     structure.edge = line;
+	            //     let edgeText = new createjs.Text("a1-6","12px serif", "rgb(255,0,0)");
+	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+	            //     stage.addChild(edgeText);
+	            //     structure.edgeInformamtion = edgeText;
+	            //     structures[structureKey] = structure;
+	            //     structureKey++;
+	            //     structure_id++;
+	            //
+	            //     structure = new Structure(structure_id, man1, man3, null);
+	            //     line = new createjs.Shape();
+	            //     line.graphics.setStrokeStyle(3);
+	            //     line.graphics.beginStroke("#000");
+	            //     line.graphics.moveTo(man1.x, man1.y);
+	            //     line.graphics.lineTo(man3.x, man3.y);
+	            //     stage.addChild(line);
+	            //     structure.edge = line;
+	            //     edgeText = new createjs.Text("a1-3","12px serif", "rgb(255,0,0)");
+	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+	            //     stage.addChild(edgeText);
+	            //     structure.edgeInformamtion = edgeText;
+	            //     structures[structureKey] = structure;
+	            //     structureKey++;
+	            //     structure_id++;
+	            //
+	            //     structure = new Structure(structure_id, man1, glcnac1, null);
+	            //     line = new createjs.Shape();
+	            //     line.graphics.setStrokeStyle(3);
+	            //     line.graphics.beginStroke("#000");
+	            //     line.graphics.moveTo(man1.x, man1.y);
+	            //     line.graphics.lineTo(glcnac1.x, glcnac1.y);
+	            //     stage.addChild(line);
+	            //     structure.edge = line;
+	            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
+	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+	            //     stage.addChild(edgeText);
+	            //     structure.edgeInformamtion = edgeText;
+	            //     structures[structureKey] = structure;
+	            //     structureKey++;
+	            //     structure_id++;
+	            //
+	            //     structure = new Structure(structure_id, glcnac1, glcnac2, null);
+	            //     line = new createjs.Shape();
+	            //     line.graphics.setStrokeStyle(3);
+	            //     line.graphics.beginStroke("#000");
+	            //     line.graphics.moveTo(glcnac1.x, glcnac1.y);
+	            //     line.graphics.lineTo(glcnac2.x, glcnac2.y);
+	            //     stage.addChild(line);
+	            //     structure.edge = line;
+	            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
+	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+	            //     stage.addChild(edgeText);
+	            //     structure.edgeInformamtion = edgeText;
+	            //     structures[structureKey] = structure;
+	            //     structureKey++;
+	            //     structure_id++;
+	            //     stage.removeChild(man1);
+	            //     stage.removeChild(man2);
+	            //     stage.removeChild(man3);
+	            //     stage.removeChild(glcnac1);
+	            //     stage.removeChild(glcnac2);
+	            //     stage.addChild(man1);
+	            //     stage.addChild(man2);
+	            //     stage.addChild(man3);
+	            //     stage.addChild(glcnac1);
+	            //     stage.addChild(glcnac2);
+	            //     stage.update();
+	            //     adjustPosition(stage, structureKey, structures);
+	            // }
 	        }
 	    };
 	
@@ -1111,12 +1145,13 @@
 	        var textArea = document.getElementById("kcf_format");
 	        var str = void 0;
 	        var str2 = void 0;
+	        var url = void 0;
 	        if (mode === 8) {
 	            str = "ENTRY" + TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + glycoTrees.length + NEW_LINE;
 	            str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
 	        } else if (mode === 9) {
 	            var date = new Date();
-	            var _url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
+	            url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
 	            str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + glycoTrees.length + URL_NEW_LINE;
 	            str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
 	        }
@@ -1140,9 +1175,10 @@
 	            textArea.value = str + str2 + SLASH;
 	        } else if (mode === 9) {
 	            var runQueryUrl = url + str + str2 + SLASH + WAVE + document.scoreMatrix.scoreSelect.value + WAVE;
+	            var kindRunQueryResultType = void 0;
 	            for (var _i3 = 0; _i3 < document.kindRnuQueryResult.type.length; _i3++) {
 	                if (document.kindRnuQueryResult.type[_i3].checked == true) {
-	                    var _kindRunQueryResultType = document.kindRnuQueryResult.type[_i3].value;
+	                    kindRunQueryResultType = document.kindRnuQueryResult.type[_i3].value;
 	                }
 	            }
 	            runQueryUrl += kindRunQueryResultType + WAVE + document.database.databaseSelect.value;
@@ -1188,19 +1224,22 @@
 	        return str2;
 	    }
 	
-	    function DrawKCF() {
-	        var text = fileLoadTextareaId.value.replace(/\s/g, "space");
+	    function DrawKCF(KCFtext) {
+	        var text = KCFtext.replace(/\s/g, "space");
 	        var splitKCFs = text.split("space");
+	        // if(mode === 4){
+	        //     splitKCFs =
+	        // }
 	        var DrawKCFNodeObject = function DrawKCFNodeObject(number, monosaccharide, x, y) {
 	            this.nodeNumber = number;
 	            this.monosaccharide = monosaccharide;
 	            this.paramX = x;
 	            this.paramY = y;
 	        };
-	        var DrawKCFEdgeObject = function DrawKCFEdgeObject(anomer, childId, chaildLinkagePosition, parentId, parentLinkagePosition) {
+	        var DrawKCFEdgeObject = function DrawKCFEdgeObject(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition) {
 	            this.anomer = anomer;
 	            this.childId = childId;
-	            this.childLinkagePsition = chaildLinkagePosition;
+	            this.childLinkagePsition = childLinkagePosition;
 	            this.parentId = parentId;
 	            this.parentLinkagePosition = parentLinkagePosition;
 	        };
@@ -1281,9 +1320,9 @@
 	
 	        //Node
 	        for (i = 0; i < DrawKCFNodeObjects.length; i++) {
-	            for (var _j2 = 100; _j2 < 1107; _j2++) {
-	                if (_node_hash.NODE_HASH[_j2] === DrawKCFNodeObjects[i].monosaccharide) {
-	                    nodeHashKey = _j2;
+	            for (j = 100; j < 1107; j++) {
+	                if (_node_hash.NODE_HASH[j] === DrawKCFNodeObjects[i].monosaccharide) {
+	                    nodeHashKey = j;
 	                }
 	            }
 	            kindNode.draw(DrawKCFNodeObjects[i].paramX, DrawKCFNodeObjects[i].paramY);
@@ -45173,6 +45212,320 @@
 	exports.getMonosaccharideColor = getMonosaccharideColor;
 	exports.getLineColor = getLineColor;
 	exports.MONOSACCHARIDE_COLOR = MONOSACCHARIDE_COLOR;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.getCoreStructure = undefined;
+	
+	var _structures = __webpack_require__(25);
+	
+	var structuresJson = _interopRequireWildcard(_structures);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	console.log(structuresJson); /**
+	                              * Created by Renji on 2016/11/09.
+	                              */
+	
+	// let path = "./core_structure";
+	//
+	// //「/」で区切って配列化
+	// let pathinfo = path.split('/');
+	//
+	// for(let i = 0; i < pathinfo)
+	// //最後の要素（ファイル名）だけ抜き出し
+	// var filename = pathinfo.pop();
+	// console.log(filename);
+	
+	// let  FOLDER = fso.GetFolder("D:\\./core_structure");
+	// const FILE_LIST = FOLDER.getFiles();
+	
+	/*
+	let fs = require('fs') // fsモジュールを利用できるように
+	let path = require('path') // pathモジュールを利用できるように
+	// process.argv[2]には対象のディレクトリのパスが格納されています。
+	fs.readdir("./core_structure", function (err, list) {
+	list.forEach(function (file) {
+	    // // process.argv[3]にはフィルタする拡張子が格納されています。
+	    // if (path.extname(file) === '.' + process.argv[3])
+	    //     console.log(file)
+	    console.log(list);
+	})
+	})
+	*/
+	
+	var getCoreStructure = function getCoreStructure(coreStructureName) {
+	    for (var i = 0; i < structuresJson.children.length; i++) {
+	        var child = structuresJson.children[i];
+	        if (coreStructureName === child.file) {
+	            return child.fileData;
+	        }
+	        // console.log(child.file);
+	    }
+	};
+	
+	exports.getCoreStructure = getCoreStructure;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"name": "root",
+		"children": [
+			{
+				"file": "3'sulfo_Lewis_X.txt",
+				"fileData": "ENTRY       3'sulfo_Lewis_X        Glycan\nNODE        4\n            1     glcnac     14.0     6.0\n            2     gal     6.0     10.0\n            3     fuc     6.0     2.0\n            4     S     -1.0     14.0\nEDGE        3\n            1     2:b1     1:4\n            2     2:3     4\n            3     3:a1     1:3\n///\n"
+			},
+			{
+				"file": "Blood_Group_A_Antigen.txt",
+				"fileData": "ENTRY       Blood_Group_A_Antigen        Glycan\nNODE        3\n            1     gal     14.0     9.0\n            2     galnac     6.0     15.0\n            3     fuc     6.0     4.0\nEDGE        2\n            1     2:a1     1:3\n            2     3:a1     1:2\n///\n"
+			},
+			{
+				"file": "Blood_Group_B_Antigen.txt",
+				"fileData": "ENTRY       Blood_Group_B_Antigen        Glycan\nNODE        3\n            1     gal     14.0     9.0\n            2     galnac     6.0     15.0\n            3     fuc     6.0     4.0\nEDGE        2\n            1     2:b1     1:3\n            2     3:a1     1:2\n///"
+			},
+			{
+				"file": "Blood_Group_H_Antigen.txt",
+				"fileData": "ENTRY       Blood_Group_H_Antigen\nNODE        2\n            1     gal     17.0     6.0\n            2     fuc     9.0     6.0\nEDGE        1\n            1     2:a1     1:2\n///"
+			},
+			{
+				"file": "Cad_Antigen.txt",
+				"fileData": "ENTRY       Cad Antigen        Glycan\nNODE        5\n            1     galnac     26.0     -0.0\n            2     neuac     19.0     5.0\n            3     gal     19.0     -5.0\n            4     galnac     12.0     -0.0\n            5     neuac     12.0     -10.0\nEDGE        4\n            1     2:a2     1:6\n            2     3:b1     1:3\n            3     4:b1     3:4\n            4     5:a2     3:3\n///\n"
+			},
+			{
+				"file": "Chondroitin_2,6-sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        8\n            1     galnac     14.0     7.0\n            2     glca     7.0     7.0\n            3     galnac     -1.0     7.0\n            4     glca     -8.0     7.0\n            5     S     11.0     11.0\n            6     S     -4.0     11.0\n            7     S     4.0     3.0\n            8     S     -11.0     3.0\nEDGE        7\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     8     4:2\n            5     6     3:6\n            6     7     2:2\n            7     5     1:6\n///"
+			},
+			{
+				"file": "Chondroitin_4,6-sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        8\n            1     galnac     13.0     9.0\n            2     glca     6.0     9.0\n            3     galnac     -1.0     9.0\n            4     glca     -8.0     9.0\n            5     S     10.0     13.0\n            6     S     10.0     5.0\n            7     S     -4.0     13.0\n            8     S     -4.0     5.0\nEDGE        7\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     7     3:6\n            5     8     3:4\n            6     5     1:6\n            7     6     1:4\n///"
+			},
+			{
+				"file": "Chondroitin_4-sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     galnac     14.0     6.0\n            2     glca     7.0     6.0\n            3     galnac     0.0     6.0\n            4     glca     -7.0     6.0\n            5     S     11.0     10.0\n            6     S     -3.0     10.0\nEDGE        5\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     6     3:4\n            5     5     1:4\n///"
+			},
+			{
+				"file": "Chondroitin_6-sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     galnac     14.0     5.0\n            2     glca     7.0     5.0\n            3     galnac     -1.0     5.0\n            4     glca     -8.0     5.0\n            5     S     11.0     9.0\n            6     S     -4.0     9.0\nEDGE        5\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     6     3:6\n            5     5     1:6\n///"
+			},
+			{
+				"file": "Dermatan_sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     galnac     13.0     7.0\n            2     ido     6.0     7.0\n            3     galnac     -1.0     7.0\n            4     ido     -8.0     7.0\n            5     S     10.0     11.0\n            6     S     -4.0     11.0\nEDGE        5\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     6     3:4\n            5     5     1:4\n///"
+			},
+			{
+				"file": "GD1a.txt",
+				"fileData": "ENTRY       GD1a        Glycan\nNODE        6\n            1     glc     25.0     2.0\n            2     gal     18.0     2.0\n            3     neuac     12.0     -3.0\n            4     galnac     11.0     7.0\n            5     gal     3.0     7.0\n            6     neuac     -5.0     7.0\nEDGE        5\n            1     2:b1     1:4\n            2     3:a2     2:3\n            3     4:b1     2:4\n            4     5:b1     4:3\n            5     6:a2     5:3\n///\n"
+			},
+			{
+				"file": "GD1b.txt",
+				"fileData": "ENTRY       GD1b        Glycan\nNODE        6\n            1     glc     27.0     2.0\n            2     gal     21.0     2.0\n            3     galnac     15.0     6.0\n            4     gal     8.0     6.0\n            5     neuac     15.0     -3.0\n            6     neuac     8.0     -3.0\nEDGE        5\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     5:a2     2:3\n            5     6:a2     5:8\n///\n"
+			},
+			{
+				"file": "GD2.txt",
+				"fileData": "ENTRY       GD2        Glycan\nNODE        5\n            1     glc     23.0     6.0\n            2     gal     17.0     6.0\n            3     galnac     11.0     11.0\n            4     neuac     11.0     1.0\n            5     neuac     3.0     1.0\nEDGE        4\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a2     2:3\n            4     5:a2     4:8\n///"
+			},
+			{
+				"file": "GD3.txt",
+				"fileData": "ENTRY       GD3        Glycan\nNODE        4\n            1     glc     24.0     6.0\n            2     gal     18.0     6.0\n            3     neuac     11.0     6.0\n            4     neuac     4.0     6.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:a2     2:3\n            3     4:a2     3:8\n///\n"
+			},
+			{
+				"file": "GM1a.txt",
+				"fileData": "ENTRY       GM1a        Glycan\nNODE        5\n            1     glc     30.0     3.0\n            2     gal     24.0     3.0\n            3     galnac     18.0     7.0\n            4     gal     11.0     7.0\n            5     neuac     18.0     -1.0\nEDGE        4\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     5:a2     2:3\n///\n"
+			},
+			{
+				"file": "GM1b.txt",
+				"fileData": "ENTRY       GM1b        Glycan\nNODE        5\n            1     glc     20.0     2.0\n            2     gal     14.0     2.0\n            3     galnac     8.0     2.0\n            4     gal     1.0     2.0\n            5     neuac     -6.0     2.0\nEDGE        4\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:b1     3:3\n            4     5:a2     4:3\n///\n"
+			},
+			{
+				"file": "GM2.txt",
+				"fileData": "ENTRY       GM2        Glycan\nNODE        4\n            1     glc     20.0     2.0\n            2     gal     14.0     2.0\n            3     galnac     8.0     7.0\n            4     neuac     8.0     -2.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a2     2:3\n///\n"
+			},
+			{
+				"file": "GM3.txt",
+				"fileData": "ENTRY       GM3        Glycan\nNODE        3\n            1     glc     20.0     2.0\n            2     gal     14.0     2.0\n            3     neuac     8.0     2.0\nEDGE        2\n            1     2:b1     1:4\n            2     3:a2     2:3\n///\n"
+			},
+			{
+				"file": "GSL_core_arthro-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     13.0     11.0\n            2     man     6.0     11.0\n            3     glcnac     -1.0     11.0\n            4     galnac     -8.0     11.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:3\n            3     4:b1     3:4\n///"
+			},
+			{
+				"file": "GSL_core_gala-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     gal     9.0     10.0\n            2     gal     2.0     10.0\nEDGE        1\n            1     2:a1     1:4\n///"
+			},
+			{
+				"file": "GSL_core_ganglio-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     12.0     10.0\n            2     gal     5.0     10.0\n            3     galnac     -2.0     10.0\n            4     gal     -9.0     10.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:b1     3:3\n///"
+			},
+			{
+				"file": "GSL_core_globo-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     13.0     9.0\n            2     gal     6.0     9.0\n            3     gal     -1.0     9.0\n            4     galnac     -8.0     9.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:a1     2:4\n            3     4:a1     3:3\n///"
+			},
+			{
+				"file": "GSL_core_isoglobo-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     12.0     8.0\n            2     gal     5.0     8.0\n            3     gal     -2.0     8.0\n            4     galnac     -9.0     8.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:a1     2:3\n            3     4:b1     3:3\n///"
+			},
+			{
+				"file": "GSL_core_lacto-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     13.0     9.0\n            2     gal     6.0     9.0\n            3     glcnac     -1.0     9.0\n            4     gal     -8.0     9.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:3\n            3     4:b1     3:3\n///"
+			},
+			{
+				"file": "GSL_core_mollu-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     11.0     8.0\n            2     man     4.0     8.0\n            3     man     -3.0     8.0\n            4     glcnac     -10.0     8.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:a1     2:3\n            3     4:b1     3:2\n///"
+			},
+			{
+				"file": "GSL_core_muco-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     12.0     8.0\n            2     gal     5.0     8.0\n            3     gal     -2.0     8.0\n            4     gal     -9.0     8.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:b1     3:3\n///"
+			},
+			{
+				"file": "GSL_core_neolacto-type.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glc     12.0     8.0\n            2     gal     5.0     8.0\n            3     glcnac     -2.0     8.0\n            4     gal     -9.0     8.0\nEDGE        3\n            1     2:b1     1:4\n            2     3:b1     2:3\n            3     4:b1     3:4\n///"
+			},
+			{
+				"file": "Heparan_sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        8\n            1     glcnac     12.0     7.0\n            2     ido     5.0     7.0\n            3     glcn     -2.0     7.0\n            4     ido     -9.0     7.0\n            5     S     9.0     11.0\n            6     S     2.0     3.0\n            7     S     -5.0     11.0\n            8     NS     -5.0     3.0\nEDGE        7\n            1     2:a1     1:4\n            2     3:b1     2:4\n            3     4:a1     3:4\n            4     7     3:6\n            5     8     3:2\n            6     6     2:2\n            7     5     1:6\n///"
+			},
+			{
+				"file": "Heparin.txt",
+				"fileData": "ENTRY               Glycan\nNODE        11\n            1     glcn     10.0     8.0\n            2     ido     3.0     8.0\n            3     glcn     -4.0     8.0\n            4     ido     -11.0     8.0\n            5     S     7.0     12.0\n            6     NS     7.0     4.0\n            7     S     5.0     6.0\n            8     S     0.0     4.0\n            9     S     -7.0     12.0\n            10     NS     -7.0     4.0\n            11     S     -9.0     6.0\nEDGE        10\n            1     6     1:2\n            2     2:a1     1:4\n            3     3:b1     2:4\n            4     4:a1     3:4\n            5     9     3:6\n            6     10     3:2\n            7     11     3:3\n            8     8     2:2\n            9     5     1:6\n            10     7     1:3\n///"
+			},
+			{
+				"file": "Hyaluronic_Acid.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glcnac     13.0     7.0\n            2     glca     6.0     7.0\n            3     glcnac     -1.0     7.0\n            4     glca     -8.0     7.0\nEDGE        3\n            1     2:b1     1:3\n            2     3:b1     2:4\n            3     4:b1     3:3\n///"
+			},
+			{
+				"file": "Keratan_sulfate.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     glcnac     13.0     6.0\n            2     gal     6.0     6.0\n            3     glcnac     -1.0     6.0\n            4     gal     -8.0     6.0\n            5     S     10.0     10.0\n            6     S     -4.0     10.0\nEDGE        5\n            1     2:b1     1:4\n            2     3:b1     2:3\n            3     4:b1     3:4\n            4     6     3:6\n            5     5     1:6\n///"
+			},
+			{
+				"file": "LacDiNAc.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     -15.0     13.0\n            2     glcnac     -6.0     13.0\nEDGE        1\n            1     1:b1     2:4\n///\n"
+			},
+			{
+				"file": "Lactosamine.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     gal     -15.0     13.0\n            2     glcnac     -6.0     13.0\nEDGE        1\n            1     1:b1     2:4\n///\n"
+			},
+			{
+				"file": "Lewis_A.txt",
+				"fileData": "ENTRY               Glycan\nNODE        3\n            1     gal     -15.0     13.0\n            2     glcnac     -6.0     13.0\n            3     fuc     -13.0     19.0\nEDGE        2\n            1     1:b1     2:3\n            2     3:a1     2:4\n///\n"
+			},
+			{
+				"file": "Lewis_B.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     gal     -14.0     13.0\n            2     glcnac     -6.0     13.0\n            3     fuc     -13.0     19.0\n            4     fuc     -22.0     13.0\nEDGE        3\n            1     1:b1     2:3\n            2     3:a1     2:4\n            3     4:a1     1:2\n///\n"
+			},
+			{
+				"file": "Lewis_C.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     gal     -14.0     13.0\n            2     glcnac     -6.0     13.0\n            3     gal     2.0     13.0\n            4     glc     11.0     13.0\nEDGE        3\n            1     1:b1     2:3\n            2     2:b1     3:3\n            3     3:b1     4:4\n///\n"
+			},
+			{
+				"file": "Lewis_D.txt",
+				"fileData": "ENTRY               Glycan\nNODE        5\n            1     gal     -14.0     13.0\n            2     glcnac     -6.0     13.0\n            3     gal     2.0     13.0\n            4     glc     11.0     13.0\n            5     fuc     -22.0     13.0\nEDGE        4\n            1     1:b1     2:3\n            2     2:b1     3:3\n            3     3:b1     4:4\n            4     5:a1     1:2\n///\n"
+			},
+			{
+				"file": "Lewis_X.txt",
+				"fileData": "ENTRY               Glycan\nNODE        3\n            1     gal     -15.0     13.0\n            2     glcnac     -6.0     13.0\n            3     fuc     -12.0     8.0\nEDGE        2\n            1     1:b1     2:4\n            2     3:a1     2:3\n///"
+			},
+			{
+				"file": "Lewis_Y.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     gal     -15.0     13.0\n            2     glcnac     -6.0     13.0\n            3     fuc     -12.0     8.0\n            4     fuc     -23.0     13.0\nEDGE        3\n            1     1:b1     2:4\n            2     3:a1     2:3\n            3     4:a1     1:2\n///\n"
+			},
+			{
+				"file": "N-glycan_bisecting_core.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     glcnac     13.0     9.0\n            2     glcnac     6.0     9.0\n            3     man     -1.0     9.0\n            4     man     -8.0     14.0\n            5     glcnac     -8.0     9.0\n            6     man     -8.0     4.0\nEDGE        5\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a1     3:6\n            4     5:b1     3:4\n            5     6:a1     3:3\n///"
+			},
+			{
+				"file": "N-glycan_bisecting_fucosylated_core.txt",
+				"fileData": "ENTRY               Glycan\nNODE        7\n            1     fuc     5.0     12.0\n            2     glcnac     12.0     7.0\n            3     glcnac     5.0     7.0\n            4     man     -2.0     7.0\n            5     man     -9.0     12.0\n            6     glcnac     -9.0     7.0\n            7     man     -9.0     2.0\nEDGE        6\n            1     2:6     1:a1\n            2     3:b1     2:4\n            3     4:b1     3:4\n            4     5:a1     4:6\n            5     6:b1     4:4\n            6     7:a1     4:3\n///"
+			},
+			{
+				"file": "N-glycan_core.txt",
+				"fileData": "ENTRY               Glycan\nNODE        5\n            1     glcnac     11.0     9.0\n            2     glcnac     4.0     9.0\n            3     man     -3.0     9.0\n            4     man     -10.0     14.0\n            5     man     -10.0     4.0\nEDGE        4\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     5:a1     3:3\n            4     4:a1     3:6\n///"
+			},
+			{
+				"file": "N-glycan_fucosylated_core.txt",
+				"fileData": "ENTRY               Glycan\nNODE        6\n            1     fuc     3.0     13.0\n            2     glcnac     10.0     8.0\n            3     glcnac     3.0     8.0\n            4     man     -4.0     8.0\n            5     man     -11.0     13.0\n            6     man     -11.0     3.0\nEDGE        5\n            1     2:6     1:a1\n            2     3:b1     2:4\n            3     4:b1     3:4\n            4     5:a1     4:6\n            5     6:a1     4:3\n///"
+			},
+			{
+				"file": "Neo-Lactosamine.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     gal     -15.0     13.0\n            2     glcnac     -6.0     13.0\nEDGE        1\n            1     1:b1     2:3\n///\n"
+			},
+			{
+				"file": "O-glycan_core_1.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     5.0     9.0\n            2     gal     -2.0     9.0\nEDGE        1\n            1     2:b1     1:3\n///"
+			},
+			{
+				"file": "O-glycan_core_2.txt",
+				"fileData": "ENTRY               Glycan\nNODE        3\n            1     galnac     7.0     6.0\n            2     glcnac     0.0     11.0\n            3     gal     0.0     1.0\nEDGE        2\n            1     2:b1     1:6\n            2     3:b1     1:3\n///"
+			},
+			{
+				"file": "O-glycan_core_3.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     7.0     9.0\n            2     glcnac     0.0     9.0\nEDGE        1\n            1     2:b1     1:3\n///"
+			},
+			{
+				"file": "O-glycan_core_4.txt",
+				"fileData": "ENTRY               Glycan\nNODE        3\n            1     galnac     8.0     7.0\n            2     glcnac     1.0     12.0\n            3     glcnac     1.0     2.0\nEDGE        2\n            1     2:b1     1:6\n            2     3:b1     1:3\n///"
+			},
+			{
+				"file": "O-glycan_core_5.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     9.0     8.0\n            2     galnac     2.0     8.0\nEDGE        1\n            1     2:a1     1:3\n///"
+			},
+			{
+				"file": "O-glycan_core_6.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     9.0     8.0\n            2     glcnac     2.0     8.0\nEDGE        1\n            1     2:b1     1:6\n///"
+			},
+			{
+				"file": "O-glycan_core_7.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     9.0     10.0\n            2     galnac     2.0     10.0\nEDGE        1\n            1     2:a1     1:6\n///"
+			},
+			{
+				"file": "O-glycan_core_8.txt",
+				"fileData": "ENTRY               Glycan\nNODE        2\n            1     galnac     9.0     10.0\n            2     gal     2.0     10.0\nEDGE        1\n            1     2:a1     1:3\n///"
+			},
+			{
+				"file": "P_Antigen.txt",
+				"fileData": "\nENTRY               Glycan\nNODE        4\n            1     galnac     -23.0     9.0\n            2     gal     -16.0     9.0\n            3     gal     -9.0     9.0\n            4     glc     -2.0     9.0\nEDGE        3\n            1     1:b1     2:3\n            2     2:a1     3:4\n            3     3:b1     4:4\n///"
+			},
+			{
+				"file": "Pk_Antigen.txt",
+				"fileData": "ENTRY               Glycan\nNODE        3\n            1     gal     -16.0     12.0\n            2     gal     -9.0     12.0\n            3     glc     -2.0     12.0\nEDGE        2\n            1     1:a1     2:4\n            2     2:b1     3:4\n///"
+			},
+			{
+				"file": "Poly-Lactosamine.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     gal     -15.0     14.0\n            2     glcnac     -7.0     14.0\n            3     gal     1.0     14.0\n            4     glcnac     9.0     14.0\nEDGE        3\n            1     1:b1     2:4\n            2     2:b1     3:3\n            3     3:b1     4:4\n///"
+			},
+			{
+				"file": "Sda_Antigen.txt",
+				"fileData": "ENTRY               Glycan\nNODE        5\n            1     galnac     -17.0     14.0\n            2     neuac     -17.0     8.0\n            3     gal     -10.0     11.0\n            4     glcnac     -2.0     11.0\n            5     gal     6.0     11.0\nEDGE        4\n            1     1:b1     3:4\n            2     2:a2     3:3\n            3     3:b1     4:4\n            4     4:b1     5:3\n///"
+			},
+			{
+				"file": "Sialyl_Lewis_A.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glcnac     9.0     11.0\n            2     fuc     2.0     15.0\n            3     gal     2.0     11.0\n            4     neuac     -5.0     11.0\nEDGE        3\n            1     3:b1     1:3\n            2     4:a2     3:3\n            3     2:a1     1:4\n///"
+			},
+			{
+				"file": "Sialyl_Lewis_X.txt",
+				"fileData": "ENTRY               Glycan\nNODE        4\n            1     glcnac     12.0     12.0\n            2     fuc     5.0     8.0\n            3     gal     5.0     12.0\n            4     neuac     -2.0     12.0\nEDGE        3\n            1     3:b1     1:4\n            2     4:a2     3:3\n            3     2:a1     1:3\n///"
+			},
+			{
+				"file": "complex.txt",
+				"fileData": "ENTRY               Glycan\nNODE        8\n            1     glcnac     13.0     7.0\n            2     glcnac     6.0     7.0\n            3     man     -1.0     7.0\n            4     man     -8.0     12.0\n            5     man     -8.0     2.0\n            6     glcnac     -15.0     9.0\n            7     glcnac     -15.0     -1.0\n            8     fuc     6.0     12.0\nEDGE        7\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a1     3:6\n            4     6:b1     4:2\n            5     5:a1     3:3\n            6     7:b1     5:2\n            7     8:a1     1:6\n///"
+			},
+			{
+				"file": "high_mannose.txt",
+				"fileData": "ENTRY               Glycan\nNODE        7\n            1     glcnac     14.0     6.0\n            2     glcnac     7.0     6.0\n            3     man     0.0     6.0\n            4     man     -7.0     11.0\n            5     man     -7.0     1.0\n            6     man     -14.0     14.0\n            7     man     -14.0     8.0\nEDGE        6\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a1     3:6\n            4     6:a1     4:6\n            5     7:a1     4:3\n            6     5:a1     3:3\n///"
+			},
+			{
+				"file": "hybrid.txt",
+				"fileData": "ENTRY               Glycan\nNODE        8\n            1     glcnac     13.0     8.0\n            2     glcnac     6.0     8.0\n            3     man     -1.0     8.0\n            4     man     -8.0     13.0\n            5     man     -8.0     3.0\n            6     man     -15.0     16.0\n            7     man     -15.0     10.0\n            8     glcnac     -15.0     -0.0\nEDGE        7\n            1     2:b1     1:4\n            2     3:b1     2:4\n            3     4:a1     3:6\n            4     6:a1     4:6\n            5     7:a1     4:3\n            6     5:a1     3:3\n            7     8:b1     5:2\n///"
+			}
+		]
+	};
 
 /***/ }
 /******/ ]);

@@ -1,0 +1,7 @@
+ENTRY               Glycan
+NODE        2
+            1     galnac     9.0     10.0
+            2     gal     2.0     10.0
+EDGE        1
+            1     2:a1     1:3
+///

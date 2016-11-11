@@ -1,0 +1,9 @@
+ENTRY       GM3        Glycan
+NODE        3
+            1     glc     20.0     2.0
+            2     gal     14.0     2.0
+            3     neuac     8.0     2.0
+EDGE        2
+            1     2:b1     1:4
+            2     3:a2     2:3
+///

@@ -1,0 +1,15 @@
+ENTRY               Glycan
+NODE        6
+            1     glcnac     13.0     9.0
+            2     glcnac     6.0     9.0
+            3     man     -1.0     9.0
+            4     man     -8.0     14.0
+            5     glcnac     -8.0     9.0
+            6     man     -8.0     4.0
+EDGE        5
+            1     2:b1     1:4
+            2     3:b1     2:4
+            3     4:a1     3:6
+            4     5:b1     3:4
+            5     6:a1     3:3
+///

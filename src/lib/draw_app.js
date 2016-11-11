@@ -20,12 +20,21 @@ import Node from './node';
 import { NODE_HASH } from './util/node_hash';
 import { adjustPosition } from './util/positioning_helper';
 import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR } from './util/monosaccharide_helper';
+import { getCoreStructure } from './util/core_structure';
 
-let DrawApp = {};
+class DrawApp {
+    constructor(canvas) {
+        this.canvas = canvas;
+    }
+    run() {
+        __run(this.canvas);
+    }
+}
 
-DrawApp.run = function(canvas) {
+function __run(canvas) {
     "use strict";
 
+    //let canvas = this.canvas;
     let stage = new createjs.Stage(canvas);
     let structureKey = 0;
     let structures = new Array();
@@ -521,6 +530,9 @@ DrawApp.run = function(canvas) {
         if(mode === 8 || mode === 9){
             CreateTree();
         }
+        if(mode === 10){
+            DrawKCF(fileLoadTextareaId.value);
+        }
     };
 
     window.edits = edits;
@@ -556,95 +568,100 @@ DrawApp.run = function(canvas) {
         }
         else if(mode === 4){
             if(mode != 4) return;
-            if(kindStructure === "N-glycan_core"){
-                nodeHashKey = 103;
-                XY(e);
-                let man1 = kindNode.draw(mouseX, mouseY);
-                let man2 = kindNode.draw(mouseX-100, mouseY-50);
-                let man3 = kindNode.draw(mouseX-100, mouseY+50);
-                nodeHashKey = 202;
-                let glcnac1 = kindNode.draw(mouseX+100, mouseY);
-                let glcnac2 = kindNode.draw(mouseX+200, mouseY);
-                let structure = new Structure(structure_id, man1, man2, null);
-                let line = new createjs.Shape();
-                line.graphics.setStrokeStyle(3);
-                line.graphics.beginStroke("#000");
-                line.graphics.moveTo(man1.x, man1.y);
-                line.graphics.lineTo(man2.x, man2.y);
-                stage.addChild(line);
-                structure.edge = line;
-                let edgeText = new createjs.Text("a1-6","12px serif", "rgb(255,0,0)");
-                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-                stage.addChild(edgeText);
-                structure.edgeInformamtion = edgeText;
-                structures[structureKey] = structure;
-                structureKey++;
-                structure_id++;
+            let coreStructureData = getCoreStructure(kindStructure);
+            console.log(coreStructureData);
+            DrawKCF(coreStructureData);
 
-                structure = new Structure(structure_id, man1, man3, null);
-                line = new createjs.Shape();
-                line.graphics.setStrokeStyle(3);
-                line.graphics.beginStroke("#000");
-                line.graphics.moveTo(man1.x, man1.y);
-                line.graphics.lineTo(man3.x, man3.y);
-                stage.addChild(line);
-                structure.edge = line;
-                edgeText = new createjs.Text("a1-3","12px serif", "rgb(255,0,0)");
-                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-                stage.addChild(edgeText);
-                structure.edgeInformamtion = edgeText;
-                structures[structureKey] = structure;
-                structureKey++;
-                structure_id++;
 
-                structure = new Structure(structure_id, man1, glcnac1, null);
-                line = new createjs.Shape();
-                line.graphics.setStrokeStyle(3);
-                line.graphics.beginStroke("#000");
-                line.graphics.moveTo(man1.x, man1.y);
-                line.graphics.lineTo(glcnac1.x, glcnac1.y);
-                stage.addChild(line);
-                structure.edge = line;
-                edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
-                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-                stage.addChild(edgeText);
-                structure.edgeInformamtion = edgeText;
-                structures[structureKey] = structure;
-                structureKey++;
-                structure_id++;
-
-                structure = new Structure(structure_id, glcnac1, glcnac2, null);
-                line = new createjs.Shape();
-                line.graphics.setStrokeStyle(3);
-                line.graphics.beginStroke("#000");
-                line.graphics.moveTo(glcnac1.x, glcnac1.y);
-                line.graphics.lineTo(glcnac2.x, glcnac2.y);
-                stage.addChild(line);
-                structure.edge = line;
-                edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
-                edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-                edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-                stage.addChild(edgeText);
-                structure.edgeInformamtion = edgeText;
-                structures[structureKey] = structure;
-                structureKey++;
-                structure_id++;
-                stage.removeChild(man1);
-                stage.removeChild(man2);
-                stage.removeChild(man3);
-                stage.removeChild(glcnac1);
-                stage.removeChild(glcnac2);
-                stage.addChild(man1);
-                stage.addChild(man2);
-                stage.addChild(man3);
-                stage.addChild(glcnac1);
-                stage.addChild(glcnac2);
-                stage.update();
-                adjustPosition(stage, structureKey, structures);
-            }
+            // if(kindStructure === "N-glycan_core"){
+            //     nodeHashKey = 103;
+            //     XY(e);
+            //     let man1 = kindNode.draw(mouseX, mouseY);
+            //     let man2 = kindNode.draw(mouseX-100, mouseY-50);
+            //     let man3 = kindNode.draw(mouseX-100, mouseY+50);
+            //     nodeHashKey = 202;
+            //     let glcnac1 = kindNode.draw(mouseX+100, mouseY);
+            //     let glcnac2 = kindNode.draw(mouseX+200, mouseY);
+            //     let structure = new Structure(structure_id, man1, man2, null);
+            //     let line = new createjs.Shape();
+            //     line.graphics.setStrokeStyle(3);
+            //     line.graphics.beginStroke("#000");
+            //     line.graphics.moveTo(man1.x, man1.y);
+            //     line.graphics.lineTo(man2.x, man2.y);
+            //     stage.addChild(line);
+            //     structure.edge = line;
+            //     let edgeText = new createjs.Text("a1-6","12px serif", "rgb(255,0,0)");
+            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+            //     stage.addChild(edgeText);
+            //     structure.edgeInformamtion = edgeText;
+            //     structures[structureKey] = structure;
+            //     structureKey++;
+            //     structure_id++;
+            //
+            //     structure = new Structure(structure_id, man1, man3, null);
+            //     line = new createjs.Shape();
+            //     line.graphics.setStrokeStyle(3);
+            //     line.graphics.beginStroke("#000");
+            //     line.graphics.moveTo(man1.x, man1.y);
+            //     line.graphics.lineTo(man3.x, man3.y);
+            //     stage.addChild(line);
+            //     structure.edge = line;
+            //     edgeText = new createjs.Text("a1-3","12px serif", "rgb(255,0,0)");
+            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+            //     stage.addChild(edgeText);
+            //     structure.edgeInformamtion = edgeText;
+            //     structures[structureKey] = structure;
+            //     structureKey++;
+            //     structure_id++;
+            //
+            //     structure = new Structure(structure_id, man1, glcnac1, null);
+            //     line = new createjs.Shape();
+            //     line.graphics.setStrokeStyle(3);
+            //     line.graphics.beginStroke("#000");
+            //     line.graphics.moveTo(man1.x, man1.y);
+            //     line.graphics.lineTo(glcnac1.x, glcnac1.y);
+            //     stage.addChild(line);
+            //     structure.edge = line;
+            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
+            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+            //     stage.addChild(edgeText);
+            //     structure.edgeInformamtion = edgeText;
+            //     structures[structureKey] = structure;
+            //     structureKey++;
+            //     structure_id++;
+            //
+            //     structure = new Structure(structure_id, glcnac1, glcnac2, null);
+            //     line = new createjs.Shape();
+            //     line.graphics.setStrokeStyle(3);
+            //     line.graphics.beginStroke("#000");
+            //     line.graphics.moveTo(glcnac1.x, glcnac1.y);
+            //     line.graphics.lineTo(glcnac2.x, glcnac2.y);
+            //     stage.addChild(line);
+            //     structure.edge = line;
+            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
+            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
+            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
+            //     stage.addChild(edgeText);
+            //     structure.edgeInformamtion = edgeText;
+            //     structures[structureKey] = structure;
+            //     structureKey++;
+            //     structure_id++;
+            //     stage.removeChild(man1);
+            //     stage.removeChild(man2);
+            //     stage.removeChild(man3);
+            //     stage.removeChild(glcnac1);
+            //     stage.removeChild(glcnac2);
+            //     stage.addChild(man1);
+            //     stage.addChild(man2);
+            //     stage.addChild(man3);
+            //     stage.addChild(glcnac1);
+            //     stage.addChild(glcnac2);
+            //     stage.update();
+            //     adjustPosition(stage, structureKey, structures);
+            // }
         }
     };
 
@@ -1073,13 +1090,14 @@ DrawApp.run = function(canvas) {
         let textArea = document.getElementById("kcf_format");
         let str;
         let str2;
+        let url;
         if(mode === 8){
             str = "ENTRY"+ TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + glycoTrees.length + NEW_LINE;
             str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
         }
         else if(mode === 9){
             let date = new Date();
-            let url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
+            url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
             str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + glycoTrees.length + URL_NEW_LINE;
             str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
         }
@@ -1105,9 +1123,10 @@ DrawApp.run = function(canvas) {
         }
         else if(mode === 9) {
             let runQueryUrl = url + str + str2 + SLASH + WAVE + document.scoreMatrix.scoreSelect.value + WAVE;
+            let kindRunQueryResultType;
             for (let i = 0; i < document.kindRnuQueryResult.type.length; i++){
                 if (document.kindRnuQueryResult.type[i].checked == true) {
-                    let kindRunQueryResultType = document.kindRnuQueryResult.type[i].value;
+                    kindRunQueryResultType = document.kindRnuQueryResult.type[i].value;
                 }
             }
             runQueryUrl += kindRunQueryResultType + WAVE + document.database.databaseSelect.value;
@@ -1156,19 +1175,22 @@ DrawApp.run = function(canvas) {
         return str2;
     }
 
-    function DrawKCF() {
-        let text = fileLoadTextareaId.value.replace(/\s/g, "space");
+    function DrawKCF(KCFtext) {
+        let text = KCFtext.replace(/\s/g, "space");
         let splitKCFs = text.split("space");
+        // if(mode === 4){
+        //     splitKCFs =
+        // }
         let DrawKCFNodeObject = function(number, monosaccharide, x, y){
             this.nodeNumber = number;
             this.monosaccharide = monosaccharide;
             this.paramX = x;
             this.paramY = y;
         }
-        let DrawKCFEdgeObject = function(anomer, childId, chaildLinkagePosition, parentId, parentLinkagePosition){
+        let DrawKCFEdgeObject = function(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition){
             this.anomer = anomer;
             this.childId = childId;
-            this.childLinkagePsition = chaildLinkagePosition;
+            this.childLinkagePsition = childLinkagePosition;
             this.parentId = parentId;
             this.parentLinkagePosition = parentLinkagePosition;
         }
@@ -1254,12 +1276,12 @@ DrawApp.run = function(canvas) {
 
         //Node
         for(i = 0; i < DrawKCFNodeObjects.length; i++){
-            for(let j = 100; j < 1107; j++){
+            for(j = 100; j < 1107; j++){
                 if(NODE_HASH[j] === DrawKCFNodeObjects[i].monosaccharide){
                     nodeHashKey = j;
                 }
             }
-            kindNode.draw(DrawKCFNodeObjects[i].paramX, DrawKCFNodeObjects[i].paramY);
+            kindNode.draw(DrawKCFNodeObjects[i].paramX , DrawKCFNodeObjects[i].paramY  );
         }
 
         //Edge

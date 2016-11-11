@@ -1,0 +1,11 @@
+ENTRY       3'sulfo_Lewis_X        Glycan
+NODE        4
+            1     glcnac     14.0     6.0
+            2     gal     6.0     10.0
+            3     fuc     6.0     2.0
+            4     S     -1.0     14.0
+EDGE        3
+            1     2:b1     1:4
+            2     2:3     4
+            3     3:a1     1:3
+///

@@ -1,0 +1,11 @@
+ENTRY               Glycan
+NODE        4
+            1     glcnac     9.0     11.0
+            2     fuc     2.0     15.0
+            3     gal     2.0     11.0
+            4     neuac     -5.0     11.0
+EDGE        3
+            1     3:b1     1:3
+            2     4:a2     3:3
+            3     2:a1     1:4
+///

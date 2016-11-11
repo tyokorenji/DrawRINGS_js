@@ -37,7 +37,7 @@
         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button" >File management <span class="caret"></span></button>
         <ul class="dropdown-menu nav nav-pills nav-stacked" role="menu">
             <li><input type="button" class="btn btn-success" name="File" value="Upload File" style="width:150px;" onclick="$('#kcfFileLoad').click();"></li>
-            <li><button class="btn btn-success" name="File" value="drawkcf" style="width:150px;" onclick="DrawKCF()" >Draw KCF </button></li>
+            <li><button class="btn btn-success" name="File" value="drawkcf" style="width:150px;" onclick="edits(10)" >Draw KCF </button></li>
             <li><button class="btn btn-success" name="File" value="kcftextout" style="width:150px;"onclick="edits(8)">KCF Text out </button></li>
             <li><button class="btn btn-success" name="File" value="textclear" style="width:150px;" onclick="textClear()">Text clear </button></li>
         </ul>
@@ -304,13 +304,13 @@
             <button class="btn btn-primary" style="width:150px;">N-glycan</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-righ" role="menu">
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_core')">N-glycan_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_fucosylated_core')">N-glycan_fucosylated_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_core')">N-glycan_bisecting_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_fucosylated_core')">N-glycan_bisecting_fucosylated_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hight-mannose')">hight-mannose </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hybrid')">hybrid </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('complex')">complex </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_core.txt')">N-glycan_core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_fucosylated_core.txt')">N-glycan_fucosylated_core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_core.txt')">N-glycan_bisecting_core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_fucosylated_core.txt')">N-glycan_bisecting_fucosylated_core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hight-mannose.txt')">hight-mannose </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hybrid.txt')">hybrid </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('complex.txt')">complex </button></li>
             </ul>
         </div>
 
@@ -318,14 +318,14 @@
             <button class="btn btn-primary" style="width:150px;">O-glycan</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_1')">O-glycan_core_1 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_2')">O-glycan_core_2 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_3')">O-glycan_core_3 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_4')">O-glycan_core_4 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_5')">O-glycan_core_5 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_6')">O-glycan_core_6 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_7')">O-glycan_core_7 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_8')">O-glycan_core_8 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_1.txt')">O-glycan_core_1 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_2.txt')">O-glycan_core_2 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_3.txt')">O-glycan_core_3 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_4.txt')">O-glycan_core_4 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_5.txt')">O-glycan_core_5 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_6.txt')">O-glycan_core_6 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_7.txt')">O-glycan_core_7 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_8.txt')">O-glycan_core_8 </button></li>
             </ul>
         </div>
 
@@ -333,15 +333,15 @@
             <button class="btn btn-primary" style="width:150px;">Glycosphingolipids</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_arthro_type')">GSL_core_arthro_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_gala_type')">GSL_core_gala_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_ganglio_type')">GSL_core_ganglio_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_globo_type')">GSL_core_globo_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_isoglobo_type')">GSL_core_isoglobo_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lact_type')">GSL_core_lact_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_mollu_type')">GSL_core_mollu_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_muco_type')">GSL_core_muco_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_neolacto_type')">GSL_core_neolacto_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_arthro-type.txt')">GSL_core_arthro_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_gala-type.txt')">GSL_core_gala_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_ganglio-type.txt')">GSL_core_ganglio_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_globo-type.txt')">GSL_core_globo_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_isoglobo-type.txt')">GSL_core_isoglobo_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lact-type.txt')">GSL_core_lact_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_mollu-type.txt')">GSL_core_mollu_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_muco-type.txt')">GSL_core_muco_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_neolacto-type.txt')">GSL_core_neolacto_type </button></li>
             </ul>
         </div>
 
@@ -349,15 +349,15 @@
             <button class="btn btn-primary" style="width:150px;">GAGs</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Hyaluronic_Acid')">Hyaluronic_Acid </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('chondroitin_4_sulfate')">chondroitin_4_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('chondroitin_6_sulfate')">chondroitin_6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('chondroitin_2,6_sulfate')">chondroitin_2,6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('chondroitin_4,6_sulfate')">chondroitin_4,6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Dermatan_sulfate')">Dermatan_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Karatan_sulfate')">Karatan_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparin')">Heparin </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparansan_sulfate')">Heparansan_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Hyaluronic_Acid.txt')">Hyaluronic_Acid </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4-sulfate.txt')">chondroitin_4_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_6-sulfate.txt')">chondroitin_6_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_2,6-sulfate.txt')">chondroitin_2,6_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4,6-sulfate.txt')">chondroitin_4,6_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Dermatan_sulfate.txt')">Dermatan_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Keratan_sulfate.txt')">Karatan_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparin.txt')">Heparin </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparan_sulfate.txt')">Heparansan_sulfate </button></li>
             </ul>
         </div>
 
@@ -365,32 +365,32 @@
             <button class="btn btn-primary" style="width:150px;">Motifs</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('3\'sulfo_Lewis_X')">3'sulfo_Lewis_X </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_A_Antigen')">Blood_Group_A_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_B_Antigen')">Blood_Group_B_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_X_Antigen')">Blood_Group_X_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Cad_Antigen')">Cad_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1a')">GD1a </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1b')">GD1b </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD2')">GD2 </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD3')">GD3 </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM1a')">GM1a </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM1b')">GM1b </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM2')">GM2 </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM3')">GM3 </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('LacDiNAc')">LacDiNAc </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lactosamin')">Lactosamin </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_A')">Lewis_A </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_B')">Lewis_B </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_C')">Lewis_C </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_D')">Lewis_D </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_X')">Lewis_X </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_Y')">Lewis_Y </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('P_Antigen')">P_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Pk_Antigen')">Pk_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Poly_Lactosamine')">Poly_Lactosamine </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialy_Lewis_A')">Sialy_Lewis_A </button></li>
-                <li><button class="btn btn-success" style="..." onclick="structureMenu('Sialy_Lewis_X')">Sialy_Lewis_X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('3\'sulfo_Lewis_X.txt')">3'sulfo_Lewis_X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_A_Antigen.txt')">Blood_Group_A_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_B_Antigen.txt')">Blood_Group_B_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_X_Antigen.txt')">Blood_Group_X_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Cad_Antigen.txt')">Cad_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1a.txt')">GD1a </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1b.txt')">GD1b </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD2.txt')">GD2 </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD3.txt')">GD3 </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM1a.txt')">GM1a </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM1b.txt')">GM1b </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM2.txt')">GM2 </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM3.txt')">GM3 </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('LacDiNAc.txt')">LacDiNAc </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lactosamine.txt')">Lactosamin </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_A.txt')">Lewis_A </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_B.txt')">Lewis_B </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_C.txt')">Lewis_C </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_D.txt')">Lewis_D </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_X.txt')">Lewis_X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_Y.txt')">Lewis_Y </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('P_Antigen.txt')">P_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Pk_Antigen.txt')">Pk_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Poly-Lactosamine.txt')">Poly_Lactosamine </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_A.txt')">Sialy_Lewis_A </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_X.txt')">Sialy_Lewis_X </button></li>
             </ul>
         </div>
     </div>
@@ -429,9 +429,7 @@
 </span>
 
 <!-- Script -->
-<script>
-
-</script>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 
 <script src="bundle.js"></script>
 
