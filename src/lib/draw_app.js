@@ -21,6 +21,7 @@ import { NODE_HASH } from './util/node_hash';
 import { adjustPosition } from './util/positioning_helper';
 import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR } from './util/monosaccharide_helper';
 import { getCoreStructure } from './util/core_structure';
+import { KCFParser } from './util/kcf_parser';
 
 class DrawApp {
     constructor(canvas) {
@@ -31,6 +32,12 @@ class DrawApp {
     }
 }
 
+/**
+ * TODO: __run メソッドはスリム化して DrawApp#run() として定義し直す.
+ * TODO: DrawApp#run() では canvas として this.canvas を使用する.
+ * @param canvas
+ * @private
+ */
 function __run(canvas) {
     "use strict";
 
@@ -353,6 +360,28 @@ function __run(canvas) {
                 nodes[nodeKey] = shape;
                 nodeKey++;
             }
+            else{
+                shape = new Node(node_id, nodeHashKey);
+                // node_id++;
+                // let r = 10;
+                // shape.graphics.beginStroke(getLineColor());
+                // shape.graphics.beginFill(MONOSACCHARIDE_COLOR.WHITE);
+                // shape.graphics.drawCircle(0, 0, r);
+                // shape.x = x;
+                // shape.y = y;
+                let nodeText = new createjs.Text(nodeHashKey,"24px serif", getLineColor());
+                nodeText.x = x;
+                nodeText.y = y;
+                shape.param.otherNodeNameText = nodeText;
+                shape.param.otherNodeNameText.addEventListener("mousedown", handleDown);
+                // stage.addChild(shape);
+                stage.addChild(nodeText);
+                stage.update();
+                nodes[nodeKey] = shape;
+                nodeKey++;
+                return shape;
+
+            }
         }
     };
 
@@ -442,17 +471,25 @@ function __run(canvas) {
     };
     window.nodeMenu = nodeMenu;
 
-    function edgeMenu(k){
+    let nodeTextMenu = function(){
+        nodeMenu(document.nodeForm.nodeText.value);
+    };
+    window.nodeTextMenu = nodeTextMenu;
+
+    let edgeMenu = function(k){
         edgeKey = k;
-    }
-    function edgeTextMenu(){
+    };
+    window.edgeMenu = edgeMenu;
+
+    let edgeTextMenu = function(){
         if(!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)){
             alert("Please write \nAnomer(a or b)" + 1 + "~" +6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
         }
         else{
             edgeMenu(document.edgeForm.edgeText.value);
         }
-    }
+    };
+    window.edgeTextMenu = edgeTextMenu
 
     let kindStructure = null;
     let structureMenu = function(k){
@@ -531,7 +568,9 @@ function __run(canvas) {
             CreateTree();
         }
         if(mode === 10){
-            DrawKCF(fileLoadTextareaId.value);
+            let parser = new KCFParser(fileLoadTextareaId.value);
+            let result = parser.parse();
+            // TODO: Canvas に result を描画する
         }
     };
 
@@ -541,8 +580,14 @@ function __run(canvas) {
     function WindowClick() {
         if (moveStructureNodes[0] != null) {
             for (let i = 0; i < moveStructureNodes.length; i++) {
-                moveStructureNodes[i].graphics._stroke.style = getLineColor();
-                moveStructureNodes[i].alpha = 1.0;
+                if(moveStructureNodes[i].param.otherNodeNameText != null){
+                    moveStructureNodes[i].param.otherNodeNameText.color = getLineColor();
+                    moveStructureNodes[i].param.otherNodeNameText.alpha = 1.0;
+                }
+                else {
+                    moveStructureNodes[i].graphics._stroke.style = getLineColor();
+                    moveStructureNodes[i].alpha = 1.0;
+                }
             }
             moveStructureNodes.splice(0, moveStructureNodes.length);
             moveStructuresNodesKey = 0;
@@ -553,6 +598,9 @@ function __run(canvas) {
     canvas.addEventListener("mousedown", canvasMouseDown);
     function canvasMouseDown(e){
         if(mode != 1 && mode != 2 && mode != 4) return;
+        /**
+         * "Select" 始まり
+         */
         if(mode === 1){
             XY(e);
             selectX = mouseX;
@@ -665,6 +713,9 @@ function __run(canvas) {
         }
     };
 
+    /**
+     *"Select"ドラッグしたまま。四角を作る
+     */
     function SelectMove(){
         if(selectRange != null){
             stage.removeChild(selectRange);
@@ -687,6 +738,10 @@ function __run(canvas) {
         stage.update();
     }
 
+    /**
+     * "Select" 四角作り終わり。
+     * 四角内のnodeを見つけ、枠線の色と透明度を変化している
+     */
     function SelectUp(){
         let i;
         for(i = 0; i < nodes.length; i++){
@@ -697,11 +752,23 @@ function __run(canvas) {
                     moveStructureNodes[moveStructuresNodesKey] = nodes[i];
                     moveStructuresNodesKey++;
                 }
+                if(selectX < nodes[i].param.otherNodeNameText.x && mouseX > nodes[i].param.otherNodeNameText.x && selectY < nodes[i].param.otherNodeNameText.y && mouseY > nodes[i].param.otherNodeNameText.y){
+                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
+                    nodes[i].param.otherNodeNameText.alpha = 0.5;
+                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
+                    moveStructuresNodesKey++;
+                }
             }
             else if(selectX > mouseX && selectY > mouseY) {
                 if(mouseX < nodes[i].x && selectX > nodes[i].x && mouseY < nodes[i].y && selectY > nodes[i].y){
                     nodes[i].graphics._stroke.style = "rgb(204, 0, 0)";
                     nodes[i].alpha = 0.5;
+                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
+                    moveStructuresNodesKey++;
+                }
+                if(mouseX < nodes[i].param.otherNodeNameText.graphics.x && selectX > nodes[i].param.otherNodeNameText.graphics.x && mouseY < nodes[i].param.otherNodeNameText.graphics.y && selectY > nodes[i].param.otherNodeNameText.graphics.y){
+                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
+                    nodes[i].param.otherNodeNameText.alpha = 0.5;
                     moveStructureNodes[moveStructuresNodesKey] = nodes[i];
                     moveStructuresNodesKey++;
                 }
@@ -716,6 +783,10 @@ function __run(canvas) {
         canvas.removeEventListener("mousemove", SelectMove);
         canvas.removeEventListener("mouseup", SelectUp);
     }
+
+    /**
+     *"Select" 選択範囲を右クリックすることで削除する
+     */
 
     function SelectStructureDelete(){
         if(mode != 1) return;
@@ -737,7 +808,12 @@ function __run(canvas) {
                         nodes.splice(j, 1);
                     }
                 }
-                stage.removeChild(moveStructureNodes[i]);
+                if(moveStructureNodes[i].param.otherNodeNameText != null){
+                    stage.removeChild(moveStructureNodes[i].param.otherNodeNameText);
+                }
+                else {
+                    stage.removeChild(moveStructureNodes[i]);
+                }
             }
             if(structures.length != 0) {
                 for (i = 0; i < structures.length; i++) {
@@ -763,6 +839,9 @@ function __run(canvas) {
         nodeKey = nodes.length;
     }
 
+    /**
+     *"Select" 選択範囲内のオブジェクトをドラッグして移動
+     */
 
     function SelectMoveStructureDown(event){
         window.removeEventListener("mousedown",WindowClick);
@@ -787,6 +866,10 @@ function __run(canvas) {
         target.addEventListener("pressmove", SelectMoveStructureMove);
         target.addEventListener("pressup", SelectMoveStructureUp);
     }
+
+    /**
+     *"Select" 移動終了
+     */
 
     function SelectMoveStructureMove(){
         if(mode != 1 && mode != 7) return;
@@ -1175,69 +1258,6 @@ function __run(canvas) {
         return str2;
     }
 
-    function DrawKCF(KCFtext) {
-        let text = KCFtext.replace(/\s/g, "space");
-        let splitKCFs = text.split("space");
-        // if(mode === 4){
-        //     splitKCFs =
-        // }
-        let DrawKCFNodeObject = function(number, monosaccharide, x, y){
-            this.nodeNumber = number;
-            this.monosaccharide = monosaccharide;
-            this.paramX = x;
-            this.paramY = y;
-        }
-        let DrawKCFEdgeObject = function(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition){
-            this.anomer = anomer;
-            this.childId = childId;
-            this.childLinkagePsition = childLinkagePosition;
-            this.parentId = parentId;
-            this.parentLinkagePosition = parentLinkagePosition;
-        }
-        let DrawKCFNodeObjects = new Array();
-        let DrawKCFNodeObjectsKey = 0;
-        let DrawKCFEdgeObjects = new Array;
-        let DrawKCFEdgeObjectKey = 0;
-        let i;
-        for(i = 0; i < splitKCFs.length; i++){
-            if(splitKCFs[i] === ""){
-                splitKCFs.splice(i,1);
-                i--;
-            }
-        }
-        if(splitKCFs[0] != "ENTRY"){
-            alert("please write KCF format.\n for exsample \" ENTRY    Glycan...\"");
-            return;
-        }
-        else if(splitKCFs[2] != "NODE"){
-            return;
-        }
-        else{
-            for(i = 4; i < splitKCFs.length; i = i + 4) {
-                if(splitKCFs[i] === "EDGE"){
-                    break;
-                }
-                else {
-                    let DrawKCFNode = new DrawKCFNodeObject(splitKCFs[i],splitKCFs[i + 1], splitKCFs[i + 2], splitKCFs[i + 3]);
-                    DrawKCFNodeObjects[DrawKCFNodeObjectsKey] = DrawKCFNode;
-                    DrawKCFNodeObjectsKey++;
-                }
-            }
-            i = i + 2;
-            for( i; i < splitKCFs.length; i = i + 3 ){
-                if(splitKCFs[i] === SLASH){
-                    break;
-                }
-                let childNodeInformations = splitKCFs[i+1].split("");
-                let parentNodeInformations = splitKCFs[i+2].split("");
-                let DrawKCFEdge = new DrawKCFEdgeObject(childNodeInformations[2], childNodeInformations[0], childNodeInformations[3], parentNodeInformations[0], parentNodeInformations[2]);
-                DrawKCFEdgeObjects[DrawKCFEdgeObjectKey] = DrawKCFEdge;
-                DrawKCFEdgeObjectKey++;
-            }
-        }
-        buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects);
-        console.log(splitKCFs);
-    };
 
     function buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects){
         //単糖の距離のsort

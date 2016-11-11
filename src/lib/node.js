@@ -7,7 +7,8 @@ class Node extends createjs.Shape {
             id: nodeId,
             monosaccharide: nodeName,
             sortParamX: 0,
-            sortParamY: 0
+            sortParamY: 0,
+            otherNodeNameText: null
         };
     }
 }

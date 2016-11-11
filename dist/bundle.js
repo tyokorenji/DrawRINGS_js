@@ -111,6 +111,8 @@
 	
 	var _core_structure = __webpack_require__(24);
 	
+	var _kcf_parser = __webpack_require__(26);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -127,19 +129,26 @@
 	    _createClass(DrawApp, [{
 	        key: 'run',
 	        value: function run() {
-	            __run(this.canvas, 10, 20, 30, 40, 50, 60);
+	            __run(this.canvas);
 	        }
 	    }]);
 	
 	    return DrawApp;
 	}();
 	
+	/**
+	 * TODO: __run メソッドはスリム化して DrawApp#run() として定義し直す.
+	 * TODO: DrawApp#run() では canvas として this.canvas を使用する.
+	 * @param canvas
+	 * @private
+	 */
+	
+	
 	function __run(canvas) {
 	    "use strict";
 	
 	    //let canvas = this.canvas;
 	
-	    console.log(arguments);
 	    var stage = new createjs.Stage(canvas);
 	    var structureKey = 0;
 	    var structures = new Array();
@@ -441,6 +450,26 @@
 	                stage.update();
 	                nodes[nodeKey] = shape;
 	                nodeKey++;
+	            } else {
+	                shape = new _node2.default(node_id, nodeHashKey);
+	                // node_id++;
+	                // let r = 10;
+	                // shape.graphics.beginStroke(getLineColor());
+	                // shape.graphics.beginFill(MONOSACCHARIDE_COLOR.WHITE);
+	                // shape.graphics.drawCircle(0, 0, r);
+	                // shape.x = x;
+	                // shape.y = y;
+	                var nodeText = new createjs.Text(nodeHashKey, "24px serif", (0, _monosaccharide_helper.getLineColor)());
+	                nodeText.x = x;
+	                nodeText.y = y;
+	                shape.param.otherNodeNameText = nodeText;
+	                shape.param.otherNodeNameText.addEventListener("mousedown", handleDown);
+	                // stage.addChild(shape);
+	                stage.addChild(nodeText);
+	                stage.update();
+	                nodes[nodeKey] = shape;
+	                nodeKey++;
+	                return shape;
 	            }
 	        }
 	    };
@@ -524,16 +553,24 @@
 	    };
 	    window.nodeMenu = nodeMenu;
 	
-	    function edgeMenu(k) {
+	    var nodeTextMenu = function nodeTextMenu() {
+	        nodeMenu(document.nodeForm.nodeText.value);
+	    };
+	    window.nodeTextMenu = nodeTextMenu;
+	
+	    var edgeMenu = function edgeMenu(k) {
 	        edgeKey = k;
-	    }
-	    function edgeTextMenu() {
+	    };
+	    window.edgeMenu = edgeMenu;
+	
+	    var edgeTextMenu = function edgeTextMenu() {
 	        if (!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)) {
 	            alert("Please write \nAnomer(a or b)" + 1 + "~" + 6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
 	        } else {
 	            edgeMenu(document.edgeForm.edgeText.value);
 	        }
-	    }
+	    };
+	    window.edgeTextMenu = edgeTextMenu;
 	
 	    var kindStructure = null;
 	    var structureMenu = function structureMenu(k) {
@@ -608,7 +645,9 @@
 	            CreateTree();
 	        }
 	        if (mode === 10) {
-	            DrawKCF(fileLoadTextareaId.value);
+	            var parser = new _kcf_parser.KCFParser(fileLoadTextareaId.value);
+	            var result = parser.parse();
+	            // TODO: Canvas に result を描画する
 	        }
 	    };
 	
@@ -618,8 +657,13 @@
 	    function WindowClick() {
 	        if (moveStructureNodes[0] != null) {
 	            for (var i = 0; i < moveStructureNodes.length; i++) {
-	                moveStructureNodes[i].graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)();
-	                moveStructureNodes[i].alpha = 1.0;
+	                if (moveStructureNodes[i].param.otherNodeNameText != null) {
+	                    moveStructureNodes[i].param.otherNodeNameText.color = (0, _monosaccharide_helper.getLineColor)();
+	                    moveStructureNodes[i].param.otherNodeNameText.alpha = 1.0;
+	                } else {
+	                    moveStructureNodes[i].graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)();
+	                    moveStructureNodes[i].alpha = 1.0;
+	                }
 	            }
 	            moveStructureNodes.splice(0, moveStructureNodes.length);
 	            moveStructuresNodesKey = 0;
@@ -630,6 +674,9 @@
 	    canvas.addEventListener("mousedown", canvasMouseDown);
 	    function canvasMouseDown(e) {
 	        if (mode != 1 && mode != 2 && mode != 4) return;
+	        /**
+	         * "Select" 始まり
+	         */
 	        if (mode === 1) {
 	            XY(e);
 	            selectX = mouseX;
@@ -738,6 +785,9 @@
 	        }
 	    };
 	
+	    /**
+	     *"Select"ドラッグしたまま。四角を作る
+	     */
 	    function SelectMove() {
 	        if (selectRange != null) {
 	            stage.removeChild(selectRange);
@@ -759,6 +809,10 @@
 	        stage.update();
 	    }
 	
+	    /**
+	     * "Select" 四角作り終わり。
+	     * 四角内のnodeを見つけ、枠線の色と透明度を変化している
+	     */
 	    function SelectUp() {
 	        var i = void 0;
 	        for (i = 0; i < nodes.length; i++) {
@@ -769,10 +823,22 @@
 	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
 	                    moveStructuresNodesKey++;
 	                }
+	                if (selectX < nodes[i].param.otherNodeNameText.x && mouseX > nodes[i].param.otherNodeNameText.x && selectY < nodes[i].param.otherNodeNameText.y && mouseY > nodes[i].param.otherNodeNameText.y) {
+	                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
+	                    nodes[i].param.otherNodeNameText.alpha = 0.5;
+	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
+	                    moveStructuresNodesKey++;
+	                }
 	            } else if (selectX > mouseX && selectY > mouseY) {
 	                if (mouseX < nodes[i].x && selectX > nodes[i].x && mouseY < nodes[i].y && selectY > nodes[i].y) {
 	                    nodes[i].graphics._stroke.style = "rgb(204, 0, 0)";
 	                    nodes[i].alpha = 0.5;
+	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
+	                    moveStructuresNodesKey++;
+	                }
+	                if (mouseX < nodes[i].param.otherNodeNameText.graphics.x && selectX > nodes[i].param.otherNodeNameText.graphics.x && mouseY < nodes[i].param.otherNodeNameText.graphics.y && selectY > nodes[i].param.otherNodeNameText.graphics.y) {
+	                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
+	                    nodes[i].param.otherNodeNameText.alpha = 0.5;
 	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
 	                    moveStructuresNodesKey++;
 	                }
@@ -787,6 +853,10 @@
 	        canvas.removeEventListener("mousemove", SelectMove);
 	        canvas.removeEventListener("mouseup", SelectUp);
 	    }
+	
+	    /**
+	     *"Select" 選択範囲を右クリックすることで削除する
+	     */
 	
 	    function SelectStructureDelete() {
 	        if (mode != 1) return;
@@ -808,7 +878,11 @@
 	                        nodes.splice(j, 1);
 	                    }
 	                }
-	                stage.removeChild(moveStructureNodes[i]);
+	                if (moveStructureNodes[i].param.otherNodeNameText != null) {
+	                    stage.removeChild(moveStructureNodes[i].param.otherNodeNameText);
+	                } else {
+	                    stage.removeChild(moveStructureNodes[i]);
+	                }
 	            }
 	            if (structures.length != 0) {
 	                for (i = 0; i < structures.length; i++) {
@@ -834,6 +908,10 @@
 	        nodeKey = nodes.length;
 	    }
 	
+	    /**
+	     *"Select" 選択範囲内のオブジェクトをドラッグして移動
+	     */
+	
 	    function SelectMoveStructureDown(event) {
 	        window.removeEventListener("mousedown", WindowClick);
 	        var target = event.target;
@@ -856,6 +934,10 @@
 	        target.addEventListener("pressmove", SelectMoveStructureMove);
 	        target.addEventListener("pressup", SelectMoveStructureUp);
 	    }
+	
+	    /**
+	     *"Select" 移動終了
+	     */
 	
 	    function SelectMoveStructureMove() {
 	        if (mode != 1 && mode != 7) return;
@@ -1223,67 +1305,6 @@
 	        }
 	        return str2;
 	    }
-	
-	    function DrawKCF(KCFtext) {
-	        var text = KCFtext.replace(/\s/g, "space");
-	        var splitKCFs = text.split("space");
-	        // if(mode === 4){
-	        //     splitKCFs =
-	        // }
-	        var DrawKCFNodeObject = function DrawKCFNodeObject(number, monosaccharide, x, y) {
-	            this.nodeNumber = number;
-	            this.monosaccharide = monosaccharide;
-	            this.paramX = x;
-	            this.paramY = y;
-	        };
-	        var DrawKCFEdgeObject = function DrawKCFEdgeObject(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition) {
-	            this.anomer = anomer;
-	            this.childId = childId;
-	            this.childLinkagePsition = childLinkagePosition;
-	            this.parentId = parentId;
-	            this.parentLinkagePosition = parentLinkagePosition;
-	        };
-	        var DrawKCFNodeObjects = new Array();
-	        var DrawKCFNodeObjectsKey = 0;
-	        var DrawKCFEdgeObjects = new Array();
-	        var DrawKCFEdgeObjectKey = 0;
-	        var i = void 0;
-	        for (i = 0; i < splitKCFs.length; i++) {
-	            if (splitKCFs[i] === "") {
-	                splitKCFs.splice(i, 1);
-	                i--;
-	            }
-	        }
-	        if (splitKCFs[0] != "ENTRY") {
-	            alert("please write KCF format.\n for exsample \" ENTRY    Glycan...\"");
-	            return;
-	        } else if (splitKCFs[2] != "NODE") {
-	            return;
-	        } else {
-	            for (i = 4; i < splitKCFs.length; i = i + 4) {
-	                if (splitKCFs[i] === "EDGE") {
-	                    break;
-	                } else {
-	                    var DrawKCFNode = new DrawKCFNodeObject(splitKCFs[i], splitKCFs[i + 1], splitKCFs[i + 2], splitKCFs[i + 3]);
-	                    DrawKCFNodeObjects[DrawKCFNodeObjectsKey] = DrawKCFNode;
-	                    DrawKCFNodeObjectsKey++;
-	                }
-	            }
-	            i = i + 2;
-	            for (i; i < splitKCFs.length; i = i + 3) {
-	                if (splitKCFs[i] === SLASH) {
-	                    break;
-	                }
-	                var childNodeInformations = splitKCFs[i + 1].split("");
-	                var parentNodeInformations = splitKCFs[i + 2].split("");
-	                var DrawKCFEdge = new DrawKCFEdgeObject(childNodeInformations[2], childNodeInformations[0], childNodeInformations[3], parentNodeInformations[0], parentNodeInformations[2]);
-	                DrawKCFEdgeObjects[DrawKCFEdgeObjectKey] = DrawKCFEdge;
-	                DrawKCFEdgeObjectKey++;
-	            }
-	        }
-	        buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects);
-	        console.log(splitKCFs);
-	    };
 	
 	    function buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects) {
 	        //単糖の距離のsort
@@ -44603,7 +44624,8 @@
 	            id: nodeId,
 	            monosaccharide: nodeName,
 	            sortParamX: 0,
-	            sortParamY: 0
+	            sortParamY: 0,
+	            otherNodeNameText: null
 	        };
 	        return _this;
 	    }
@@ -45526,6 +45548,350 @@
 			}
 		]
 	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.KCFParser = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _node = __webpack_require__(20);
+	
+	var _node2 = _interopRequireDefault(_node);
+	
+	var _structure = __webpack_require__(19);
+	
+	var _structure2 = _interopRequireDefault(_structure);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var KCFParser = function () {
+	    function KCFParser(text) {
+	        _classCallCheck(this, KCFParser);
+	
+	        this.text = text;
+	    }
+	
+	    _createClass(KCFParser, [{
+	        key: 'parse',
+	        value: function parse() {
+	            var lines = removeNullLines(generateLines(this.text));
+	
+	            if (checkSyntax(lines) === false) {
+	                // TODO: 読み込みエラー. 文法にエラーがある.
+	                return null;
+	            }
+	
+	            var result = analyzeLines(lines);
+	            //return result;
+	
+	            DrawKCF(this.text);
+	        }
+	    }]);
+	
+	    return KCFParser;
+	}();
+	
+	// i オプションをつけることで、大文字・小文字を区別しないでマッチングさせる.
+	
+	
+	var FLAGS = {
+	    ENTRY_FLAG: /^ENTRY/i,
+	    ENTRY_GLYCAN_FLAG: /Glycan/i,
+	
+	    NODE_FLAG: /^NODE/i,
+	    EDGE_FLAG: /^EDGE/i,
+	    TERMINAL_FLAG: /^\/\/\/$/
+	};
+	var SPACE_SEPARATOR = /\s+/;
+	var TOKEN_SEPARATOR = /:/;
+	var ALPHA_BETA_CHECK = /a|b/i;
+	
+	/**
+	 * KCFファイルから読み込んだ文字列情報を行頭/行末から空白文字が除去された形で行ごとに配列化する.
+	 * @param text KCFファイル文字列.
+	 * @returns {Array|*} 行単位に分割されたKCFファイル情報配列
+	 * .
+	 */
+	function generateLines(text) {
+	    "use strict";
+	
+	    var LINE_SEPARATOR = /\r\n|\r|\n/;
+	    var lines = text.split(LINE_SEPARATOR);
+	    for (var i = 0; i < lines.length; i++) {
+	        lines[i] = lines[i].trim();
+	    }
+	    return lines;
+	}
+	
+	/**
+	 * KCFファイル情報を含む配列中から、空白文字 "" だけの要素を除去する.
+	 * @param lines 行単位に分割されたKCFファイル情報配列.
+	 * @returns {Array} 空白文字要素が除去されたKCFファイル情報配列.
+	 */
+	function removeNullLines(lines) {
+	    "use strict";
+	
+	    var result = [];
+	    for (var i = 0; i < lines.length; i++) {
+	        if (lines[i]) {
+	            result.push(lines[i]);
+	        }
+	    }
+	    return result;
+	}
+	
+	/**
+	 * KCFファイルの文法をチェックする.
+	 * @param lines KCFファイル情報配列.
+	 * @returns {boolean} 文法エラーがなければ true、文法エラーがあるならば false.
+	 */
+	function checkSyntax(lines) {
+	    "use strict";
+	
+	    var hasEntry = false;
+	    var hasNode = false;
+	    var hasEdge = false;
+	    var hasTerminal = false;
+	
+	    for (var i = 0; i < lines.length; i++) {
+	        var line = lines[i];
+	        if (FLAGS.ENTRY_FLAG.test(line)) {
+	            var entryHeader = line.split(SPACE_SEPARATOR);
+	            if (FLAGS.ENTRY_GLYCAN_FLAG.test(entryHeader[entryHeader.length - 1])) {
+	                hasEntry = true;
+	            }
+	        } else if (FLAGS.NODE_FLAG.test(line)) {
+	            var nodeHeader = line.split(SPACE_SEPARATOR);
+	            var nodeSize = Number.parseInt(nodeHeader[nodeHeader.length - 1]);
+	            hasNode = true;
+	            i += nodeSize;
+	        } else if (FLAGS.EDGE_FLAG.test(line)) {
+	            var edgeHeader = line.split(SPACE_SEPARATOR);
+	            var edgeSize = Number.parseInt(edgeHeader[edgeHeader.length - 1]);
+	            hasEdge = true;
+	            i += edgeSize;
+	        } else if (FLAGS.TERMINAL_FLAG.test(line)) {
+	            hasTerminal = true;
+	        }
+	    }
+	
+	    return hasEntry && hasNode && hasEdge && hasTerminal;
+	}
+	
+	function analyzeLines(lines) {
+	    var nodeLines = [];
+	    var edgeLines = [];
+	
+	    for (var i = 0; i < lines.length; i++) {
+	        var line = lines[i];
+	        if (FLAGS.NODE_FLAG.test(line)) {
+	            var nodeHeader = line.split(SPACE_SEPARATOR);
+	            var nodeSize = Number.parseInt(nodeHeader[nodeHeader.length - 1]);
+	            for (var j = 0; j < nodeSize; j++) {
+	                nodeLines.push(lines[i + j + 1]);
+	            }
+	            i += nodeSize;
+	        } else if (FLAGS.EDGE_FLAG.test(line)) {
+	            var edgeHeader = line.split(SPACE_SEPARATOR);
+	            var edgeSize = Number.parseInt(edgeHeader[edgeHeader.length - 1]);
+	            for (var _j = 0; _j < edgeSize; _j++) {
+	                edgeLines.push(lines[i + _j + 1]);
+	            }
+	            i += edgeSize;
+	        }
+	    }
+	    var nodesObj = parseNodes(nodeLines);
+	    var edgesObj = parseEdges(edgeLines, nodesObj);
+	    /*
+	    let structures = null;
+	    if (nodes && edges) {
+	        structures = connectStructures(nodes, edges);
+	    }
+	    return structures;
+	    */
+	    return edgesObj;
+	}
+	
+	function parseNodes(lines) {
+	    var nodesObj = {};
+	    for (var i = 0; i < lines.length; i++) {
+	        var line = lines[i];
+	        var tokens = line.split(SPACE_SEPARATOR);
+	        // Node は各行ごとに 2 個以上のトークンが必要とする.
+	        if (tokens.length < 2) {
+	            return null;
+	        }
+	
+	        var id = tokens[0];
+	        var name = tokens[1];
+	        if (nodesObj[id] !== undefined) {
+	            return null;
+	        }
+	        // TODO: Node の constructor 側で name から Sugar/Modification の判定を行っておく.
+	        nodesObj[id] = new _node2.default(id, name);
+	    }
+	    return nodesObj;
+	}
+	
+	function parseEdges(lines, nodesObj) {
+	    var edgesObj = {};
+	    for (var i = 0; i < lines.length; i++) {
+	        var line = lines[i];
+	        var tokens = line.split(SPACE_SEPARATOR);
+	        // Edge は各行ごとに 3 個のトークンが必要とする.
+	        if (tokens.length !== 3) {
+	            return null;
+	        }
+	
+	        var id = tokens[0];
+	        var lToken = tokens[1];
+	        var rToken = tokens[2];
+	        if (edgesObj[id] !== undefined) {
+	            return null;
+	        }
+	
+	        var genObj = generateConnection(lToken, rToken, nodesObj);
+	        var child = genObj.child;
+	        var parent = genObj.parent;
+	        var edgeInfo = genObj.edgeInfo;
+	
+	        edgesObj[id] = new _structure2.default(id, child, parent, edgeInfo);
+	    }
+	    return edgesObj;
+	}
+	
+	function generateConnection(lToken, rToken, nodesObj) {
+	    var lTokens = lToken.split(TOKEN_SEPARATOR);
+	    var rTokens = rToken.split(TOKEN_SEPARATOR);
+	
+	    var child = null;
+	    var parent = null;
+	    var edgeInfo = "";
+	
+	    if (lTokens.length === 1 && rTokens.length === 1) {
+	        // 左も右も結合情報皆無 ---> 左を子として優先.
+	        child = nodesObj[lTokens[0]];
+	        parent = nodesObj[rTokens[0]];
+	        edgeInfo = "";
+	    } else if (rTokens.length === 1) {
+	        // 右には結合情報皆無, 左には結合情報あり ("a1", "4")
+	        if (ALPHA_BETA_CHECK.test(lTokens[1])) {
+	            // 左側が非還元末端 (子側)
+	            child = nodesObj[lTokens[0]];
+	            parent = nodesObj[rTokens[0]];
+	        } else {
+	            // 右側が非還元末端 (子側)
+	            child = nodesObj[rTokens[0]];
+	            parent = nodesObj[lTokens[0]];
+	        }
+	        edgeInfo = lTokens[1] + "-";
+	    } else if (lTokens.length === 1) {
+	        // 左には結合情報皆無, 右には結合情報あり ("a1", "4")
+	        if (ALPHA_BETA_CHECK.test(rTokens[1])) {
+	            // 右側が非還元末端 (子側)
+	            child = nodesObj[rTokens[0]];
+	            parent = nodesObj[lTokens[0]];
+	        } else {
+	            // 左側が非還元末端 (子側)
+	            child = nodesObj[lTokens[0]];
+	            parent = nodesObj[rTokens[0]];
+	        }
+	        edgeInfo = "-" + rTokens[1];
+	    } else {
+	        // lTokens.length === rTokens.length === 2 ---> 通常の単糖
+	        if (ALPHA_BETA_CHECK.test(rTokens[1])) {
+	            // 右側が非還元末端 (子側)
+	            child = nodesObj[rTokens[0]];
+	            parent = nodesObj[lTokens[0]];
+	        } else {
+	            // 左側が非還元末端 (子側)
+	            child = nodesObj[lTokens[0]];
+	            parent = nodesObj[rTokens[0]];
+	        }
+	        edgeInfo = lTokens[1] + "-" + rTokens[1];
+	    }
+	
+	    return {
+	        child: child,
+	        parent: parent,
+	        edgeInfo: edgeInfo
+	    };
+	}
+	
+	function connectStructures(nodes, edges) {}
+	
+	function DrawKCF(KCFtext) {
+	    var text = KCFtext.replace(/\s/g, "space");
+	    var splitKCFs = text.split("space");
+	    // if(mode === 4){
+	    //     splitKCFs =
+	    // }
+	    var DrawKCFNodeObject = function DrawKCFNodeObject(number, monosaccharide, x, y) {
+	        this.nodeNumber = number;
+	        this.monosaccharide = monosaccharide;
+	        this.paramX = x;
+	        this.paramY = y;
+	    };
+	    var DrawKCFEdgeObject = function DrawKCFEdgeObject(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition) {
+	        this.anomer = anomer;
+	        this.childId = childId;
+	        this.childLinkagePsition = childLinkagePosition;
+	        this.parentId = parentId;
+	        this.parentLinkagePosition = parentLinkagePosition;
+	    };
+	    var DrawKCFNodeObjects = new Array();
+	    var DrawKCFNodeObjectsKey = 0;
+	    var DrawKCFEdgeObjects = new Array();
+	    var DrawKCFEdgeObjectKey = 0;
+	    var i = void 0;
+	    for (i = 0; i < splitKCFs.length; i++) {
+	        if (splitKCFs[i] === "") {
+	            splitKCFs.splice(i, 1);
+	            i--;
+	        }
+	    }
+	    if (splitKCFs[0] != "ENTRY") {
+	        alert("please write KCF format.\n for exsample \" ENTRY    Glycan...\"");
+	        return;
+	    } else if (splitKCFs[2] != "NODE") {
+	        return;
+	    } else {
+	        for (i = 4; i < splitKCFs.length; i = i + 4) {
+	            if (splitKCFs[i] === "EDGE") {
+	                break;
+	            } else {
+	                var DrawKCFNode = new DrawKCFNodeObject(splitKCFs[i], splitKCFs[i + 1], splitKCFs[i + 2], splitKCFs[i + 3]);
+	                DrawKCFNodeObjects[DrawKCFNodeObjectsKey] = DrawKCFNode;
+	                DrawKCFNodeObjectsKey++;
+	            }
+	        }
+	        i = i + 2;
+	        for (i; i < splitKCFs.length; i = i + 3) {
+	            if (splitKCFs[i] === SLASH) {
+	                break;
+	            }
+	            var childNodeInformations = splitKCFs[i + 1].split("");
+	            var parentNodeInformations = splitKCFs[i + 2].split("");
+	            var DrawKCFEdge = new DrawKCFEdgeObject(childNodeInformations[2], childNodeInformations[0], childNodeInformations[3], parentNodeInformations[0], parentNodeInformations[2]);
+	            DrawKCFEdgeObjects[DrawKCFEdgeObjectKey] = DrawKCFEdge;
+	            DrawKCFEdgeObjectKey++;
+	        }
+	    }
+	    buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects);
+	    console.log(splitKCFs);
+	};
+	
+	exports.KCFParser = KCFParser;
 
 /***/ }
 /******/ ]);
