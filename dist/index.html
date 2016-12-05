@@ -18,28 +18,14 @@
 
 <!-- 各ツールの設定 -->
 <div class="row upper-menu">
-
-    <!--<div class="btn-group col-md-4">-->
-    <!--<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button" >Edit canvas <span class="caret"></span></button>-->
-    <!--<ul class="dropdown-menu  nav nav-pills nav-stacked" role="menu">-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="select" style="width:150px;" onclick="edits(1)">Select </button></li>-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="node" style="width:150px;" onclick="edits(2)">Node </button></li>-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="edge" style="width:150px;" onclick="edits(3)">Edge </button></li>-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="structure" style="width:150px;" onclick="edits(4)">Structure </button></li>-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="clearall" style="width:150px;" onclick="edits(5)">Clear All </button></li>-->
-    <!--<li><button class="btn btn-success"  name="mode" data-value="erasenode" style="width:150px;" onclick="edits(6)">Erase Node </button></li>-->
-    <!--<li><button class="btn btn-success" name="mode" data-value="monenode" style="width:150px;" onclick="edits(7)">Move Node </button></li>-->
-    <!--</ul>-->
-    <!--<input type="hidden" name="dropdown-value" value="">-->
-    <!--</div>-->
-
     <div class="btn-group col-md-6">
         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button" >File management <span class="caret"></span></button>
         <ul class="dropdown-menu nav nav-pills nav-stacked" role="menu">
             <li><input type="button" class="btn btn-success" name="File" value="Upload File" style="width:150px;" onclick="$('#kcfFileLoad').click();"></li>
             <li><button class="btn btn-success" name="File" value="drawkcf" style="width:150px;" onclick="edits(10)" >Draw KCF </button></li>
             <li><button class="btn btn-success" name="File" value="kcftextout" style="width:150px;"onclick="edits(8)">KCF Text out </button></li>
-            <li><button class="btn btn-success" name="File" value="textclear" style="width:150px;" onclick="textClear()">Text clear </button></li>
+            <li><button class="btn btn-success" name="File" value="kcftextout" style="width:150px;"onclick="edits(12)">IUPAC Text out </button></li>
+            <li><button class="btn btn-success" name="File" value="textclear" style="width:150px;" onclick="edits(11)">Text clear </button></li>
         </ul>
     </div>
 
@@ -321,7 +307,7 @@
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_fucosylated_core.txt')">N-glycan_fucosylated_core </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_core.txt')">N-glycan_bisecting_core </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_fucosylated_core.txt')">N-glycan_bisecting_fucosylated_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hight-mannose.txt')">hight-mannose </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('high_mannose.txt')">high-mannose </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hybrid.txt')">hybrid </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('complex.txt')">complex </button></li>
             </ul>
@@ -351,7 +337,7 @@
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_ganglio-type.txt')">GSL_core_ganglio_type </button></li>
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_globo-type.txt')">GSL_core_globo_type </button></li>
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_isoglobo-type.txt')">GSL_core_isoglobo_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lact-type.txt')">GSL_core_lact_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lacto-type.txt')">GSL_core_lact_type </button></li>
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_mollu-type.txt')">GSL_core_mollu_type </button></li>
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_muco-type.txt')">GSL_core_muco_type </button></li>
                 <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_neolacto-type.txt')">GSL_core_neolacto_type </button></li>
@@ -381,7 +367,7 @@
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('3\'sulfo_Lewis_X.txt')">3'sulfo_Lewis_X </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_A_Antigen.txt')">Blood_Group_A_Antigen </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_B_Antigen.txt')">Blood_Group_B_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_X_Antigen.txt')">Blood_Group_X_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_H_Antigen.txt')">Blood_Group_H_Antigen </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Cad_Antigen.txt')">Cad_Antigen </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1a.txt')">GD1a </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1b.txt')">GD1b </button></li>
@@ -436,6 +422,18 @@
         <label><input type="radio" name="type" value="0" checked> Similarity</label><br />
         <label><input type="radio" name="type" value="1"> Matched</label><br />
     </form>
+</div>
+
+<div id="numberOfRepeat" title="repeatBracket">
+    <label><p>Number od repeat</p>
+        <form name="repeat">
+            <p><label>n：<input type="text" id="repeatN" name="name" size="30" maxlength="20"></label></p>
+        </form>
+    </label>
+</div>
+<div id="structureDelete">
+    <button class="btn btn-success" style="width:180px;" onclick="selectStructureDelete()">structureDelete </button>
+    <button id="repeatBracketBuuton" class="btn btn-success" style="width:180px;">repeatBracket </button>
 </div>
 <span id="fileArea">
     <input type="file" id="kcfFileLoad" style="display:none;" >

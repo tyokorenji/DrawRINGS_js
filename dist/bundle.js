@@ -103,21 +103,52 @@
 	
 	var _node2 = _interopRequireDefault(_node);
 	
-	var _node_hash = __webpack_require__(21);
+	var _sugar = __webpack_require__(22);
 	
-	var _positioning_helper = __webpack_require__(22);
+	var _sugar2 = _interopRequireDefault(_sugar);
 	
-	var _monosaccharide_helper = __webpack_require__(23);
+	var _Modification = __webpack_require__(28);
 	
-	var _core_structure = __webpack_require__(24);
+	var _Modification2 = _interopRequireDefault(_Modification);
 	
-	var _kcf_parser = __webpack_require__(26);
+	var _node_hash = __webpack_require__(29);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _core_structure = __webpack_require__(30);
+	
+	var _kcf_parser = __webpack_require__(32);
+	
+	var _clear_all = __webpack_require__(35);
+	
+	var _create_KCF = __webpack_require__(36);
+	
+	var _set_edge_text = __webpack_require__(25);
+	
+	var _text_clear = __webpack_require__(37);
+	
+	var _erase_node = __webpack_require__(38);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _select_function = __webpack_require__(39);
+	
+	var _createIUPAC = __webpack_require__(40);
+	
+	var _create_bracket = __webpack_require__(41);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	console.log(_node2.default);
+	console.log(_structure2.default);
+	console.log(_sugar2.default);
+	console.log(_Modification2.default);
 	
 	var DrawApp = function () {
 	    function DrawApp(canvas) {
@@ -150,31 +181,6 @@
 	    //let canvas = this.canvas;
 	
 	    var stage = new createjs.Stage(canvas);
-	    var structureKey = 0;
-	    var structures = new Array();
-	
-	    // リサイズイベントを検知してリサイズ処理を実行
-	    window.addEventListener("resize", handleResize);
-	    handleResize(); // 起動時にもリサイズしておく
-	
-	    // リサイズ処理
-	    /**
-	     * TODO: GUI
-	     */
-	    function handleResize(event) {
-	        // 画面幅・高さを取得
-	        var c = (0, _jquery2.default)(canvas); //$('#canvas');
-	        var w = parseInt(c.css('width'), 10);
-	        var h = parseInt(c.css('height'), 10);
-	
-	        // Canvas要素の大きさを画面幅・高さに合わせる
-	        stage.canvas.width = w;
-	        stage.canvas.height = h;
-	
-	        // 画面更新する
-	        stage.update();
-	        (0, _positioning_helper.adjustPosition)(stage, structureKey, structures);
-	    }
 	
 	    (function ($) {
 	        var viewport = _responsiveBootstrapToolkit2.default;
@@ -240,303 +246,98 @@
 	        });
 	    });
 	
-	    var kindNode = {
-	        color: function color() {
-	            return (0, _monosaccharide_helper.getMonosaccharideColor)(_node_hash.NODE_HASH[nodeHashKey]);
-	        },
-	
-	        draw: function draw(x, y) {
-	            var shape = null;
-	            if (100 < nodeHashKey && nodeHashKey < 110) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                var r = 10;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.drawCircle(0, 0, r);
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	                return shape;
-	            } else if (200 < nodeHashKey && nodeHashKey < 210) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.drawRect(-10, -10, 20, 20);
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	                return shape;
-	            } else if (300 < nodeHashKey && nodeHashKey < 310) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0 - 10, 0 - 10);
-	                shape.graphics.lineTo(0 + 10, 0 - 10);
-	                shape.graphics.lineTo(0 + 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0 - 10, 0 - 10);
-	                shape.graphics.lineTo(0 - 10, 0 + 10);
-	                shape.graphics.lineTo(0 + 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (400 < nodeHashKey && nodeHashKey < 410) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                if (_node_hash.NODE_HASH[nodeHashKey] === "alta" || _node_hash.NODE_HASH[nodeHashKey] === "idoa") shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);else shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0 - 10, 0);
-	                shape.graphics.lineTo(0, 0 - 10);
-	                shape.graphics.lineTo(0 + 10, 0);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                if (_node_hash.NODE_HASH[nodeHashKey] === "alta" || _node_hash.NODE_HASH[nodeHashKey] === "idoa") shape.graphics.beginFill(kindNode.color());else shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0 - 10, 0);
-	                shape.graphics.lineTo(0, 0 + 10);
-	                shape.graphics.lineTo(0 + 10, 0);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (500 < nodeHashKey && nodeHashKey < 510) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0, 0 + 10);
-	                shape.graphics.lineTo(0 + 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0 - 20);
-	                shape.graphics.lineTo(0 - 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0 + 10);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (600 < nodeHashKey && nodeHashKey < 610) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0, 0 - 10);
-	                shape.graphics.lineTo(0 + 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0 + 10);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
-	                shape.graphics.moveTo(0, 0);
-	                shape.graphics.lineTo(0, 0 - 10);
-	                shape.graphics.lineTo(0 - 10, 0 + 10);
-	                shape.graphics.lineTo(0, 0 + 10);
-	                shape.graphics.lineTo(0, 0);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (700 < nodeHashKey && nodeHashKey < 710) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.drawRect(0 - 10, 0 - 10, 20, 10);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (800 < nodeHashKey && nodeHashKey < 810) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.drawPolyStar(0, 0, 10, 5, 0.6, -90);
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (900 < nodeHashKey && nodeHashKey < 910) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0, 0 - 10);
-	                shape.graphics.lineTo(0 - 10, 0);
-	                shape.graphics.lineTo(0, 0 + 10);
-	                shape.graphics.lineTo(0 + 10, 0);
-	                shape.graphics.lineTo(0, 0 - 10);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (1000 < nodeHashKey && nodeHashKey < 1010) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.moveTo(0 - 8, 0 - 8);
-	                shape.graphics.lineTo(0 - 10, 0);
-	                shape.graphics.lineTo(0 - 8, 0 + 8);
-	                shape.graphics.lineTo(0 + 8, 0 + 8);
-	                shape.graphics.lineTo(0 + 10, 0);
-	                shape.graphics.lineTo(0 + 8, 0 - 8);
-	                shape.graphics.lineTo(0 - 8, 0 - 8);
-	                shape.graphics.endFill();
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else if (1100 < nodeHashKey && nodeHashKey < 1110) {
-	                shape = new _node2.default(node_id, _node_hash.NODE_HASH[nodeHashKey]);
-	                node_id++;
-	                shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	                shape.graphics.beginFill(kindNode.color());
-	                shape.graphics.drawPolyStar(0, 0, 10, 5, 0, -90);
-	                shape.x = x;
-	                shape.y = y;
-	                shape.addEventListener("mousedown", handleDown);
-	                stage.addChild(shape);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	            } else {
-	                shape = new _node2.default(node_id, nodeHashKey);
-	                // node_id++;
-	                // let r = 10;
-	                // shape.graphics.beginStroke(getLineColor());
-	                // shape.graphics.beginFill(MONOSACCHARIDE_COLOR.WHITE);
-	                // shape.graphics.drawCircle(0, 0, r);
-	                // shape.x = x;
-	                // shape.y = y;
-	                var nodeText = new createjs.Text(nodeHashKey, "24px serif", (0, _monosaccharide_helper.getLineColor)());
-	                nodeText.x = x;
-	                nodeText.y = y;
-	                shape.param.otherNodeNameText = nodeText;
-	                shape.param.otherNodeNameText.addEventListener("mousedown", handleDown);
-	                // stage.addChild(shape);
-	                stage.addChild(nodeText);
-	                stage.update();
-	                nodes[nodeKey] = shape;
-	                nodeKey++;
-	                return shape;
-	            }
-	        }
-	    };
+	    (0, _jquery2.default)(function ($) {
+	        $("#numberOfRepeat").dialog({
+	            autoOpen: false, // 自動的に開かないように設定
+	            width: 400, // 横幅のサイズを設定
+	            modal: true, // モーダルダイアログにする
+	            buttons: [// ボタン名 : 処理 を設定
+	            {
+	                text: 'OK',
+	                click: function click() {
+	                    repeatBracket();
+	                    $(this).dialog("close");
+	                }
+	            }, {
+	                text: 'Cancel',
+	                click: function click() {
+	                    $(this).dialog("close");
+	                }
+	            }]
+	        });
+	        $("#repeatBracketBuuton").click(function () {
+	            $("#numberOfRepeat").dialog("open");
+	        });
+	    });
 	
 	    var mouseX = 0;
 	    var mouseY = 0;
-	    var mouseX1 = 0;
-	    var mouseY1 = 0;
 	
 	    // どの機能かの判別
-	    var flag = 0;
 	    var mode = 0;
-	    var edit = 0;
-	    var node_id = 1;
-	    var structure_id = 1;
+	    var nodeId = 1;
+	    var structureId = 1;
 	
 	    var nodeHashKey = void 0;
 	    var edgeKey = void 0;
-	    var nodes = new Array();
-	    var nodeKey = 0;
-	
+	    var nodes = [];
+	    var structures = [];
+	    var brackets = [];
+	    var nodeShape = 0;
 	    // 機能のための変数
-	    var dragPointX = void 0;
-	    var dragPointY = void 0;
-	    var startX = void 0;
-	    var startY = void 0;
 	    var edgeCount = 0;
-	    var edgeStart = void 0;
-	    var targetMoveNode1 = new Array();
-	    var targetMoveKey1 = 0;
-	    var targetMoveNode2 = new Array();
-	    var targetMoveKey2 = 0;
+	    var edgeStart = null;
 	    var selectX = 0;
 	    var selectY = 0;
 	    var selectRange = null;
 	    var moveStructureNodes = new Array();
-	    var moveStructuresNodesKey = 0;
-	    var drawStructureXPoints = new Array();
-	    var drawStructureYPoints = new Array();
-	    var targetMoveStructureNode1 = new Array();
-	    var targetMoveStructureNode2 = new Array();
-	    var targetMoveStructureKey1 = 0;
-	    var targetMoveStructureKey2 = 0;
-	
-	    //KCFTextOut
-	    var usedStructures = new Array();
-	    var usedStructureKey = 0;
-	    var KCFTextOutId = 1;
-	    var glycoTrees = new Array();
-	    var glycoTreeKey = 0;
-	    var GlycoTree = function GlycoTree() {
-	        this.link = null;
-	        this.children = new Array();
-	        this.id = null;
-	        this.Node = null;
-	        this.parentId = null;
-	    };
-	    var TAB = "    ";
-	    var NEW_LINE = "\n";
-	    var COLON = ":";
-	    var SLASH = "///";
-	    var URL_TAB = "%20";
-	    var URL_NEW_LINE = "%30";
-	    var WAVE = "~";
+	    var pointObj = {};
+	    var moveStructure = [];
 	
 	    var fileLoadId = document.getElementById("kcfFileLoad");
 	    var fileLoadTextareaId = document.getElementById("kcf_format");
+	
+	    // リサイズイベントを検知してリサイズ処理を実行
+	    window.addEventListener("resize", handleResize);
+	    handleResize(); // 起動時にもリサイズしておく
+	
+	    // リサイズ処理
+	    /**
+	     * TODO: GUI
+	     */
+	    function handleResize(event) {
+	        // 画面幅・高さを取得
+	        var c = (0, _jquery2.default)(canvas); //$('#canvas');
+	        var w = parseInt(c.css('width'), 10);
+	        var h = parseInt(c.css('height'), 10);
+	
+	        // Canvas要素の大きさを画面幅・高さに合わせる
+	        stage.canvas.width = w;
+	        stage.canvas.height = h;
+	
+	        // 画面更新する
+	        stage.update();
+	        // adjustPosition(stage, structureKey, structures);
+	        if (nodes.length != 0 && structures.length != 0) {
+	            for (var i = 0; i < nodes.length; i++) {
+	                if (nodes[i].xCood < 10 || nodes[i].xCood > canvas.width - 10 || nodes[i].yCood < 10 || nodes[i].yCood > canvas.height - 10) {
+	                    (0, _clear_all.clearAll)(nodes, structures, brackets, stage);
+	                    for (var l = 0; l < nodes.length; l++) {
+	                        nodes[l].childNode = [];
+	                    }
+	                    var results = (0, _kcf_parser.connectStructures)(nodes, structures, canvas, stage);
+	                    for (var j = 0; j < nodes.length; j++) {
+	                        nodes[j] = results[0][j];
+	                        nodes[j].sprite.addEventListener("mousedown", handleDown);
+	                    }
+	                    for (var _j = 0; _j < structures.length; _j++) {
+	                        structures[_j] = results[1][_j];
+	                        structures[_j].edge.addEventListener("click", edgeClick);
+	                    }
+	                }
+	            }
+	        }
+	    }
 	
 	    fileLoadId.addEventListener("change", function (evt) {
 	        var file = evt.target.files;
@@ -550,11 +351,13 @@
 	
 	    var nodeMenu = function nodeMenu(k) {
 	        nodeHashKey = k;
+	        nodeShape = 0;
 	    };
 	    window.nodeMenu = nodeMenu;
 	
 	    var nodeTextMenu = function nodeTextMenu() {
-	        nodeMenu(document.nodeForm.nodeText.value);
+	        nodeShape = 1;
+	        nodeHashKey = document.nodeForm.nodeText.value;
 	    };
 	    window.nodeTextMenu = nodeTextMenu;
 	
@@ -572,32 +375,22 @@
 	    };
 	    window.edgeTextMenu = edgeTextMenu;
 	
-	    var kindStructure = null;
 	    var structureMenu = function structureMenu(k) {
-	        kindStructure = k;
+	        if (mode != 4) return;
+	        var coreStructureData = (0, _core_structure.getCoreStructure)(k);
+	        console.log(coreStructureData);
+	        var parser = new _kcf_parser.KCFParser(coreStructureData);
+	        var results = parser.parse(canvas, stage);
+	        for (var i = 0; i < results[0].length; i++) {
+	            results[0][i].sprite.addEventListener("mousedown", handleDown);
+	            nodes.push(results[0][i]);
+	        }
+	        for (var _i = 0; _i < results[1].length; _i++) {
+	            results[1][_i].edge.addEventListener("click", edgeClick);
+	            structures.push(results[1][_i]);
+	        }
 	    };
 	    window.structureMenu = structureMenu;
-	
-	    function clearAll() {
-	        var res = confirm("clear ALL?");
-	        if (res === true) {
-	            var i = void 0;
-	            for (i = 0; i < structures.length; i++) {
-	                stage.removeChild(structures[i].edge);
-	                stage.removeChild(structures[i].edgeInformamtion);
-	            }
-	            for (i = 0; i < nodes.length; i++) {
-	                stage.removeChild(nodes[i]);
-	            }
-	            stage.update();
-	            structures.splice(0, structures.length);
-	            nodes.splice(0, nodes.length);
-	            structure_id = 1;
-	            structureKey = 0;
-	            node_id = 0;
-	            nodeKey = 0;
-	        }
-	    }
 	
 	    (0, _jquery2.default)(function () {
 	        (0, _jquery2.default)(".dropdown-menu li button").click(function () {
@@ -609,11 +402,7 @@
 	    (0, _jquery2.default)('#nodeMenu').addClass('hidden-menu');
 	    (0, _jquery2.default)('#edgeMenu').addClass('hidden-menu');
 	    (0, _jquery2.default)('#structureMenu').addClass('hidden-menu');
-	    /*
-	     document.getElementById("nodemenu").style.visibility = "hidden";
-	     document.getElementById("edgeMenu").style.visibility = "hidden";
-	     document.getElementById("strucureMenu").style.visibility = "hidden";
-	     */
+	    (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
 	
 	    var edits = function edits(edit) {
 	        mode = edit;
@@ -639,15 +428,39 @@
 	            (0, _jquery2.default)('#structureMenu').addClass('hidden-menu');
 	        }
 	        if (mode === 5) {
-	            clearAll();
+	            var res = confirm("clear ALL?");
+	            if (res) {
+	                (0, _clear_all.clearAll)(nodes, structures, brackets, stage);
+	                nodes = [];
+	                structures = [];
+	                brackets = [];
+	                structureId = 1;
+	                nodeId = 1;
+	            }
 	        }
 	        if (mode === 8 || mode === 9) {
-	            CreateTree();
+	            var kindRunQuery = document.kindRnuQueryResult.type;
+	            var database = document.database.databaseSelect;
+	            var scoreMatrix = document.scoreMatrix.scoreSelect;
+	            (0, _create_KCF.createKCF)(mode, nodes, structures, kindRunQuery, database, scoreMatrix);
 	        }
 	        if (mode === 10) {
 	            var parser = new _kcf_parser.KCFParser(fileLoadTextareaId.value);
-	            var result = parser.parse();
-	            // TODO: Canvas に result を描画する
+	            var results = parser.parse(canvas, stage);
+	            for (var i = 0; i < results[0].length; i++) {
+	                results[0][i].sprite.addEventListener("mousedown", handleDown);
+	                nodes.push(results[0][i]);
+	            }
+	            for (var _i2 = 0; _i2 < results[1].length; _i2++) {
+	                results[1][_i2].edge.addEventListener("click", edgeClick);
+	                structures.push(results[1][_i2]);
+	            }
+	        }
+	        if (mode === 11) {
+	            (0, _text_clear.textClear)();
+	        }
+	        if (mode === 12) {
+	            (0, _createIUPAC.createIUPAC)(nodes, structures);
 	        }
 	    };
 	
@@ -655,18 +468,12 @@
 	
 	    window.addEventListener("mousedown", WindowClick);
 	    function WindowClick() {
-	        if (moveStructureNodes[0] != null) {
+	        if (moveStructureNodes.length != 0) {
 	            for (var i = 0; i < moveStructureNodes.length; i++) {
-	                if (moveStructureNodes[i].param.otherNodeNameText != null) {
-	                    moveStructureNodes[i].param.otherNodeNameText.color = (0, _monosaccharide_helper.getLineColor)();
-	                    moveStructureNodes[i].param.otherNodeNameText.alpha = 1.0;
-	                } else {
-	                    moveStructureNodes[i].graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)();
-	                    moveStructureNodes[i].alpha = 1.0;
-	                }
+	                moveStructureNodes[i].returnShape(moveStructureNodes[i]);
 	            }
-	            moveStructureNodes.splice(0, moveStructureNodes.length);
-	            moveStructuresNodesKey = 0;
+	            canvas.addEventListener("mousedown", canvasMouseDown);
+	            // $('#structureDelete').addClass('hidden-menu');
 	        }
 	    }
 	
@@ -681,356 +488,134 @@
 	            XY(e);
 	            selectX = mouseX;
 	            selectY = mouseY;
-	
-	            canvas.addEventListener("mousemove", SelectMove);
-	            canvas.addEventListener("mouseup", SelectUp);
+	            moveStructureNodes = [];
+	            canvas.addEventListener("mousemove", selectMove);
+	            canvas.addEventListener("mouseup", selectUp);
 	        } else if (mode === 2) {
 	            XY(e);
-	            kindNode.draw(mouseX, mouseY);
-	        } else if (mode === 4) {
-	            if (mode != 4) return;
-	            var coreStructureData = (0, _core_structure.getCoreStructure)(kindStructure);
-	            console.log(coreStructureData);
-	            DrawKCF(coreStructureData);
-	
-	            // if(kindStructure === "N-glycan_core"){
-	            //     nodeHashKey = 103;
-	            //     XY(e);
-	            //     let man1 = kindNode.draw(mouseX, mouseY);
-	            //     let man2 = kindNode.draw(mouseX-100, mouseY-50);
-	            //     let man3 = kindNode.draw(mouseX-100, mouseY+50);
-	            //     nodeHashKey = 202;
-	            //     let glcnac1 = kindNode.draw(mouseX+100, mouseY);
-	            //     let glcnac2 = kindNode.draw(mouseX+200, mouseY);
-	            //     let structure = new Structure(structure_id, man1, man2, null);
-	            //     let line = new createjs.Shape();
-	            //     line.graphics.setStrokeStyle(3);
-	            //     line.graphics.beginStroke("#000");
-	            //     line.graphics.moveTo(man1.x, man1.y);
-	            //     line.graphics.lineTo(man2.x, man2.y);
-	            //     stage.addChild(line);
-	            //     structure.edge = line;
-	            //     let edgeText = new createjs.Text("a1-6","12px serif", "rgb(255,0,0)");
-	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-	            //     stage.addChild(edgeText);
-	            //     structure.edgeInformamtion = edgeText;
-	            //     structures[structureKey] = structure;
-	            //     structureKey++;
-	            //     structure_id++;
-	            //
-	            //     structure = new Structure(structure_id, man1, man3, null);
-	            //     line = new createjs.Shape();
-	            //     line.graphics.setStrokeStyle(3);
-	            //     line.graphics.beginStroke("#000");
-	            //     line.graphics.moveTo(man1.x, man1.y);
-	            //     line.graphics.lineTo(man3.x, man3.y);
-	            //     stage.addChild(line);
-	            //     structure.edge = line;
-	            //     edgeText = new createjs.Text("a1-3","12px serif", "rgb(255,0,0)");
-	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-	            //     stage.addChild(edgeText);
-	            //     structure.edgeInformamtion = edgeText;
-	            //     structures[structureKey] = structure;
-	            //     structureKey++;
-	            //     structure_id++;
-	            //
-	            //     structure = new Structure(structure_id, man1, glcnac1, null);
-	            //     line = new createjs.Shape();
-	            //     line.graphics.setStrokeStyle(3);
-	            //     line.graphics.beginStroke("#000");
-	            //     line.graphics.moveTo(man1.x, man1.y);
-	            //     line.graphics.lineTo(glcnac1.x, glcnac1.y);
-	            //     stage.addChild(line);
-	            //     structure.edge = line;
-	            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
-	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-	            //     stage.addChild(edgeText);
-	            //     structure.edgeInformamtion = edgeText;
-	            //     structures[structureKey] = structure;
-	            //     structureKey++;
-	            //     structure_id++;
-	            //
-	            //     structure = new Structure(structure_id, glcnac1, glcnac2, null);
-	            //     line = new createjs.Shape();
-	            //     line.graphics.setStrokeStyle(3);
-	            //     line.graphics.beginStroke("#000");
-	            //     line.graphics.moveTo(glcnac1.x, glcnac1.y);
-	            //     line.graphics.lineTo(glcnac2.x, glcnac2.y);
-	            //     stage.addChild(line);
-	            //     structure.edge = line;
-	            //     edgeText = new createjs.Text("b1-4","12px serif", "rgb(255,0,0)");
-	            //     edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x)/2;
-	            //     edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y)/2;
-	            //     stage.addChild(edgeText);
-	            //     structure.edgeInformamtion = edgeText;
-	            //     structures[structureKey] = structure;
-	            //     structureKey++;
-	            //     structure_id++;
-	            //     stage.removeChild(man1);
-	            //     stage.removeChild(man2);
-	            //     stage.removeChild(man3);
-	            //     stage.removeChild(glcnac1);
-	            //     stage.removeChild(glcnac2);
-	            //     stage.addChild(man1);
-	            //     stage.addChild(man2);
-	            //     stage.addChild(man3);
-	            //     stage.addChild(glcnac1);
-	            //     stage.addChild(glcnac2);
-	            //     stage.update();
-	            //     adjustPosition(stage, structureKey, structures);
-	            // }
+	            var node = null;
+	            if (nodeShape === 1) {
+	                node = new _node2.default(nodeId, nodeHashKey, mouseX, mouseY);
+	                nodeId++;
+	                // node.sprite = new Modification();
+	            } else {
+	                node = new _node2.default(nodeId, _node_hash.NODE_HASH[nodeHashKey], mouseX, mouseY);
+	                nodeId++;
+	                // node.sprite = new  Sugar();
+	            }
+	            node.sprite = node.sprite.nodeDraw(node.name, node.xCood, node.yCood, stage);
+	            node.sprite.parentNode = node;
+	            node.sprite.addEventListener("mousedown", handleDown);
+	            nodes.push(node);
+	            nodeId++;
 	        }
-	    };
+	    }
 	
 	    /**
 	     *"Select"ドラッグしたまま。四角を作る
 	     */
-	    function SelectMove() {
+	    function selectMove() {
 	        if (selectRange != null) {
-	            stage.removeChild(selectRange);
-	            stage.update();
+	            stageEdit.removeStage(stage, selectRange);
+	            stageEdit.stageUpdate(stage);
 	        }
 	        XY(event);
-	        var shape = new createjs.Shape();
-	        shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)());
-	        shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
-	        if (selectX < mouseX || selectY < mouseY) {
-	            shape.graphics.drawRect(selectX, selectY, mouseX - selectX, mouseY - selectY);
-	        } else if (selectX > mouseX && selectY > mouseY) {
-	            shape.graphics.drawRect(mouseX, mouseY, selectX - mouseX, selectY - mouseY);
-	        }
-	
-	        shape.alpha = 0.3;
-	        selectRange = shape;
-	        stage.addChild(shape);
-	        stage.update();
+	        selectRange = (0, _select_function.rectMove)(selectX, selectY, mouseX, mouseY, stage);
 	    }
 	
 	    /**
 	     * "Select" 四角作り終わり。
 	     * 四角内のnodeを見つけ、枠線の色と透明度を変化している
 	     */
-	    function SelectUp() {
-	        var i = void 0;
-	        for (i = 0; i < nodes.length; i++) {
-	            if (selectX < mouseX || selectY < mouseY) {
-	                if (selectX < nodes[i].x && mouseX > nodes[i].x && selectY < nodes[i].y && mouseY > nodes[i].y) {
-	                    nodes[i].graphics._stroke.style = "rgb(204, 0, 0)";
-	                    nodes[i].alpha = 0.5;
-	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
-	                    moveStructuresNodesKey++;
-	                }
-	                if (selectX < nodes[i].param.otherNodeNameText.x && mouseX > nodes[i].param.otherNodeNameText.x && selectY < nodes[i].param.otherNodeNameText.y && mouseY > nodes[i].param.otherNodeNameText.y) {
-	                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
-	                    nodes[i].param.otherNodeNameText.alpha = 0.5;
-	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
-	                    moveStructuresNodesKey++;
-	                }
-	            } else if (selectX > mouseX && selectY > mouseY) {
-	                if (mouseX < nodes[i].x && selectX > nodes[i].x && mouseY < nodes[i].y && selectY > nodes[i].y) {
-	                    nodes[i].graphics._stroke.style = "rgb(204, 0, 0)";
-	                    nodes[i].alpha = 0.5;
-	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
-	                    moveStructuresNodesKey++;
-	                }
-	                if (mouseX < nodes[i].param.otherNodeNameText.graphics.x && selectX > nodes[i].param.otherNodeNameText.graphics.x && mouseY < nodes[i].param.otherNodeNameText.graphics.y && selectY > nodes[i].param.otherNodeNameText.graphics.y) {
-	                    nodes[i].param.otherNodeNameText.color = "rgb(204, 0, 0)";
-	                    nodes[i].param.otherNodeNameText.alpha = 0.5;
-	                    moveStructureNodes[moveStructuresNodesKey] = nodes[i];
-	                    moveStructuresNodesKey++;
-	                }
-	            }
+	    function selectUp() {
+	        moveStructureNodes = (0, _select_function.rectUp)(selectRange, selectX, selectY, mouseX, mouseY, nodes, moveStructureNodes, stage);
+	        for (var i = 0; i < moveStructureNodes.length; i++) {
+	            moveStructureNodes[i].addEventListener("mousedown", selectMoveStructureDown);
 	        }
-	        for (i = 0; i < moveStructureNodes.length; i++) {
-	            moveStructureNodes[i].addEventListener("mousedown", SelectMoveStructureDown);
-	        }
-	        stage.removeChild(selectRange);
-	        document.addEventListener("contextmenu", SelectStructureDelete, false);
-	        stage.update();
-	        canvas.removeEventListener("mousemove", SelectMove);
-	        canvas.removeEventListener("mouseup", SelectUp);
+	        (0, _jquery2.default)('#structureDelete').removeClass('hidden-menu');
+	        canvas.removeEventListener("mousemove", selectMove);
+	        canvas.removeEventListener("mouseup", selectUp);
+	        canvas.removeEventListener("mousedown", canvasMouseDown);
 	    }
 	
 	    /**
 	     *"Select" 選択範囲を右クリックすることで削除する
 	     */
 	
-	    function SelectStructureDelete() {
+	    function selectStructureDelete() {
 	        if (mode != 1) return;
-	        canvas.removeEventListener("mousemove", SelectMove);
-	        canvas.removeEventListener("mouseup", SelectUp);
+	        canvas.removeEventListener("mousemove", selectMove);
+	        canvas.removeEventListener("mouseup", selectUp);
 	        window.removeEventListener("mousedown", WindowClick);
-	        var res = confirm("Do you delete Selected structure?");
-	        if (res == true) {
-	            var i = void 0;
-	            var j = void 0;
-	            for (i = 0; i < moveStructureNodes.length; i++) {
-	                for (j = 0; j < structures.length; j++) {
-	                    if (moveStructureNodes[i].param.id === structures[j].Node1.param.id || moveStructureNodes[i].param.id === structures[j].Node2.param.id) {
-	                        stage.removeChild(structures[j].edge);
-	                        stage.removeChild(structures[j].edgeInformamtion);
-	                        structures.splice(j, 1);
-	                    }
-	                    if (moveStructureNodes[i] === nodes[j]) {
-	                        nodes.splice(j, 1);
-	                    }
-	                }
-	                if (moveStructureNodes[i].param.otherNodeNameText != null) {
-	                    stage.removeChild(moveStructureNodes[i].param.otherNodeNameText);
-	                } else {
-	                    stage.removeChild(moveStructureNodes[i]);
-	                }
-	            }
-	            if (structures.length != 0) {
-	                for (i = 0; i < structures.length; i++) {
-	                    structures[i].structureId = structure_id;
-	                    structure_id++;
-	                }
-	            }
-	            if (nodes.length != 0) {
-	                for (i = 0; i < nodes.length; i++) {
-	                    nodes[i].param.id = node_id;
-	                    node_id++;
-	                }
-	            }
-	            for (i = 0; i < moveStructureNodes.length; i++) {
-	                moveStructureNodes[i].removeEventListener("mousedown", SelectMoveStructureDown);
-	            }
-	            moveStructureNodes.splice(0, moveStructureNodes.length);
-	            moveStructuresNodesKey = 0;
-	            document.removeEventListener("contextmenu", SelectStructureDelete, false);
+	        var results = (0, _select_function.selectedStructureDelete)(moveStructureNodes, nodes, structures, stage);
+	        nodes = results[0];
+	        structures = results[1];
+	        if (results) {
+	            moveStructureNodes = [];
+	            // document.removeEventListener("contextmenu", selectStructureDelete,false);
 	            window.addEventListener("mousedown", WindowClick);
+	            (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
 	        }
-	        structureKey = structures.length;
-	        nodeKey = nodes.length;
 	    }
+	    window.selectStructureDelete = selectStructureDelete;
+	
+	    function repeatBracket() {
+	        if (moveStructureNodes.length != 0) {
+	            var bracketObj = (0, _create_bracket.createRepeatBracket)(moveStructureNodes, structures, stage);
+	            // for (let i = 0; i < moveStructureNodes.length; i++) {
+	            //     moveStructureNodes[i].returnShape(moveStructureNodes[i]);
+	            // }
+	            canvas.addEventListener("mousedown", canvasMouseDown);
+	            (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
+	            brackets.push(bracketObj);
+	        } else {
+	            return null;
+	        }
+	    }
+	    window.repeatBracket = repeatBracket;
 	
 	    /**
 	     *"Select" 選択範囲内のオブジェクトをドラッグして移動
 	     */
 	
-	    function SelectMoveStructureDown(event) {
+	    function selectMoveStructureDown(event) {
 	        window.removeEventListener("mousedown", WindowClick);
+	        canvas.removeEventListener("mousedown", canvasMouseDown);
+	        for (var i = 0; i < moveStructureNodes.length; i++) {
+	            moveStructure.push(moveStructureNodes[i]);
+	        }
+	        pointObj = (0, _select_function.selectedMoveStructureDown)(moveStructure, structures, stage);
 	        var target = event.target;
-	        var i = void 0;
-	        for (i = 0; i < moveStructureNodes.length; i++) {
-	            drawStructureXPoints[i] = stage.mouseX - moveStructureNodes[i].x;
-	            drawStructureYPoints[i] = stage.mouseY - moveStructureNodes[i].y;
-	        }
-	        for (i = 0; i < moveStructureNodes.length; i++) {
-	            for (var j = 0; j < structures.length; j++) {
-	                if (moveStructureNodes[i].param.id === structures[j].Node1.param.id) {
-	                    targetMoveStructureNode1[targetMoveStructureKey1] = structures[j];
-	                    targetMoveStructureKey1++;
-	                } else if (moveStructureNodes[i].param.id === structures[j].Node2.param.id) {
-	                    targetMoveStructureNode2[targetMoveStructureKey2] = structures[j];
-	                    targetMoveStructureKey2++;
-	                }
-	            }
-	        }
-	        target.addEventListener("pressmove", SelectMoveStructureMove);
-	        target.addEventListener("pressup", SelectMoveStructureUp);
+	        target.addEventListener("pressmove", selectMoveStructureMove);
+	        target.addEventListener("pressup", selectMoveStructureUp);
 	    }
 	
 	    /**
 	     *"Select" 移動終了
 	     */
 	
-	    function SelectMoveStructureMove() {
+	    function selectMoveStructureMove() {
 	        if (mode != 1 && mode != 7) return;
-	        canvas.removeEventListener("mousemove", SelectMove);
-	        canvas.removeEventListener("mouseup", SelectUp);
-	        var i = void 0;
-	        var j = void 0;
-	
-	        for (i = 0; i < moveStructureNodes.length; i++) {
-	            var movePointX = stage.mouseX - drawStructureXPoints[i];
-	            var movePointY = stage.mouseY - drawStructureYPoints[i];
-	            if (movePointX > 0 + 10 && movePointX < canvas.width - 10) {
-	                moveStructureNodes[i].x = stage.mouseX - drawStructureXPoints[i];
-	            }
-	            if (movePointY > 0 + 10 && movePointY < canvas.height - 10) {
-	                moveStructureNodes[i].y = stage.mouseY - drawStructureYPoints[i];
-	            }
-	        }
-	        for (i = 0; i < moveStructureNodes.length; i++) {
-	            for (j = 0; j < targetMoveStructureNode1.length; j++) {
-	                if (targetMoveStructureNode1.length != 0) {
-	                    if (moveStructureNodes[i] === targetMoveStructureNode1[j].Node1) {
-	                        stage.removeChild(targetMoveStructureNode1[j].edge);
-	                        var line = new createjs.Shape();
-	                        line.graphics.setStrokeStyle(3);
-	                        line.graphics.beginStroke("#000");
-	                        line.graphics.moveTo(targetMoveStructureNode1[j].Node2.x, targetMoveStructureNode1[j].Node2.y);
-	                        line.graphics.lineTo(moveStructureNodes[i].x, moveStructureNodes[i].y);
-	                        stage.addChild(line);
-	                        stage.removeChild(targetMoveStructureNode1[j].Node2);
-	                        stage.removeChild(moveStructureNodes[i]);
-	                        stage.addChild(targetMoveStructureNode1[j].Node2);
-	                        stage.addChild(moveStructureNodes[i]);
-	                        if (targetMoveStructureNode1[j] != null) {
-	                            stage.removeChild(targetMoveStructureNode1[j].edgeInformamtion);
-	                            targetMoveStructureNode1[j].edgeInformamtion.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                            targetMoveStructureNode1[j].edgeInformamtion.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                        }
-	                        stage.addChild(targetMoveStructureNode1[j].edgeInformamtion);
-	                        stage.update();
-	                        targetMoveStructureNode1[j].edge = line;
-	                    }
-	                }
-	            }
-	            for (j = 0; j < targetMoveStructureNode2.length; j++) {
-	                if (targetMoveStructureNode2.length != 0) {
-	                    if (moveStructureNodes[i] === targetMoveStructureNode2[j].Node2) {
-	                        stage.removeChild(targetMoveStructureNode2[j].edge);
-	                        var _line = new createjs.Shape();
-	                        _line.graphics.setStrokeStyle(3);
-	                        _line.graphics.beginStroke("#000");
-	                        _line.graphics.moveTo(targetMoveStructureNode2[j].Node1.x, targetMoveStructureNode2[j].Node1.y);
-	                        _line.graphics.lineTo(moveStructureNodes[i].x, moveStructureNodes[i].y);
-	                        stage.addChild(_line);
-	                        stage.removeChild(targetMoveStructureNode2[j].Node1);
-	                        stage.removeChild(moveStructureNodes[i]);
-	                        stage.addChild(targetMoveStructureNode2[j].Node1);
-	                        stage.addChild(moveStructureNodes[i]);
-	                        if (targetMoveStructureNode2[j] != null) {
-	                            stage.removeChild(targetMoveStructureNode2[j].edgeInformamtion);
-	                            targetMoveStructureNode2[j].edgeInformamtion.x = (_line.graphics._activeInstructions[0].x + _line.graphics._activeInstructions[1].x) / 2;
-	                            targetMoveStructureNode2[j].edgeInformamtion.y = (_line.graphics._activeInstructions[0].y + _line.graphics._activeInstructions[1].y) / 2;
-	                        }
-	                        stage.addChild(targetMoveStructureNode2[j].edgeInformamtion);
-	                        stage.update();
-	                        targetMoveStructureNode2[j].edge = _line;
-	                    }
-	                }
-	            }
-	        }
+	        canvas.removeEventListener("mousemove", selectMove);
+	        canvas.removeEventListener("mouseup", selectUp);
+	        (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
+	        (0, _select_function.selectedMoveStructureMove)(pointObj, moveStructure, stage, canvas);
 	    }
 	
-	    function SelectMoveStructureUp(event) {
+	    function selectMoveStructureUp(event) {
 	        if (mode != 1 && mode != 7) return;
+	        (0, _select_function.selectedMoveStructureUp)(moveStructure);
 	        var target = event.target;
-	        for (var i = 0; i < moveStructureNodes.length; i++) {
-	            moveStructureNodes[i].graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)();
-	            moveStructureNodes[i].alpha = 1.0;
-	            moveStructureNodes[i].removeEventListener("mousedown", SelectMoveStructureDown);
-	            moveStructureNodes[i].removeEventListener("contextmenu", SelectStructureDelete);
+	        for (var i = 0; i < moveStructure.length; i++) {
+	            moveStructure[i].removeEventListener("mousedown", selectMoveStructureDown);
 	        }
-	        moveStructureNodes.splice(0, moveStructureNodes.length);
-	        moveStructuresNodesKey = 0;
-	        targetMoveStructureNode1.splice(0, targetMoveStructureNode1.length);
-	        targetMoveStructureNode2.splice(0, targetMoveStructureNode2.length);
-	        targetMoveStructureKey1 = 0;
-	        targetMoveStructureKey2 = 0;
-	        drawStructureXPoints.splice(0, drawStructureXPoints.length);
-	        drawStructureYPoints.splice(0, drawStructureYPoints.length);
-	        target.removeEventListener("pressmove", SelectMoveStructureMove);
-	        target.removeEventListener("pressup", SelectMoveStructureUp);
+	        moveStructure = [];
+	        pointObj = {};
+	        target.removeEventListener("pressmove", selectMoveStructureMove);
+	        target.removeEventListener("pressup", selectMoveStructureUp);
 	        window.addEventListener("mousedown", WindowClick);
-	        document.removeEventListener("contextmenu", SelectStructureDelete, false);
+	        canvas.addEventListener("mousedown", canvasMouseDown);
+	        (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
 	    }
 	
 	    // Edge Move Node
@@ -1038,372 +623,42 @@
 	        if (mode != 3 && mode != 6 && mode != 7) return;
 	        if (mode === 3) {
 	            if (edgeCount === 0) {
-	                edgeStart = event.target;
-	                startX = edgeStart.x;
-	                startY = edgeStart.y;
-	                edgeStart.alpha = 0.5;
-	                edgeCount = 1;
-	            } else {
-	                var edgeEnd = event.target;
-	                var structure = new _structure2.default(structure_id, edgeStart, edgeEnd, null);
-	                var line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(startX, startY);
-	                line.graphics.lineTo(edgeEnd.x, edgeEnd.y);
-	                stage.addChild(line);
-	                stage.removeChild(edgeStart);
-	                stage.removeChild(edgeEnd);
-	                stage.addChild(edgeStart);
-	                stage.addChild(edgeEnd);
-	                stage.update();
-	                edgeStart.alpha = 1.0;
-	                edgeCount = 0;
-	                structure.edge = line;
-	                structures[structureKey] = structure;
+	                edgeStart = event.target.edgeDraw(event.target, edgeCount);
+	                edgeCount++;
+	            } else if (edgeCount === 1) {
+	                var structure = event.target.edgeDraw(edgeStart, edgeCount, event.target, stage, structureId);
 	                structure.edge.addEventListener("click", edgeClick);
-	                structureKey++;
-	                structure_id++;
+	                structures.push(structure);
+	                structureId++;
+	                edgeCount = 0;
+	                edgeStart = null;
 	            }
 	        } else if (mode === 6) {
-	            var target = event.target;
-	            var deleatStructures = new Array();
-	            var deleatKey = 0;
-	            var i = void 0;
-	            var j = 0;
-	            for (i = 0; i < structures.length; i++) {
-	                if (target.param.id === structures[i].Node1.param.id || target.param.id === structures[i].Node2.param.id) {
-	                    stage.removeChild(structures[i].edge);
-	                    if (structures[i].edgeInformamtion != null) {
-	                        stage.removeChild(structures[i].edgeInformamtion);
-	                    }
-	                    deleatStructures[deleatKey] = i;
-	                    deleatKey++;
-	                }
-	            }
-	            for (i = 0; i < deleatStructures.length; i++) {
-	                structures.splice(deleatStructures[i] - j, 1);
-	                j++;
-	            }
-	            for (i = 0; i < nodes.length; i++) {
-	                if (nodes[i].id === target.id) {
-	                    nodes.splice(i, 1);
-	                }
-	            }
-	            stage.removeChild(target);
-	            stage.update();
-	            structureKey = structures.length;
-	            nodeKey = nodes.length;
+	            var results = (0, _erase_node.eraseNode)(event.target, nodes, structures, brackets, stage);
+	            nodes = results[0];
+	            structures = results[1];
+	            brackets = results[2];
 	        } else if (mode === 7) {
 	            window.removeEventListener("mousedown", WindowClick);
-	            var _target = event.target;
-	            _target.graphics._stroke.style = "rgb(204, 0, 0)";
-	            _target.alpha = 0.5;
-	            moveStructureNodes[moveStructuresNodesKey] = _target;
-	            moveStructuresNodesKey++;
-	            var _i = void 0;
-	            for (_i = 0; _i < moveStructureNodes.length; _i++) {
-	                drawStructureXPoints[_i] = stage.mouseX - moveStructureNodes[_i].x;
-	                drawStructureYPoints[_i] = stage.mouseY - moveStructureNodes[_i].y;
-	            }
-	            for (_i = 0; _i < moveStructureNodes.length; _i++) {
-	                for (var _j = 0; _j < structures.length; _j++) {
-	                    if (moveStructureNodes[_i].param.id === structures[_j].Node1.param.id) {
-	                        targetMoveStructureNode1[targetMoveStructureKey1] = structures[_j];
-	                        targetMoveStructureKey1++;
-	                    } else if (moveStructureNodes[_i].param.id === structures[_j].Node2.param.id) {
-	                        targetMoveStructureNode2[targetMoveStructureKey2] = structures[_j];
-	                        targetMoveStructureKey2++;
-	                    }
-	                }
-	            }
-	            _target.addEventListener("pressmove", SelectMoveStructureMove);
-	            _target.addEventListener("pressup", SelectMoveStructureUp);
+	            var target = event.target;
+	            target.highlightShape(target);
+	            moveStructure.push(target);
+	            pointObj = (0, _select_function.selectedMoveStructureDown)(moveStructure, structures, stage);
+	            target.addEventListener("pressmove", selectMoveStructureMove);
+	            target.addEventListener("pressup", selectMoveStructureUp);
 	        }
 	    }
 	
-	    function edgeClick(event) {
-	        var target = event.target;
-	        for (var i = 0; i < structures.length; i++) {
-	            if (structures[i].edge === target) {
-	                stage.removeChild(structures[i].edgeInformamtion);
-	            }
-	        }
-	        var edgeText = new createjs.Text(edgeKey, "12px serif", "rgb(255,0,0)");
-	        edgeText.x = (target.graphics._activeInstructions[0].x + target.graphics._activeInstructions[1].x) / 2;
-	        edgeText.y = (target.graphics._activeInstructions[0].y + target.graphics._activeInstructions[1].y) / 2;
-	        stage.addChild(edgeText);
-	        stage.update();
-	        for (var _i2 = 0; _i2 < structures.length; _i2++) {
-	            if (structures[_i2].edge === target) {
-	                structures[_i2].edgeInformamtion = edgeText;
-	            }
-	        }
-	    }
+	    // 結合情報
+	    var edgeClick = function edgeClick(event) {
+	        if (mode != 3) return;
+	        structures = (0, _set_edge_text.setEdgeText)(event.target, edgeKey, structures, stage);
+	    };
+	
 	    function XY(e) {
 	        var rect = e.target.getBoundingClientRect();
 	        mouseX = e.clientX - rect.left;
 	        mouseY = e.clientY - rect.top;
-	    };
-	
-	    function CreateTree() {
-	        if (nodes.length < 1) {
-	            alert("Please build glycan.");
-	            return;
-	        }
-	        var orderStructure = new Array();
-	        var i = void 0;
-	        for (i = 0; i < structures.length; i++) {
-	            orderStructure[i] = structures[i];
-	        }
-	        var rootNode = orderStructure[0].Node1;
-	        var childKey = 0;
-	
-	        KCFTextOutId = 0;
-	        glycoTreeKey = 0;
-	        usedStructureKey = 0;
-	
-	        for (i = 0; i < orderStructure.length; i++) {
-	            if (rootNode.x < orderStructure[i].Node1.x) rootNode = orderStructure[i].Node1;
-	            if (rootNode.x < orderStructure[i].Node2.x) rootNode = orderStructure[i].Node2;
-	        }
-	        var glycoTree = new GlycoTree();
-	        glycoTree.Node = rootNode;
-	        glycoTree.id = KCFTextOutId;
-	        KCFTextOutId++;
-	        glycoTrees[glycoTreeKey] = glycoTree;
-	        glycoTreeKey++;
-	        for (i = 0; i < orderStructure.length; i++) {
-	            if (glycoTree.Node.param.id === orderStructure[i].Node1.param.id) {
-	                usedStructures[usedStructureKey] = orderStructure[i];
-	                usedStructureKey++;
-	                glycoTree.children[childKey] = followTree(orderStructure, orderStructure[i].Node2, orderStructure[i].edgeInformamtion, glycoTree.id);
-	                childKey++;
-	            } else if (glycoTree.Node.param.id === orderStructure[i].Node2.param.id) {
-	                usedStructures[usedStructureKey] = orderStructure[i];
-	                usedStructureKey++;
-	                glycoTree.children[childKey] = followTree(orderStructure, orderStructure[i].Node1, orderStructure[i].edgeInformamtion, glycoTree.id);
-	                childKey++;
-	            }
-	        }
-	        KCFTextOut();
-	    }
-	
-	    function followTree(orderStructure, Node, linkage, parentId) {
-	        var glycoTree = new GlycoTree();
-	        glycoTree.Node = Node;
-	        glycoTree.link = linkage;
-	        glycoTree.id = KCFTextOutId;
-	        glycoTree.parentId = parentId;
-	        KCFTextOutId++;
-	        glycoTrees[glycoTreeKey] = glycoTree;
-	        glycoTreeKey++;
-	
-	        var childKey = 0;
-	
-	        for (var i = 0; i < orderStructure.length; i++) {
-	            for (var j = 0; j < usedStructures.length; j++) {
-	                if (i >= orderStructure.length) break;else if (usedStructures[j].structureId === orderStructure[i].structureId) {
-	                    i++;
-	                }
-	            }
-	            if (i >= orderStructure.length) break;
-	            if (glycoTree.Node.param.id === orderStructure[i].Node1.param.id) {
-	                usedStructures[usedStructureKey] = orderStructure[i];
-	                usedStructureKey++;
-	                glycoTree.children[childKey] = followTree(orderStructure, orderStructure[i].Node2, orderStructure[i].edgeInformamtion, glycoTree.id);
-	                childKey++;
-	            } else if (glycoTree.Node.param.id === orderStructure[i].Node2.param.id) {
-	                usedStructures[usedStructureKey] = orderStructure[i];
-	                usedStructureKey++;
-	                glycoTree.children[childKey] = followTree(orderStructure, orderStructure[i].Node1, orderStructure[i].edgeInformamtion, glycoTree.id);
-	                childKey++;
-	            }
-	        }
-	        return glycoTree;
-	    }
-	
-	    function KCFTextOut() {
-	        var textArea = document.getElementById("kcf_format");
-	        var str = void 0;
-	        var str2 = void 0;
-	        var url = void 0;
-	        if (mode === 8) {
-	            str = "ENTRY" + TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + glycoTrees.length + NEW_LINE;
-	            str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
-	        } else if (mode === 9) {
-	            var date = new Date();
-	            url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
-	            str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + glycoTrees.length + URL_NEW_LINE;
-	            str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
-	        }
-	        for (var i = 0; i < glycoTrees.length; i++) {
-	            if (i != 0) {
-	                glycoTrees[i].Node.param.sortParamX = glycoTrees[i].Node.x - glycoTrees[0].Node.x;
-	                glycoTrees[i].Node.param.sortParamY = glycoTrees[i].Node.y - glycoTrees[0].Node.y;
-	            }
-	            glycoTrees[i].id++;
-	            if (mode === 8) {
-	                str += TAB + glycoTrees[i].id + TAB + glycoTrees[i].Node.param.monosaccharide + TAB + glycoTrees[i].Node.param.sortParamX + TAB + glycoTrees[i].Node.param.sortParamY + NEW_LINE;
-	            } else if (mode === 9) {
-	                str += URL_TAB + glycoTrees[i].id + URL_TAB + glycoTrees[i].Node.param.monosaccharide + URL_TAB + glycoTrees[i].Node.param.sortParamX + URL_TAB + glycoTrees[i].Node.param.sortParamY + URL_NEW_LINE;
-	            }
-	        }
-	        var KCFEdgeID = 0;
-	        str2 += KCFTextOutEdge(glycoTrees[0], KCFEdgeID + 1, "");
-	        glycoTreeKey = 0;
-	
-	        if (mode === 8) {
-	            textArea.value = str + str2 + SLASH;
-	        } else if (mode === 9) {
-	            var runQueryUrl = url + str + str2 + SLASH + WAVE + document.scoreMatrix.scoreSelect.value + WAVE;
-	            var kindRunQueryResultType = void 0;
-	            for (var _i3 = 0; _i3 < document.kindRnuQueryResult.type.length; _i3++) {
-	                if (document.kindRnuQueryResult.type[_i3].checked == true) {
-	                    kindRunQueryResultType = document.kindRnuQueryResult.type[_i3].value;
-	                }
-	            }
-	            runQueryUrl += kindRunQueryResultType + WAVE + document.database.databaseSelect.value;
-	
-	            //                + "~none~0~All";
-	            window.open(runQueryUrl, "_blank");
-	            //console.log(textArea.value);
-	        }
-	        usedStructures.splice(0, usedStructures.length);
-	        glycoTrees.splice(0, glycoTrees.length);
-	    }
-	
-	    function KCFTextOutEdge(glycoTree, KCFEdgeID, str) {
-	        var str2 = str;
-	        var anomer = "";
-	        var reduction = -1;
-	        var non_reduction = -1;
-	        for (var i = 0; i < glycoTree.children.length; i++) {
-	            var child = glycoTree.children[i];
-	            if (child.link != null) {
-	                if (child.link.text.match(/^[a]/)) {
-	                    anomer = 'a';
-	                } else {
-	                    anomer = 'b';
-	                }
-	                for (var j = 1; j <= 6; j++) {
-	                    for (var k = 1; k <= 6; k++) {
-	                        if (child.link.text == anomer + j + "-" + k) {
-	                            reduction = k;
-	                            non_reduction = j;
-	                        }
-	                    }
-	                }
-	                if (mode === 8) {
-	                    str2 += TAB + KCFEdgeID + TAB + child.id + COLON + anomer + non_reduction + TAB + glycoTree.id + COLON + reduction + NEW_LINE;
-	                } else if (mode === 9) {
-	                    str2 += URL_TAB + KCFEdgeID + URL_TAB + child.id + COLON + anomer + non_reduction + URL_TAB + glycoTree.id + COLON + reduction + URL_NEW_LINE;
-	                }
-	                KCFEdgeID++;
-	            }
-	            str2 = KCFTextOutEdge(glycoTree.children[i], KCFEdgeID, str2);
-	        }
-	        return str2;
-	    }
-	
-	    function buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects) {
-	        //単糖の距離のsort
-	        var sortMinX = parseInt(DrawKCFNodeObjects[0].paramX, 10);
-	        var sortMinY = parseInt(DrawKCFNodeObjects[0].paramY, 10);
-	        var sortMaxX = parseInt(DrawKCFNodeObjects[0].paramX, 10);
-	        var sortMaxY = parseInt(DrawKCFNodeObjects[0].paramY, 10);
-	        var i = void 0;
-	        var j = void 0;
-	        for (i = 1; i < DrawKCFNodeObjects.length; i++) {
-	            if (sortMinX > parseInt(DrawKCFNodeObjects[i].paramX, 10)) {
-	                sortMinX = parseInt(DrawKCFNodeObjects[i].paramX, 10);
-	            } else if (sortMaxX < parseInt(DrawKCFNodeObjects[i].paramX, 10)) {
-	                sortMaxX = parseInt(DrawKCFNodeObjects[i].paramX, 10);
-	            }
-	            if (sortMinY > parseInt(DrawKCFNodeObjects[i].paramY, 10)) {
-	                sortMinY = parseInt(DrawKCFNodeObjects[i].paramY, 10);
-	            } else if (sortMaxY < parseInt(DrawKCFNodeObjects[i].paramY, 10)) {
-	                sortMaxY = parseInt(DrawKCFNodeObjects[i].paramY, 10);
-	            }
-	        }
-	        var sortAverageX = sortMinX + (sortMaxX - sortMinX) / 2;
-	        var sortAverageY = sortMinY + (sortMaxY - sortMinY) / 2;
-	        for (i = 0; i < DrawKCFNodeObjects.length; i++) {
-	            DrawKCFNodeObjects[i].paramX = parseInt(DrawKCFNodeObjects[i].paramX, 10) - sortAverageX;
-	            DrawKCFNodeObjects[i].paramY = parseInt(DrawKCFNodeObjects[i].paramY, 10) - sortAverageY;
-	        }
-	        sortAverageX = canvas.width / 2;
-	        sortAverageY = canvas.height / 2;
-	        for (i = 0; i < DrawKCFNodeObjects.length; i++) {
-	            DrawKCFNodeObjects[i].paramX = sortAverageX + DrawKCFNodeObjects[i].paramX;
-	            DrawKCFNodeObjects[i].paramY = sortAverageY + DrawKCFNodeObjects[i].paramY;
-	        }
-	
-	        //Node
-	        for (i = 0; i < DrawKCFNodeObjects.length; i++) {
-	            for (j = 100; j < 1107; j++) {
-	                if (_node_hash.NODE_HASH[j] === DrawKCFNodeObjects[i].monosaccharide) {
-	                    nodeHashKey = j;
-	                }
-	            }
-	            kindNode.draw(DrawKCFNodeObjects[i].paramX, DrawKCFNodeObjects[i].paramY);
-	        }
-	
-	        //Edge
-	        var childNode = void 0;
-	        var parentNode = void 0;
-	        var parentNodeObject = void 0;
-	        var childNodeObject = void 0;
-	        for (i = 0; i < DrawKCFEdgeObjects.length; i++) {
-	            for (j = 0; j < DrawKCFNodeObjects.length; j++) {
-	                if (DrawKCFEdgeObjects[i].childId === DrawKCFNodeObjects[j].nodeNumber) {
-	                    childNode = DrawKCFNodeObjects[j];
-	                } else if (DrawKCFEdgeObjects[i].parentId === DrawKCFNodeObjects[j].nodeNumber) {
-	                    parentNode = DrawKCFNodeObjects[j];
-	                }
-	            }
-	            for (j = 0; j < nodes.length; j++) {
-	                if (nodes[j].x === parentNode.paramX && nodes[j].y === parentNode.paramY) {
-	                    parentNodeObject = nodes[j];
-	                } else if (nodes[j].x === childNode.paramX && nodes[j].y === childNode.paramY) {
-	                    childNodeObject = nodes[j];
-	                }
-	            }
-	
-	            var structure = new _structure2.default(structure_id, parentNodeObject, childNodeObject, null);
-	            var line = new createjs.Shape();
-	            line.graphics.setStrokeStyle(3);
-	            line.graphics.beginStroke("#000");
-	            line.graphics.moveTo(parentNode.paramX, parentNode.paramY);
-	            line.graphics.lineTo(childNode.paramX, childNode.paramY);
-	            stage.addChild(line);
-	            structure.edge = line;
-	            var edgeText = new createjs.Text(DrawKCFEdgeObjects[i].anomer + DrawKCFEdgeObjects[i].childLinkagePsition + "-" + DrawKCFEdgeObjects[i].parentLinkagePosition, "12px serif", "rgb(255,0,0)");
-	            edgeText.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	            edgeText.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	            stage.addChild(edgeText);
-	            structure.edgeInformamtion = edgeText;
-	            structures[structureKey] = structure;
-	            structureKey++;
-	            structure_id++;
-	            stage.removeChild(parentNodeObject);
-	            stage.removeChild(childNodeObject);
-	            stage.addChild(parentNodeObject);
-	            stage.addChild(childNodeObject);
-	        }
-	
-	        stage.update();
-	        DrawKCFNodeObjects.splice(0, DrawKCFNodeObjects.length);
-	        DrawKCFEdgeObjects.splice(0, DrawKCFEdgeObjects.length);
-	        (0, _positioning_helper.adjustPosition)(stage, structureKey, structures);
-	    }
-	
-	    function textClear() {
-	        var res = confirm("Textarea clear all?");
-	        if (res === true) {
-	            var textArea = document.getElementById("kcf_format");
-	            textArea.value = "KCF-Text";
-	        }
 	    }
 	
 	    createjs.Ticker.addEventListener("tick", handleTick);
@@ -44568,30 +43823,139 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var Structure = function Structure(structureId, node1, node2, edgeInformation) {
+	var Structure = function Structure(structureId, parent, child, edgeInformation, edge) {
 	    _classCallCheck(this, Structure);
 	
 	    this.structureId = structureId;
-	    this.Node1 = node1;
-	    this.Node2 = node2;
-	    this.edgeInformation = edgeInformation;
-	    this.edge = null;
+	    this.parentNode = parent;
+	    this.childNode = child;
+	    this.edgeInformation = null;
+	    this.edgeInformationText = edgeInformation;
+	    this.edge = edge;
+	    this.bracket = null;
 	};
 	
 	module.exports = Structure;
-	
-	/*
-	 var Structure = function(structureId,Node1, Node2, edgeInformamtion) {
-	 this.structureId = structureId;
-	 this.Node1 = Node1;
-	 this.Node2 = Node2;
-	 this.edgeInformamtion = edgeInformamtion;
-	 this.edge = null;
-	 };
-	 */
 
 /***/ },
 /* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _sugar = __webpack_require__(22);
+	
+	var _sugar2 = _interopRequireDefault(_sugar);
+	
+	var _Modification = __webpack_require__(28);
+	
+	var _Modification2 = _interopRequireDefault(_Modification);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Node = function Node(id, name, xCood, yCood) {
+	    _classCallCheck(this, Node);
+	
+	    this.id = id;
+	    this.sprite = nodeClass(name);
+	    this.name = name;
+	    this.xCood = xCood;
+	    this.yCood = yCood;
+	    this.childNode = [];
+	    this.bracket = null;
+	};
+	
+	function nodeClass(name) {
+	    "use strict";
+	
+	    var MONOSACCHRIDESKeys = Object.keys(_monosaccharide_helper.MONOSACCHARIDES);
+	    for (var i = 0; i < MONOSACCHRIDESKeys.length; i++) {
+	        for (var j = 0; j <= 10; j++) {
+	            if (_monosaccharide_helper.MONOSACCHARIDES[MONOSACCHRIDESKeys[i]][j] === name.toLowerCase()) {
+	                var shape = new _sugar2.default(name);
+	                return shape;
+	            }
+	        }
+	    }
+	    return new _Modification2.default(name);
+	}
+	
+	module.exports = Node;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var MONOSACCHARIDE_COLOR = {
+	    WHITE: 'rgb(255, 255, 255)',
+	    BLUE: 'rgb(0, 128, 255)',
+	    GREEN: 'rgb(0, 255, 0)',
+	    YELLOW: 'rgb(255, 217, 0)',
+	    ORANGE: 'rgb(255, 128, 0)',
+	    PINK: 'rgb(255, 136, 194)',
+	    PURPLE: 'rgb(159, 31, 255)',
+	    LIGHT_BLUE: 'rgb(151, 243, 248)',
+	    BROWN: 'rgb(140, 116, 54)',
+	    RED: 'rgb(255, 0, 0)'
+	};
+	
+	var NULL = "null";
+	
+	var MONOSACCHARIDES = {
+	    WHITE: ["hexose", "hexnac", "hexosamine", "hexuronate", "deoxyhexose", "deoxyhexnac", "di_deoxyhexose", "pentose", "noulosonate", "unknown", "assigned"],
+	    BLUE: ["glc", "glcnac", "glcn", "glca", "qui", "quinac", "oli", NULL, NULL, "bac", "api"],
+	    GREEN: ["man", "mannac", "mann", "mana", "rha", "rhanac", "tyv", "ara", "kdn", "ldmanhep", "fru"],
+	    YELLOW: ["gal", "galnac", "galn", "gala", NULL, NULL, NULL, "lyx", NULL, "kdo", "tag"],
+	    ORANGE: ["gul", "gulnac", "guln", "gula", NULL, NULL, "abe", "xyl", NULL, "dha", "sor"],
+	    PINK: ["alt", "altnac", "altn", "alta", "6dalt", NULL, "par", "rib", NULL, "ddmanhep", "psi"],
+	    PURPLE: ["all", "allnac", "alln", "alla", NULL, NULL, "dig", NULL, "neu5ac", "murnac", NULL],
+	    LIGHT_BLUE: ["tal", "talnac", "taln", "tala", "6dtal", NULL, "col", NULL, "neu5gc", "murngc", NULL],
+	    BROWN: ["ido", "idonac", "idon", "idoa", NULL, NULL, NULL, NULL, "neu", "mur", NULL],
+	    RED: [NULL, NULL, NULL, NULL, "fuc", "fucnac", NULL, NULL, NULL, NULL, NULL]
+	};
+	
+	var LINE_COLOR_BLACK = 'rgb(0, 0, 0)';
+	var LINE_COLOR_RED = ' rgb(255, 0, 0) ';
+	
+	var getMonosaccharideColor = function getMonosaccharideColor(sugarName) {
+	    "use strict";
+	
+	    var lowerSugarName = sugarName.toLowerCase();
+	
+	    var colors = Object.keys(MONOSACCHARIDES);
+	    for (var i = 0; i < colors.length; i++) {
+	        var color = colors[i];
+	
+	        if (MONOSACCHARIDES[color].indexOf(lowerSugarName) >= 0) {
+	            return MONOSACCHARIDE_COLOR[color];
+	        }
+	    }
+	    return null;
+	};
+	
+	var getLineColor = function getLineColor(color) {
+	    "use strict";
+	
+	    if (color === "black") return LINE_COLOR_BLACK;else if (color === "red") return LINE_COLOR_RED;
+	};
+	
+	exports.getMonosaccharideColor = getMonosaccharideColor;
+	exports.getLineColor = getLineColor;
+	exports.MONOSACCHARIDE_COLOR = MONOSACCHARIDE_COLOR;
+	exports.MONOSACCHARIDES = MONOSACCHARIDES;
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44600,9 +43964,21 @@
 	    value: true
 	});
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _EaselJS = __webpack_require__(3);
 	
 	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _create_sugar = __webpack_require__(23);
+	
+	var createSugar = _interopRequireWildcard(_create_sugar);
+	
+	var _edge_function = __webpack_require__(26);
+	
+	var drawEdgeSugar = _interopRequireWildcard(_edge_function);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -44612,45 +43988,476 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Node = function (_createjs$Shape) {
-	    _inherits(Node, _createjs$Shape);
+	var Sugar = function (_createjs$Shape) {
+	    _inherits(Sugar, _createjs$Shape);
 	
-	    function Node(nodeId, nodeName) {
-	        _classCallCheck(this, Node);
+	    function Sugar() {
+	        _classCallCheck(this, Sugar);
 	
-	        var _this = _possibleConstructorReturn(this, (Node.__proto__ || Object.getPrototypeOf(Node)).call(this));
+	        var _this = _possibleConstructorReturn(this, (Sugar.__proto__ || Object.getPrototypeOf(Sugar)).call(this));
 	
-	        _this.param = {
-	            id: nodeId,
-	            monosaccharide: nodeName,
-	            sortParamX: 0,
-	            sortParamY: 0,
-	            otherNodeNameText: null
-	        };
+	        _this.parentNode = null;
 	        return _this;
 	    }
 	
-	    return Node;
+	    _createClass(Sugar, [{
+	        key: 'nodeDraw',
+	        value: function nodeDraw(sugar, x, y, stage) {
+	            // let sugar = sugar;
+	            var MONOSACCHRIDESKeys = Object.keys(_monosaccharide_helper.MONOSACCHARIDES);
+	            //sugarの種類で関数を分ける
+	            for (var i = 0; i < MONOSACCHRIDESKeys.length; i++) {
+	                for (var j = 0; j <= 10; j++) {
+	                    if (_monosaccharide_helper.MONOSACCHARIDES[MONOSACCHRIDESKeys[i]][j] === sugar.toLowerCase()) {
+	                        var shape = new Sugar();
+	                        if (j === 0) shape = createSugar.createHexose(sugar, shape, x, y, stage);else if (j === 1) shape = createSugar.createHexnac(sugar, shape, x, y, stage);else if (j === 2) shape = createSugar.createHexosamine(sugar, shape, x, y, stage);else if (j === 3) shape = createSugar.createHexuronate(sugar, shape, x, y, stage);else if (j === 4) shape = createSugar.createDeoxyhexose(sugar, shape, x, y, stage);else if (j === 5) shape = createSugar.createDeoxyhexnac(sugar, shape, x, y, stage);else if (j === 6) shape = createSugar.createDi_deoxyhexose(sugar, shape, x, y, stage);else if (j === 7) shape = createSugar.createPentose(sugar, shape, x, y, stage);else if (j === 8) shape = createSugar.createNouloosonate(sugar, shape, x, y, stage);else if (j === 9) shape = createSugar.createUnknown(sugar, shape, x, y, stage);else if (j === 10) shape = createSugar.createAssigned(sugar, shape, x, y, stage);
+	
+	                        return shape;
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'edgeDraw',
+	        value: function edgeDraw(edgeStart, edgeCount, edgeEnd, stage, structureId) {
+	            if (edgeCount === 0) {
+	                return drawEdgeSugar.drawEdgeSugarStart(edgeStart);
+	            } else if (edgeCount === 1) {
+	                return drawEdgeSugar.drawEdgeSugarEnd(edgeStart, edgeEnd, stage, structureId);
+	            }
+	        }
+	    }, {
+	        key: 'highlightShape',
+	        value: function highlightShape(shape) {
+	            shape.alpha = 0.5;
+	            shape.graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)("red");
+	        }
+	    }, {
+	        key: 'returnShape',
+	        value: function returnShape(shape) {
+	            shape.alpha = 1.0;
+	            shape.graphics._stroke.style = (0, _monosaccharide_helper.getLineColor)("black");
+	        }
+	    }]);
+	
+	    return Sugar;
 	}(createjs.Shape);
 	
-	exports.default = createjs.promote(Node, "Shape");
-	
-	/*
-	var Node = function Node(nodeId, nodeName) {
-	    this.Shape_constructor();
-	    this.param = {
-	        id: nodeId,
-	        monosaccharide: nodeName,
-	        sortParamX: 0,
-	        sortParamY: 0,
-	    };
-	}
-	createjs.extend(Node, createjs.Shape);
-	createjs.promote(Node, "Shape");
-	*/
+	exports.default = createjs.promote(Sugar, "Shape");
 
 /***/ },
-/* 21 */
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	              value: true
+	});
+	exports.createNodeText = exports.createAssigned = exports.createUnknown = exports.createNouloosonate = exports.createPentose = exports.createDi_deoxyhexose = exports.createDeoxyhexnac = exports.createDeoxyhexose = exports.createHexuronate = exports.createHexosamine = exports.createHexnac = exports.createHexose = undefined;
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _set_edge_text = __webpack_require__(25);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var createHexose = exports.createHexose = function createHexose(sugar, shape, x, y, stage) {
+	              var r = 10;
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).drawCircle(originPointX, originPointY, r);
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	// import  handleDown  from "../draw_app";
+	var createHexnac = exports.createHexnac = function createHexnac(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).drawRect(originPointX - 10, originPointY - 10, originPointX + 20, originPointY + 20);
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createHexosamine = exports.createHexosamine = function createHexosamine(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).moveTo(originPointX, originPointY).lineTo(originPointX - 10, originPointY - 10).lineTo(originPointX + 10, originPointY - 10).lineTo(originPointX + 10, originPointY + 10).lineTo(originPointX, originPointY).endFill().beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE).moveTo(originPointX, originPointY).lineTo(originPointX - 10, originPointY - 10).lineTo(originPointX - 10, originPointY + 10).lineTo(originPointX + 10, originPointY + 10).lineTo(originPointX, originPointY).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createHexuronate = exports.createHexuronate = function createHexuronate(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black"));
+	              if (sugar === "alta" || sugar === "idoa") shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);else shape.graphics.beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar));
+	              shape.graphics.moveTo(originPointX, originPointY).lineTo(originPointX - 10, originPointY).lineTo(originPointX, originPointY - 10).lineTo(originPointX + 10, originPointY).lineTo(originPointX, originPointY).endFill().beginStroke((0, _monosaccharide_helper.getLineColor)("black"));
+	              if (sugar === "alta" || sugar === "idoa") shape.graphics.beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar));else shape.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
+	              shape.graphics.moveTo(originPointX, originPointY).lineTo(originPointX - 10, originPointY).lineTo(originPointX, originPointY + 10).lineTo(originPointX + 10, originPointY).lineTo(originPointX, originPointY).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createDeoxyhexose = exports.createDeoxyhexose = function createDeoxyhexose(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).moveTo(originPointX, 0 + 10).lineTo(originPointX + 10, 0 + 10).lineTo(originPointX, 0 - 20).lineTo(originPointX - 10, 0 + 10).lineTo(originPointX, 0 + 10).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createDeoxyhexnac = exports.createDeoxyhexnac = function createDeoxyhexnac(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).moveTo(originPointX, originPointY).lineTo(originPointX, originPointY - 10).lineTo(originPointX + 10, originPointY + 10).lineTo(originPointX, originPointY + 10).lineTo(originPointX, originPointY).endFill().beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE).moveTo(originPointX, originPointY).lineTo(originPointX, originPointY - 10).lineTo(originPointX - 10, originPointY + 10).lineTo(originPointX, originPointY + 10).lineTo(originPointX, originPointY).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createDi_deoxyhexose = exports.createDi_deoxyhexose = function createDi_deoxyhexose(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).drawRect(originPointX - 10, originPointY - 10, originPointX + 20, originPointY + 10).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createPentose = exports.createPentose = function createPentose(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).drawPolyStar(originPointX, originPointY, 10, 5, 0.6, -90);
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createNouloosonate = exports.createNouloosonate = function createNouloosonate(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).moveTo(originPointX, originPointY - 10).lineTo(originPointX - 10, originPointY).lineTo(originPointX, originPointY + 10).lineTo(originPointX + 10, originPointY).lineTo(originPointX, originPointY - 10).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createUnknown = exports.createUnknown = function createUnknown(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).moveTo(originPointX - 8, originPointY - 8).lineTo(originPointX - 10, originPointY).lineTo(originPointX - 8, originPointY + 8).lineTo(originPointX + 8, originPointY + 8).lineTo(originPointX + 10, originPointY).lineTo(originPointX + 8, originPointY - 8).lineTo(originPointX - 8, originPointY - 8).endFill();
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createAssigned = exports.createAssigned = function createAssigned(sugar, shape, x, y, stage) {
+	              var originPointX = 0;
+	              var originPointY = 0;
+	              shape.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black")).beginFill((0, _monosaccharide_helper.getMonosaccharideColor)(sugar)).drawPolyStar(originPointX, originPointY, 10, 5, 0, -90);
+	              shape.x = x;
+	              shape.y = y;
+	              // shape.addEventListener("mousedown", handleDown);
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+	
+	var createNodeText = exports.createNodeText = function createNodeText(mody, shape, x, y, stage) {
+	              // let nodeText = new createjs.Text(mody,"24px serif", getLineColor("black"));
+	              // nodeText.x = x;
+	              // nodeText.y = y;
+	              shape.x = x;
+	              shape.y = y;
+	              // stage.addEventListener("mousedown", handleDown);
+	              // shape.nodeText = nodeText;
+	              stageEdit.setStage(stage, shape);
+	              stageEdit.stageUpdate(stage);
+	              return shape;
+	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.stageEdge = exports.stageUpdate = exports.removeStage = exports.setStage = undefined;
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var setStage = exports.setStage = function setStage(stage, shape) {
+	    stage.addChild(shape);
+	};
+	
+	var removeStage = exports.removeStage = function removeStage(stage, shape) {
+	    stage.removeChild(shape);
+	    stageUpdate(stage);
+	};
+	
+	var stageUpdate = exports.stageUpdate = function stageUpdate(stage) {
+	    stage.update();
+	};
+	
+	var stageEdge = exports.stageEdge = function stageEdge(structure, stage) {
+	    setStage(stage, structure.edge);
+	    removeStage(stage, structure.parentNode.sprite);
+	    removeStage(stage, structure.childNode.sprite);
+	    stageUpdate(stage);
+	    setStage(stage, structure.parentNode.sprite);
+	    setStage(stage, structure.childNode.sprite);
+	};
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.setEdgeText = undefined;
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function setEdgeText(edge, text, structures, stage) {
+	    for (var i = 0; i < structures.length; i++) {
+	        if (structures[i].edge === edge && structures[i].edgeInformation != null) {
+	            stageEdit.removeStage(stage, structures[i].edgeInformamtion);
+	        }
+	    }
+	    var edgeText = new createjs.Text(text, "12px serif", "rgb(255,0,0)");
+	    edgeText.x = (edge.graphics._activeInstructions[0].x + edge.graphics._activeInstructions[1].x) / 2;
+	    edgeText.y = (edge.graphics._activeInstructions[0].y + edge.graphics._activeInstructions[1].y) / 2;
+	    stageEdit.setStage(stage, edgeText);
+	    stageEdit.stageUpdate(stage);
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (structures[_i].edge === edge) {
+	            structures[_i].edgeInformation = edgeText;
+	            structures[_i].edgeInformationText = text;
+	        }
+	    }
+	
+	    return structures;
+	}
+	
+	exports.setEdgeText = setEdgeText;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.drawEdgeSugarEnd = exports.drawEdgeSugarStart = undefined;
+	
+	var _structure = __webpack_require__(19);
+	
+	var _structure2 = _interopRequireDefault(_structure);
+	
+	var _determine_parent_child = __webpack_require__(27);
+	
+	var determineParentChild = _interopRequireWildcard(_determine_parent_child);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var drawEdgeSugarStart = exports.drawEdgeSugarStart = function drawEdgeSugarStart(edgeStart) {
+	    edgeStart.highlightShape(edgeStart);
+	    return edgeStart;
+	};
+	
+	var drawEdgeSugarEnd = exports.drawEdgeSugarEnd = function drawEdgeSugarEnd(edgeStart, edgeEnd, stage, C) {
+	    var line = new createjs.Shape();
+	    line.graphics.setStrokeStyle(3).beginStroke("#000").moveTo(edgeStart.x, edgeStart.y).lineTo(edgeEnd.x, edgeEnd.y);
+	    var parentChild = determineParentChild.determineParentChild(edgeStart, edgeEnd);
+	    var structure = new _structure2.default(0, parentChild[0].parentNode, parentChild[1].parentNode, null, line);
+	    stageEdit.stageEdge(structure, stage);
+	    stageEdit.stageUpdate(stage);
+	    edgeStart.returnShape(edgeStart);
+	    parentChild[0].parentNode.childNode.push(parentChild[1].parentNode);
+	    return structure;
+	};
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var determineParentChild = exports.determineParentChild = function determineParentChild(node1, node2) {
+	    var parentNode = null;
+	    var childNode = null;
+	    if (node1.x > node2.x) {
+	        parentNode = node1;
+	        childNode = node2;
+	    } else if (node1.x < node2.x) {
+	        parentNode = node2;
+	        childNode = node1;
+	    } else {
+	        if (node1.y < node2.y) {
+	            parentNode = node1;
+	            childNode = node2;
+	        } else {
+	            parentNode = node2;
+	            childNode = node1;
+	        }
+	    }
+	
+	    return [parentNode, childNode];
+	};
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _create_sugar = __webpack_require__(23);
+	
+	var createSugar = _interopRequireWildcard(_create_sugar);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _edge_function = __webpack_require__(26);
+	
+	var drawEdgeModification = _interopRequireWildcard(_edge_function);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	// class Modification extends createjs.Shape {
+	var Modification = function (_createjs$Text) {
+	    _inherits(Modification, _createjs$Text);
+	
+	    function Modification(mody) {
+	        _classCallCheck(this, Modification);
+	
+	        var _this = _possibleConstructorReturn(this, (Modification.__proto__ || Object.getPrototypeOf(Modification)).call(this, mody, "24px serif", (0, _monosaccharide_helper.getLineColor)("black")));
+	
+	        _this.parentNode = null;
+	        // this.nodeNext = null;
+	        return _this;
+	    }
+	
+	    _createClass(Modification, [{
+	        key: 'nodeDraw',
+	        value: function nodeDraw(mody, x, y, stage) {
+	            var shape = new Modification(mody);
+	            return createSugar.createNodeText(mody, shape, x, y, stage);
+	        }
+	    }, {
+	        key: 'edgeDraw',
+	        value: function edgeDraw(edgeStart, edgeCount, edgeEnd, stage, structureId) {
+	            if (edgeCount === 0) {
+	                return drawEdgeModification.drawEdgeSugarStart(edgeStart);
+	            } else if (edgeCount === 1) {
+	                return drawEdgeModification.drawEdgeSugarEnd(edgeStart, edgeEnd, stage, structureId);
+	            }
+	        }
+	    }, {
+	        key: 'highlightShape',
+	        value: function highlightShape(shape) {
+	            shape.alpha = 1.0;
+	            shape.color = (0, _monosaccharide_helper.getLineColor)("red");
+	        }
+	    }, {
+	        key: 'returnShape',
+	        value: function returnShape(shape) {
+	            shape.alpha = 1.0;
+	            shape.color = (0, _monosaccharide_helper.getLineColor)("black");
+	        }
+	    }]);
+	
+	    return Modification;
+	}(createjs.Text);
+	
+	exports.default = createjs.promote(Modification, "Text");
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -44742,546 +44549,21 @@
 	exports.NODE_HASH = NODE_HASH;
 
 /***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	/**
-	 * TODO: 処理内容をリファクタリングで整理する.
-	 * @param stage
-	 * @param structureKey
-	 * @param structures
-	 */
-	function adjustPosition(stage, structureKey, structures) {
-	    var outOfLeftCanvas = 0;
-	    var outOfRightCanvas = 0;
-	    var outOfTopCanvas = 0;
-	    var outOfBottomCanvas = 0;
-	
-	    if (structureKey != 0) {
-	        for (var i = 0; i < structures.length; i++) {
-	            if (structures[i].Node1.x < 0 || structures[i].Node2.x < 0) {
-	                outOfLeftCanvas++;
-	            }
-	            if (structures[i].Node1.x > canvas.width || structures[i].Node2.x > canvas.width) {
-	                outOfRightCanvas++;
-	            }
-	            if (structures[i].Node1.y < 0 || structures[i].Node2.y < 0) {
-	                outOfTopCanvas++;
-	            }
-	            if (structures[i].Node1.y > canvas.height || structures[i].Node2.y > canvas.height) {
-	                outOfBottomCanvas++;
-	            }
-	        }
-	        if (outOfRightCanvas != 0 || outOfLeftCanvas != 0 || outOfTopCanvas != 0 || outOfBottomCanvas != 0) {
-	            var sortMinX = structures[0].Node1.x;
-	            var sortMinY = structures[0].Node1.y;
-	            var sortMaxX = structures[0].Node1.x;
-	            var sortMaxY = structures[0].Node1.y;
-	            var paramPlusX = new Array();
-	            var paramMinusX = new Array();
-	            var paramPlusY = new Array();
-	            var paramMinusY = new Array();
-	            var paramPlusXKey = 0;
-	            var paramMinusXKey = 0;
-	            var paramPlusYKey = 0;
-	            var paramMinusYKey = 0;
-	            var _i = void 0;
-	            var j = void 0;
-	            for (_i = 0; _i < structures.length; _i++) {
-	                if (sortMinX > structures[_i].Node1.x) {
-	                    sortMinX = structures[_i].Node1.x;
-	                } else if (sortMaxX < structures[_i].Node1.x) {
-	                    sortMaxX = structures[_i].Node1.x;
-	                }
-	                if (sortMinY > structures[_i].Node1.y) {
-	                    sortMinY = structures[_i].Node1.y;
-	                } else if (sortMaxY < structures[_i].Node1.y) {
-	                    sortMaxY = structures[_i].Node1.y;
-	                }
-	                if (sortMinX > structures[_i].Node2.x) {
-	                    sortMinX = structures[_i].Node2.x;
-	                } else if (sortMaxX < structures[_i].Node2.x) {
-	                    sortMaxX = structures[_i].Node2.x;
-	                }
-	                if (sortMinY > structures[_i].Node2.y) {
-	                    sortMinY = structures[_i].Node2.y;
-	                } else if (sortMaxY < structures[_i].Node2.y) {
-	                    sortMaxY = structures[_i].Node2.y;
-	                }
-	            }
-	            var sortAverageX = (sortMaxX - sortMinX) / 2 + sortMinX;
-	            var sortAverageY = (sortMaxY - sortMinY) / 2 + sortMinY;
-	            for (_i = 0; _i < structures.length; _i++) {
-	                structures[_i].Node1.param.sortParamX = structures[_i].Node1.x - sortAverageX;
-	                structures[_i].Node1.param.sortParamY = structures[_i].Node1.y - sortAverageY;
-	                structures[_i].Node2.param.sortParamX = structures[_i].Node2.x - sortAverageX;
-	                structures[_i].Node2.param.sortParamY = structures[_i].Node2.y - sortAverageY;
-	            }
-	            sortAverageX = canvas.width / 2;
-	            sortAverageY = canvas.height / 2;
-	            var calculationNodes = new Array();
-	            var calcureationsKey = 1;
-	            calculationNodes[0] = structures[0].Node1;
-	            structures[0].Node1.param.sortParamX = sortAverageX + structures[0].Node1.param.sortParamX;
-	            structures[0].Node1.param.sortParamY = sortAverageY + structures[0].Node1.param.sortParamY;
-	            for (_i = 0; _i < structures.length; _i++) {
-	                var usedNode1 = 0;
-	                var usedNode2 = 0;
-	                for (j = 0; j < calculationNodes.length; j++) {
-	                    if (calculationNodes[j] === structures[_i].Node1) {
-	                        usedNode1++;
-	                    } else if (calculationNodes[j] === structures[_i].Node2) {
-	                        usedNode2++;
-	                    }
-	                }
-	                if (usedNode1 === 0) {
-	                    structures[_i].Node1.param.sortParamX = sortAverageX + structures[_i].Node1.param.sortParamX;
-	                    structures[_i].Node1.param.sortParamY = sortAverageY + structures[_i].Node1.param.sortParamY;
-	                    calculationNodes[calcureationsKey] = structures[_i].Node1;
-	                    calcureationsKey++;
-	                }
-	                if (usedNode2 === 0) {
-	                    structures[_i].Node2.param.sortParamX = sortAverageX + structures[_i].Node2.param.sortParamX;
-	                    structures[_i].Node2.param.sortParamY = sortAverageY + structures[_i].Node2.param.sortParamY;
-	                    calculationNodes[calcureationsKey] = structures[_i].Node2;
-	                    calcureationsKey++;
-	                }
-	            }
-	            for (_i = 0; _i < structures.length; _i++) {
-	                if (structures[_i].Node1.param.sortParamX - sortAverageX > 0) {
-	                    paramPlusX[paramPlusXKey] = structures[_i].Node1;
-	                    paramPlusXKey++;
-	                } else if (structures[_i].Node1.param.sortParamX - sortAverageX <= 0) {
-	                    paramMinusX[paramMinusXKey] = structures[_i].Node1;
-	                    paramMinusXKey++;
-	                }
-	                if (structures[_i].Node2.param.sortParamX - sortAverageX > 0) {
-	                    paramPlusX[paramPlusXKey] = structures[_i].Node2;
-	                    paramPlusXKey++;
-	                } else if (structures[_i].Node2.param.sortParamX - sortAverageX <= 0) {
-	                    paramMinusX[paramMinusXKey] = structures[_i].Node2;
-	                    paramMinusXKey++;
-	                }
-	                if (structures[_i].Node1.param.sortParamY - sortAverageY > 0) {
-	                    paramPlusY[paramPlusYKey] = structures[_i].Node1;
-	                    paramPlusYKey++;
-	                } else if (structures[_i].Node1.param.sortParamY - sortAverageY <= 0) {
-	                    paramMinusY[paramMinusYKey] = structures[_i].Node1;
-	                    paramMinusYKey++;
-	                }
-	                if (structures[_i].Node2.param.sortParamY - sortAverageY > 0) {
-	                    paramPlusY[paramPlusYKey] = structures[_i].Node2;
-	                    paramPlusYKey++;
-	                } else if (structures[_i].Node2.param.sortParamY - sortAverageY <= 0) {
-	                    paramMinusY[paramMinusYKey] = structures[_i].Node2;
-	                    paramMinusYKey++;
-	                }
-	            }
-	            if (paramPlusXKey >= 1) {
-	                paramPlusX = selectionSort(paramPlusX, 'sortParamX');
-	                // paramPlusX = selectionSortX(paramPlusX);
-	            }
-	            if (paramMinusXKey >= 1) {
-	                paramMinusX = selectionSort(paramMinusX, 'sortParamX');
-	                // paramMinusX = selectionSortX(paramMinusX);
-	            }
-	            if (paramPlusYKey >= 1) {
-	                paramPlusY = selectionSort(paramPlusY, 'sortParamY');
-	                /// paramPlusY = selectionSortY(paramPlusY);
-	            }
-	            if (paramMinusYKey >= 1) {
-	                paramMinusY = selectionSort(paramMinusY, 'sortParamY');
-	                // paramMinusY = selectionSortY(paramMinusY);
-	            }
-	            var distance = 50;
-	            var counter = 100;
-	            recursionSetCoordinateX(paramPlusX, paramMinusX, distance, sortAverageX, counter);
-	            distance = 0;
-	            counter = 50;
-	            recursionSetCoordinateY(paramPlusY, paramMinusY, distance, sortAverageY, counter);
-	            for (_i = 0; _i < structures.length; _i++) {
-	                stage.removeChild(structures[_i].edge);
-	                var line = new createjs.Shape();
-	                line.graphics.setStrokeStyle(3);
-	                line.graphics.beginStroke("#000");
-	                line.graphics.moveTo(structures[_i].Node1.x, structures[_i].Node1.y);
-	                line.graphics.lineTo(structures[_i].Node2.x, structures[_i].Node2.y);
-	                structures[_i].edge = line;
-	                structures[_i].edgeInformamtion.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                structures[_i].edgeInformamtion.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	                stage.removeChild(structures[_i].edgeInformamtion);
-	            }
-	            var usedNodes = new Array();
-	            var usedNodesKey = 2;
-	            for (_i = 0; _i < structures.length; _i++) {
-	                var countNode1 = 0;
-	                var countNode2 = 0;
-	                if (_i === 0) {
-	                    stage.removeChild(structures[_i].Node1);
-	                    stage.removeChild(structures[_i].Node2);
-	                    usedNodes[0] = structures[_i].Node1;
-	                    usedNodes[1] = structures[_i].Node2;
-	                }
-	                for (j = 0; j < usedNodes.length; j++) {
-	                    if (structures[_i].Node1 === usedNodes[j]) {
-	                        countNode1++;
-	                    } else if (structures[_i].Node2 === usedNodes[j]) {
-	                        countNode2++;
-	                    }
-	                }
-	                if (countNode1 != 1 && countNode2 === 1) {
-	                    stage.removeChild(structures[_i].Node1);
-	                    usedNodes[usedNodesKey] = structures[_i].Node1;
-	                    usedNodesKey++;
-	                } else if (countNode1 === 1 && countNode2 != 1) {
-	                    stage.removeChild(structures[_i].Node2);
-	                    usedNodes[usedNodesKey] = structures[_i].Node2;
-	                    usedNodesKey++;
-	                } else if (countNode1 != 1 && countNode2 != 1) {
-	                    stage.removeChild(structures[_i].Node1);
-	                    stage.removeChild(structures[_i].Node2);
-	                    usedNodes[usedNodesKey] = structures[_i].Node1;
-	                    usedNodesKey++;
-	                    usedNodes[usedNodesKey] = structures[_i].Node2;
-	                    usedNodesKey++;
-	                }
-	                stage.addChild(structures[_i].edge);
-	                stage.addChild(structures[_i].edgeInformamtion);
-	            }
-	            for (_i = 0; _i < usedNodes.length; _i++) {
-	                stage.addChild(usedNodes[_i]);
-	            }
-	            stage.update();
-	        }
-	    }
-	}
-	
-	function selectionSort(sortValues, paramType) {
-	    for (var i = 0; i < sortValues.length - 1; i++) {
-	        var min = i;
-	        for (var j = i + 1; j < sortValues.length; j++) {
-	            if (sortValues[j].param[paramType] < sortValues[min].param[paramType]) {
-	                var t = sortValues[min];
-	                sortValues[min] = sortValues[j];
-	                sortValues[j] = t;
-	            }
-	        }
-	    }
-	    return sortValues;
-	}
-	
-	/*
-	function selectionSortX(sortValues){
-	    for(let i = 0; i < sortValues.length - 1; i++){
-	        let min = i;
-	        for(let j = i + 1; j < sortValues.length; j++){
-	            if(sortValues[j].param.sortParamX < sortValues[min].param.sortParamX){
-	                let t = sortValues[min];
-	                sortValues[min] = sortValues[j];
-	                sortValues[j] = t;
-	            }
-	        }
-	    }
-	    return sortValues;
-	}
-	
-	function selectionSortY(sortValues){
-	    for(let i = 0; i < sortValues.length - 1; i++){
-	        let min = i;
-	        for(let j = i + 1; j < sortValues.length; j++){
-	            if(sortValues[j].param.sortParamY < sortValues[min].param.sortParamY){
-	                let t = sortValues[min];
-	                sortValues[min] = sortValues[j];
-	                sortValues[j] = t;
-	            }
-	        }
-	    }
-	    return sortValues;
-	}
-	*/
-	
-	function recursionSetCoordinateX(paramPlusX, paramMinusX, distance, sortAverageX, counter) {
-	    var originalDistance = distance;
-	    paramPlusX[0].x = sortAverageX + distance;
-	    paramMinusX[paramMinusX.length - 1].x = sortAverageX - distance;
-	    var setedNode = new Array();
-	    var setedNodeKey = 1;
-	    var sameNode = 0;
-	    setedNode[0] = paramPlusX[0];
-	
-	    var i = void 0;
-	    var j = void 0;
-	
-	    for (i = 1; i < paramPlusX.length; i++) {
-	        sameNode = 0;
-	        for (j = 0; j < setedNode.length; j++) {
-	            if (paramPlusX[i] === setedNode[j]) {
-	                sameNode++;
-	            }
-	        }
-	        if (sameNode === 0) {
-	            var different = 0;
-	            for (j = 0; j < i; j++) {
-	                if (paramPlusX[i] != paramPlusX[j]) {
-	                    if (paramPlusX[i].param.sortParamX === paramPlusX[j].param.sortParamX) {
-	                        different++;
-	                    }
-	                }
-	            }
-	            if (different === 0) {
-	                distance = distance + counter;
-	            }
-	            paramPlusX[i].x = sortAverageX + distance;
-	            setedNode[setedNodeKey] = paramPlusX[i];
-	            setedNodeKey++;
-	            sameNode = 0;
-	        }
-	    }
-	    setedNode.splice(0, setedNode.length);
-	    setedNode[0] = paramMinusX[paramMinusX.length - 1];
-	    setedNodeKey = 1;
-	    distance = originalDistance;
-	
-	    for (i = paramMinusX.length - 2; i >= 0; i--) {
-	        sameNode = 0;
-	        for (j = 0; j < setedNode.length; j++) {
-	            if (paramMinusX[i] === setedNode[j]) {
-	                sameNode++;
-	            }
-	        }
-	        if (sameNode === 0) {
-	            var _different = 0;
-	            for (var _j = paramMinusX.length - 1; _j > i; _j--) {
-	                if (paramMinusX[i] != paramMinusX[_j]) {
-	                    if (paramMinusX[i].param.sortParamX === paramMinusX[_j].param.sortParamX) {
-	                        _different++;
-	                    }
-	                }
-	            }
-	            if (_different === 0) {
-	                distance = distance + counter;
-	            }
-	            paramMinusX[i].x = sortAverageX - distance;
-	            setedNode[setedNodeKey] = paramMinusX[i];
-	            setedNodeKey++;
-	        }
-	    }
-	    if (counter === 20) {
-	        return;
-	    } else {
-	        for (i = 0; i < paramPlusX.length; i++) {
-	            if (paramPlusX[i].x + 10 > canvas.width) {
-	                recursionSetCoordinateX(paramPlusX, paramMinusX, originalDistance - 10, sortAverageX, counter - 10);
-	            }
-	        }
-	        for (i = 0; i < paramMinusX.length; i++) {
-	            if (paramMinusX[i].x - 10 < 0) {
-	                recursionSetCoordinateX(paramPlusX, paramMinusX, originalDistance - 10, sortAverageX, counter - 10);
-	            }
-	        }
-	    }
-	}
-	
-	function recursionSetCoordinateY(paramPlusY, paramMinusY, distance, sortAverageY, counter) {
-	    var originalDistance = distance;
-	    var setedNode = new Array();
-	    var setedNodeKey = 0;
-	    var i = void 0;
-	    var j = void 0;
-	    for (i = 0; i < paramPlusY.length; i++) {
-	        var sameNode = 0;
-	        if (setedNodeKey != 0) {
-	            for (j = 0; j < setedNode.length; j++) {
-	                if (paramPlusY[i] === setedNode[j]) {
-	                    sameNode++;
-	                }
-	            }
-	        }
-	        if (sameNode === 0) {
-	            var different = 0;
-	            for (j = 0; j < i; j++) {
-	                if (paramPlusY[i] != paramPlusY[j]) {
-	                    if (paramPlusY[i].param.sortParamY === paramPlusY[j].param.sortParamY) {
-	                        different++;
-	                    }
-	                }
-	            }
-	            if (different === 0) {
-	                distance = distance + counter;
-	            }
-	            paramPlusY[i].y = sortAverageY + distance;
-	            setedNode[setedNodeKey] = paramPlusY[i];
-	            setedNodeKey++;
-	        }
-	    }
-	    distance = originalDistance;
-	    setedNode.splice(0, setedNode.length);
-	    setedNodeKey = 0;
-	    for (i = paramMinusY.length - 1; i >= 0; i--) {
-	        if (paramMinusY[i].param.sortParamY >= sortAverageY) {
-	            paramMinusY[i].y = paramMinusY[i].param.sortParamY;
-	            continue;
-	        }
-	        var _sameNode = 0;
-	        if (setedNodeKey != 0) {
-	            for (j = 0; j < setedNode.length; j++) {
-	                if (paramPlusY[i] === setedNode[j]) {
-	                    _sameNode++;
-	                }
-	            }
-	        }
-	
-	        if (_sameNode === 0) {
-	            var _different2 = 0;
-	            for (j = paramMinusY.length - 1; j > i; j--) {
-	                if (paramMinusY[i] != paramMinusY[j]) {
-	                    if (paramMinusY[i].param.sortParamY === paramMinusY[j].param.sortParamY) {
-	                        _different2++;
-	                    }
-	                }
-	            }
-	            if (_different2 === 0) {
-	                distance = distance + counter;
-	            }
-	            paramMinusY[i].y = sortAverageY - distance;
-	            setedNode[setedNodeKey] = paramMinusY[i];
-	            setedNodeKey++;
-	        }
-	    }
-	    if (counter === 20) {
-	        return;
-	    } else {
-	        for (i = 0; i < paramPlusY.length; i++) {
-	            if (paramPlusY[i].y + 10 > canvas.height) {
-	                recursionSetCoordinateY(paramPlusY, paramMinusY, originalDistance, sortAverageY, counter - 10);
-	            }
-	        }
-	        for (i = 0; i < paramMinusY.length; i++) {
-	            if (paramMinusY[i].y - 10 < 0) {
-	                recursionSetCoordinateY(paramPlusY, paramMinusY, originalDistance, sortAverageY, counter - 10);
-	            }
-	        }
-	    }
-	}
-	
-	exports.adjustPosition = adjustPosition;
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var MONOSACCHARIDE_COLOR = {
-	    WHITE: 'rgb(255, 255, 255)',
-	    BLUE: 'rgb(0, 128, 255)',
-	    GREEN: 'rgb(0, 255, 0)',
-	    YELLOW: 'rgb(255, 217, 0)',
-	    ORANGE: 'rgb(255, 128, 0)',
-	    PINK: 'rgb(255, 136, 194)',
-	    PURPLE: 'rgb(159, 31, 255)',
-	    LIGHT_BLUE: 'rgb(151, 243, 248)',
-	    BROWN: 'rgb(140, 116, 54)',
-	    RED: 'rgb(255, 0, 0)'
-	};
-	
-	var MONOSACCHARIDES = {
-	    WHITE: ["hexose", "hexnac", "hexosamine", "hexuronate", "deoxyhexose", "deoxyhexnac", "di_deoxyhexose", "pentose", "nonuloosonate", "unknown", "assigned"],
-	    BLUE: ["glc", "glcnac", "glcn", "glca", "qui", "quinac", "oli", "bac", "api"],
-	    GREEN: ["man", "mannac", "mann", "mana", "rha", "rhanac", "tyv", "ara", "kdn", "ldmanhep", "fru"],
-	    YELLOW: ["gal", "galnac", "galn", "gala", "lyx", "kdo", "tag"],
-	    ORANGE: ["gul", "gulnac", "guln", "gula", "abe", "xyl", "dha", "sor"],
-	    PINK: ["alt", "altnac", "altn", "alta", "6dalt", "par", "rib", "ddmanhep", "psi"],
-	    PURPLE: ["all", "allnac", "alln", "alla", "dig", "neu5ac", "murnac"],
-	    LIGHT_BLUE: ["tal", "talnac", "taln", "tala", "6dtal", "col", "neu5gc", "murngc"],
-	    BROWN: ["ido", "idonac", "idon", "idoa", "neu", "mur"],
-	    RED: ["fuc", "fucnac"]
-	};
-	
-	var LINE_COLOR = 'rgb(0, 0, 0)';
-	
-	var getMonosaccharideColor = function getMonosaccharideColor(sugarName) {
-	    "use strict";
-	
-	    var lowerSugarName = sugarName.toLowerCase();
-	
-	    var colors = Object.keys(MONOSACCHARIDES);
-	    for (var i = 0; i < colors.length; i++) {
-	        var color = colors[i];
-	
-	        if (MONOSACCHARIDES[color].indexOf(lowerSugarName) >= 0) {
-	            return MONOSACCHARIDE_COLOR[color];
-	        }
-	    }
-	    return null;
-	};
-	
-	var getLineColor = function getLineColor() {
-	    "use strict";
-	
-	    return LINE_COLOR;
-	};
-	
-	exports.getMonosaccharideColor = getMonosaccharideColor;
-	exports.getLineColor = getLineColor;
-	exports.MONOSACCHARIDE_COLOR = MONOSACCHARIDE_COLOR;
-
-/***/ },
-/* 24 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	exports.getCoreStructure = undefined;
 	
-	var _structures = __webpack_require__(25);
+	var _structures = __webpack_require__(31);
 	
 	var structuresJson = _interopRequireWildcard(_structures);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	console.log(structuresJson); /**
-	                              * Created by Renji on 2016/11/09.
-	                              */
-	
-	// let path = "./core_structure";
-	//
-	// //「/」で区切って配列化
-	// let pathinfo = path.split('/');
-	//
-	// for(let i = 0; i < pathinfo)
-	// //最後の要素（ファイル名）だけ抜き出し
-	// var filename = pathinfo.pop();
-	// console.log(filename);
-	
-	// let  FOLDER = fso.GetFolder("D:\\./core_structure");
-	// const FILE_LIST = FOLDER.getFiles();
-	
-	/*
-	let fs = require('fs') // fsモジュールを利用できるように
-	let path = require('path') // pathモジュールを利用できるように
-	// process.argv[2]には対象のディレクトリのパスが格納されています。
-	fs.readdir("./core_structure", function (err, list) {
-	list.forEach(function (file) {
-	    // // process.argv[3]にはフィルタする拡張子が格納されています。
-	    // if (path.extname(file) === '.' + process.argv[3])
-	    //     console.log(file)
-	    console.log(list);
-	})
-	})
-	*/
 	
 	var getCoreStructure = function getCoreStructure(coreStructureName) {
 	    for (var i = 0; i < structuresJson.children.length; i++) {
@@ -45289,14 +44571,13 @@
 	        if (coreStructureName === child.file) {
 	            return child.fileData;
 	        }
-	        // console.log(child.file);
 	    }
 	};
 	
 	exports.getCoreStructure = getCoreStructure;
 
 /***/ },
-/* 25 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -45316,7 +44597,7 @@
 			},
 			{
 				"file": "Blood_Group_H_Antigen.txt",
-				"fileData": "ENTRY       Blood_Group_H_Antigen\nNODE        2\n            1     gal     17.0     6.0\n            2     fuc     9.0     6.0\nEDGE        1\n            1     2:a1     1:2\n///"
+				"fileData": "ENTRY       Blood_Group_H_Antigen       Glycan\nNODE        2\n            1     gal     17.0     6.0\n            2     fuc     9.0     6.0\nEDGE        1\n            1     2:a1     1:2\n///"
 			},
 			{
 				"file": "Cad_Antigen.txt",
@@ -45550,7 +44831,7 @@
 	};
 
 /***/ },
-/* 26 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -45558,7 +44839,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.KCFParser = undefined;
+	exports.connectStructures = exports.KCFParser = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -45569,6 +44850,18 @@
 	var _structure = __webpack_require__(19);
 	
 	var _structure2 = _interopRequireDefault(_structure);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _set_coordinate = __webpack_require__(33);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -45583,7 +44876,7 @@
 	
 	    _createClass(KCFParser, [{
 	        key: 'parse',
-	        value: function parse() {
+	        value: function parse(canvas, stage) {
 	            var lines = removeNullLines(generateLines(this.text));
 	
 	            if (checkSyntax(lines) === false) {
@@ -45592,9 +44885,11 @@
 	            }
 	
 	            var result = analyzeLines(lines);
+	
+	            return connectStructures(result[0], result[1], canvas, stage);
 	            //return result;
 	
-	            DrawKCF(this.text);
+	            // DrawKCF(this.text);
 	        }
 	    }]);
 	
@@ -45719,7 +45014,15 @@
 	    }
 	    return structures;
 	    */
-	    return edgesObj;
+	    var nodesAry = [];
+	    var edgesAry = [];
+	    for (var _i = 0; _i < Object.keys(nodesObj).length; _i++) {
+	        nodesAry.push(nodesObj[Object.keys(nodesObj)[_i]]);
+	    }
+	    for (var _i2 = 0; _i2 < Object.keys(edgesObj).length; _i2++) {
+	        edgesAry.push(edgesObj[Object.keys(edgesObj)[_i2]]);
+	    }
+	    return [nodesAry, edgesAry];
 	}
 	
 	function parseNodes(lines) {
@@ -45734,11 +45037,14 @@
 	
 	        var id = tokens[0];
 	        var name = tokens[1];
+	        var xCood = tokens[2];
+	        var yCood = tokens[3];
 	        if (nodesObj[id] !== undefined) {
 	            return null;
 	        }
 	        // TODO: Node の constructor 側で name から Sugar/Modification の判定を行っておく.
-	        nodesObj[id] = new _node2.default(id, name);
+	        // name = name.toLowerCase();
+	        nodesObj[id] = new _node2.default(id, name, xCood, yCood);
 	    }
 	    return nodesObj;
 	}
@@ -45765,7 +45071,7 @@
 	        var parent = genObj.parent;
 	        var edgeInfo = genObj.edgeInfo;
 	
-	        edgesObj[id] = new _structure2.default(id, child, parent, edgeInfo);
+	        edgesObj[id] = new _structure2.default(id, parent, child, edgeInfo);
 	    }
 	    return edgesObj;
 	}
@@ -45828,70 +45134,1066 @@
 	    };
 	}
 	
-	function connectStructures(nodes, edges) {}
+	function connectStructures(nodes, edges, canvas, stage) {
+	    (0, _set_coordinate.setCoordinate)(nodes, edges, canvas);
+	    upStage(edges, stage);
+	    for (var i = 0; i < nodes.length; i++) {
+	        nodes[i].sprite.parentNode = nodes[i];
+	    }
+	    return [nodes, edges];
+	}
 	
-	function DrawKCF(KCFtext) {
-	    var text = KCFtext.replace(/\s/g, "space");
-	    var splitKCFs = text.split("space");
-	    // if(mode === 4){
-	    //     splitKCFs =
-	    // }
-	    var DrawKCFNodeObject = function DrawKCFNodeObject(number, monosaccharide, x, y) {
-	        this.nodeNumber = number;
-	        this.monosaccharide = monosaccharide;
-	        this.paramX = x;
-	        this.paramY = y;
-	    };
-	    var DrawKCFEdgeObject = function DrawKCFEdgeObject(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition) {
-	        this.anomer = anomer;
-	        this.childId = childId;
-	        this.childLinkagePsition = childLinkagePosition;
-	        this.parentId = parentId;
-	        this.parentLinkagePosition = parentLinkagePosition;
-	    };
-	    var DrawKCFNodeObjects = new Array();
-	    var DrawKCFNodeObjectsKey = 0;
-	    var DrawKCFEdgeObjects = new Array();
-	    var DrawKCFEdgeObjectKey = 0;
-	    var i = void 0;
-	    for (i = 0; i < splitKCFs.length; i++) {
-	        if (splitKCFs[i] === "") {
-	            splitKCFs.splice(i, 1);
-	            i--;
-	        }
-	    }
-	    if (splitKCFs[0] != "ENTRY") {
-	        alert("please write KCF format.\n for exsample \" ENTRY    Glycan...\"");
-	        return;
-	    } else if (splitKCFs[2] != "NODE") {
-	        return;
-	    } else {
-	        for (i = 4; i < splitKCFs.length; i = i + 4) {
-	            if (splitKCFs[i] === "EDGE") {
-	                break;
-	            } else {
-	                var DrawKCFNode = new DrawKCFNodeObject(splitKCFs[i], splitKCFs[i + 1], splitKCFs[i + 2], splitKCFs[i + 3]);
-	                DrawKCFNodeObjects[DrawKCFNodeObjectsKey] = DrawKCFNode;
-	                DrawKCFNodeObjectsKey++;
+	function upStage(edges, stage) {
+	    var line = null;
+	    var text = null;
+	    var addedNodes = [];
+	    var parentCounter = 0;
+	    var childCounter = 0;
+	    for (var i = 0; i < edges.length; i++) {
+	        line = new createjs.Shape();
+	        line.graphics.setStrokeStyle(3).beginStroke("#000").moveTo(edges[i].parentNode.xCood, edges[i].parentNode.yCood).lineTo(edges[i].childNode.xCood, edges[i].childNode.yCood);
+	        edges[i].edge = line;
+	        for (var j = 0; j < addedNodes.length; j++) {
+	            if (addedNodes[j] === edges[i].parentNode) {
+	                parentCounter++;
+	            } else if (addedNodes[j] === edges[i].childNode) {
+	                childCounter++;
 	            }
 	        }
-	        i = i + 2;
-	        for (i; i < splitKCFs.length; i = i + 3) {
-	            if (splitKCFs[i] === SLASH) {
-	                break;
-	            }
-	            var childNodeInformations = splitKCFs[i + 1].split("");
-	            var parentNodeInformations = splitKCFs[i + 2].split("");
-	            var DrawKCFEdge = new DrawKCFEdgeObject(childNodeInformations[2], childNodeInformations[0], childNodeInformations[3], parentNodeInformations[0], parentNodeInformations[2]);
-	            DrawKCFEdgeObjects[DrawKCFEdgeObjectKey] = DrawKCFEdge;
-	            DrawKCFEdgeObjectKey++;
+	        if (parentCounter === 0) {
+	            edges[i].parentNode.sprite = edges[i].parentNode.sprite.nodeDraw(edges[i].parentNode.name, edges[i].parentNode.xCood, edges[i].parentNode.yCood, stage);
+	            addedNodes.push(edges[i].parentNode);
 	        }
+	        if (childCounter === 0) {
+	            edges[i].childNode.sprite = edges[i].childNode.sprite.nodeDraw(edges[i].childNode.name, edges[i].childNode.xCood, edges[i].childNode.yCood, stage);
+	            addedNodes.push(edges[i].childNode);
+	        }
+	        stageEdit.stageEdge(edges[i], stage);
+	        text = new createjs.Text(edges[i].edgeInformationText, "12px serif", "rgb(255,0,0)");
+	        text.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	        text.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
+	        edges[i].edgeInformation = text;
+	        stageEdit.setStage(stage, text);
+	        stageEdit.stageUpdate(stage);
+	        parentCounter = 0;
+	        childCounter = 0;
+	        // addedNodes.push(edges[i].childNode);
 	    }
-	    buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects);
-	    console.log(splitKCFs);
-	};
+	}
 	
 	exports.KCFParser = KCFParser;
+	exports.connectStructures = connectStructures;
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.setCoordinate = undefined;
+	
+	var _edge_information_parser = __webpack_require__(34);
+	
+	function setCoordinate(nodes, edges, canvas) {
+	    for (var i = 0; i < edges.length; i++) {
+	        edges[i].parentNode.xCood = parseInt(edges[i].parentNode.xCood);
+	        edges[i].parentNode.yCood = parseInt(edges[i].parentNode.yCood);
+	        edges[i].childNode.xCood = parseInt(edges[i].childNode.xCood);
+	        edges[i].childNode.yCood = parseInt(edges[i].childNode.yCood);
+	    }
+	
+	    var rootNode = edges[0].parentNode;
+	    for (var _i = 1; _i < edges.length; _i++) {
+	        if (rootNode.xCood < edges[_i].parentNode.xCood) {
+	            rootNode = edges[_i].parentNode;
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < edges.length; _i2++) {
+	        edges[_i2].parentNode.xCood = 0;
+	        edges[_i2].parentNode.yCood = 0;
+	        edges[_i2].childNode.xCood = 0;
+	        edges[_i2].childNode.yCood = 0;
+	    }
+	    for (var _i3 = 0; _i3 < nodes.length; _i3++) {
+	        for (var j = 0; j < edges.length; j++) {
+	            if (nodes[_i3] === edges[j].parentNode) {
+	                nodes[_i3].childNode.push(edges[j].childNode);
+	            }
+	        }
+	    }
+	    // let xDistance = 80;
+	    // let yDistance = 50;
+	    var xDistance = 100;
+	    var yDistance = 50;
+	    recursiveComputeCoordinate(rootNode, nodes, edges, xDistance, yDistance, canvas);
+	}
+	
+	function recursiveComputeCoordinate(rootNode, nodes, edges, xDistance, yDistance, canvas) {
+	    recursiveSetCoordinate(rootNode, edges, xDistance, yDistance);
+	    var midCody = middleCoordinate(nodes);
+	    relativeCoordinate(midCody[0], midCody[1], nodes);
+	    setRelativeCoordinate(nodes, canvas);
+	    for (var i = 0; i < nodes.length; i++) {
+	        if (nodes[i].xCood < 10 || nodes[i].xCood > canvas.width - 10 || nodes[i].yCood < 10 || nodes[i].yCood > canvas.height - 10) {
+	            if (xDistance === 20 || yDistance < 10) {
+	                return;
+	            }
+	            return recursiveComputeCoordinate(rootNode, nodes, xDistance - 10, yDistance - 5, canvas);
+	        }
+	    }
+	}
+	
+	function setRelativeCoordinate(nodes, canvas) {
+	    var midX = canvas.width / 2;
+	    var midY = canvas.height / 2;
+	    for (var i = 0; i < nodes.length; i++) {
+	        nodes[i].xCood = midX + nodes[i].xCood;
+	        nodes[i].yCood = midY + nodes[i].yCood;
+	    }
+	}
+	
+	function relativeCoordinate(midX, midY, nodes) {
+	    for (var i = 0; i < nodes.length; i++) {
+	        nodes[i].xCood = nodes[i].xCood - midX;
+	        nodes[i].yCood = nodes[i].yCood - midY;
+	    }
+	}
+	
+	function recursiveSetCoordinate(parentNode, edges, xDistance, yDistance) {
+	    //TODO: 結合位置で子供のNodeの位置を判断する。
+	    // let parentEdgePoint = null;
+	    // let counter = 0;
+	    // for(let i = 0; i < parentNode.childNode.length; i++){
+	    //     for(let j = 0; j < edges.length; j++){
+	    //         counter++;
+	    //         if(parentNode === edges[j].parentNode && parentNode.childNode[i] === edges[j].childNode){
+	    //             parentEdgePoint = edgeInformationParser(edges[j]);
+	    //             break;
+	    //         }
+	    //     }
+	    //     if(counter === edges.length) continue;
+	    //     if(parseInt(parentEdgePoint[1]) === 2){
+	    //         parentNode.childNode[i].xCood = parentNode.xCood;
+	    //         parentNode.childNode[i].yCood = parentNode.yCood + yDistance;
+	    //         recursiveSetCoordinate(parentNode.childNode[i], edges, xDistance, yDistance);
+	    //         continue;
+	    //     }
+	    //     else if(parseInt(parentEdgePoint[1]) === 3){
+	    //         parentNode.childNode[i].xCood = parentNode.xCood - xDistance;
+	    //         parentNode.childNode[i].yCood = parentNode.yCood + yDistance + 40;
+	    //         recursiveSetCoordinate(parentNode.childNode[i], edges, xDistance, yDistance);
+	    //         continue;
+	    //     }
+	    //     else if(parseInt(parentEdgePoint[1]) === 4){
+	    //         parentNode.childNode[i].xCood = parentNode.xCood - xDistance;
+	    //         parentNode.childNode[i].yCood = parentNode.yCood;
+	    //         recursiveSetCoordinate(parentNode.childNode[i], edges, xDistance, yDistance);
+	    //         continue;
+	    //     }
+	    //     else if(parseInt(parentEdgePoint[1]) === 6){
+	    //         parentNode.childNode[i].xCood = parentNode.xCood;
+	    //         parentNode.childNode[i].yCood = parentNode.yCood - yDistance;
+	    //         recursiveSetCoordinate(parentNode.childNode[i], edges, xDistance, yDistance);
+	    //         continue;
+	    //     }
+	    //     else{
+	    //         parentNode.childNode[i].xCood = parentNode.xCood - xDistance;
+	    //         parentNode.childNode[i].yCood = parentNode.yCood - yDistance - 40;
+	    //         recursiveSetCoordinate(parentNode.childNode[i], edges, xDistance, yDistance);
+	    //         continue;
+	    //     }
+	    // }
+	
+	    if (parentNode.childNode.length === 0) {
+	        return;
+	    } else if (parentNode.childNode.length === 1) {
+	        parentNode.childNode[0].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[0].yCood = parentNode.yCood;
+	        recursiveSetCoordinate(parentNode.childNode[0], edges, xDistance, yDistance);
+	        return;
+	    } else if (parentNode.childNode.length === 2) {
+	        for (var i = 0; i < 2; i++) {
+	            parentNode.childNode[i].xCood = parentNode.xCood - xDistance;
+	        }
+	        parentNode.childNode[0].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[0], edges, xDistance, yDistance);
+	        parentNode.childNode[1].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[1], edges, xDistance, yDistance);
+	        return;
+	    } else if (parentNode.childNode.length === 3) {
+	        for (var _i4 = 0; _i4 < 3; _i4++) {
+	            parentNode.childNode[_i4].xCood = parentNode.xCood - xDistance;
+	        }
+	        parentNode.childNode[0].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[0], edges, xDistance, yDistance);
+	        parentNode.childNode[1].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[1], edges, xDistance, yDistance);
+	        parentNode.childNode[2].yCood = parentNode.yCood;
+	        recursiveSetCoordinate(parentNode.childNode[2], edges, xDistance, yDistance);
+	        return;
+	    } else if (parentNode.childNode.length === 4) {
+	        parentNode.childNode[0].xCood = parentNode.xCood;
+	        parentNode.childNode[0].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[0], edges, xDistance, yDistance);
+	        parentNode.childNode[1].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[1].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[1], edges, xDistance, yDistance);
+	        parentNode.childNode[2].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[2].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[2], edges, xDistance, yDistance);
+	        parentNode.childNode[3].xCood = parentNode.xCood;
+	        parentNode.childNode[3].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[3], edges, xDistance, yDistance);
+	    } else if (parentNode.childNode.length === 5) {
+	        parentNode.childNode[0].xCood = parentNode.xCood;
+	        parentNode.childNode[0].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[0], edges, xDistance, yDistance);
+	        parentNode.childNode[1].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[1].yCood = parentNode.yCood - yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[1], edges, xDistance, yDistance);
+	        parentNode.childNode[2].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[2].yCood = parentNode.yCood;
+	        recursiveSetCoordinate(parentNode.childNode[2], edges, xDistance, yDistance);
+	        parentNode.childNode[3].xCood = parentNode.xCood - xDistance;
+	        parentNode.childNode[3].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[3], edges, xDistance, yDistance);
+	        parentNode.childNode[4].xCood = parentNode.xCood;
+	        parentNode.childNode[4].yCood = parentNode.yCood + yDistance;
+	        recursiveSetCoordinate(parentNode.childNode[4], edges, xDistance, yDistance);
+	    }
+	}
+	
+	function middleCoordinate(nodes) {
+	    var mostRightNode = nodes[0].xCood;
+	    var mostLeftNode = nodes[0].xCood;
+	    var mostTopNode = nodes[0].yCood;
+	    var mostBttomNode = nodes[0].yCood;
+	    for (var i = 1; i < nodes.length; i++) {
+	        if (mostLeftNode > nodes[i].xCood) {
+	            mostLeftNode = nodes[i].xCood;
+	        } else if (mostRightNode < nodes[i].xCood) {
+	            mostRightNode = nodes[i].xCood;
+	        }
+	        if (mostTopNode > nodes[i].yCood) {
+	            mostTopNode = nodes[i].yCood;
+	        } else if (mostBttomNode < nodes[i].yCood) {
+	            mostBttomNode = nodes[i].yCood;
+	        }
+	    }
+	
+	    var averageCoordinateX = mostLeftNode + (mostRightNode - mostLeftNode) / 2;
+	    var averageCoordinateY = mostTopNode + (mostBttomNode - mostTopNode) / 2;
+	
+	    return [averageCoordinateX, averageCoordinateY];
+	}
+	
+	exports.setCoordinate = setCoordinate;
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var SEPERATOR = new RegExp("-");
+	
+	function edgeInformationParser(structure) {
+	    structure.edgeInformationText.match(SEPERATOR);
+	    return [RegExp.leftContext, RegExp.rightContext];
+	}
+	
+	exports.edgeInformationParser = edgeInformationParser;
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	"used strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.clearAll = undefined;
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function clearAll(nodes, structures, brackets, stage) {
+	    for (var i = 0; i < structures.length; i++) {
+	        stageEdit.removeStage(stage, structures[i].edge);
+	        stageEdit.removeStage(stage, structures[i].edgeInformation);
+	    }
+	    for (var j = 0; j < nodes.length; j++) {
+	        stageEdit.removeStage(stage, nodes[j].sprite);
+	        stageEdit.stageUpdate(stage);
+	    }
+	    for (var k = 0; k < brackets.length; k++) {
+	        stageEdit.removeStage(stage, brackets[k].startBracket.bracketShape);
+	        stageEdit.removeStage(stage, brackets[k].startBracket.numOfRepeatShape);
+	        stageEdit.removeStage(stage, brackets[k].endBracket.bracketShape);
+	        stageEdit.stageUpdate(stage);
+	    }
+	    stageEdit.stageUpdate(stage);
+	}
+	exports.clearAll = clearAll;
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var TAB = "    ";
+	var NEW_LINE = "\n";
+	var COLON = ":";
+	var SLASH = "///";
+	var URL_TAB = "%20";
+	var URL_NEW_LINE = "%30";
+	var WAVE = "~";
+	
+	var SEPERATOR = new RegExp("-");
+	
+	function createKCF(mode, nodes, structures, kindRunQuery, database, scoreMatrix) {
+	    if (nodes.length < 1) {
+	        alert("Please build glycan.");
+	        return;
+	    }
+	
+	    var rootNode = null;
+	
+	    for (var i = 0; i < nodes.length; i++) {
+	        var counter = 0;
+	        for (var j = 0; j < structures.length; j++) {
+	            if (nodes[i] === structures[j].childNode) {
+	                counter++;
+	            }
+	        }
+	        if (counter === 0) {
+	            rootNode = nodes[i];
+	        }
+	    }
+	    var nodeFormat = [];
+	    if (mode === 8) nodeFormat.push(TAB + rootNode.id + "" + TAB + rootNode.name + TAB + "0" + TAB + "0" + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + rootNode.id + "" + URL_TAB + rootNode.name + URL_TAB + "0" + URL_TAB + "0" + URL_NEW_LINE);
+	    nodeFormat = recursiveSetNode(rootNode, rootNode, nodeFormat, mode);
+	
+	    var edgeFormat = [];
+	    var childEdge = null;
+	    var parentEdge = null;
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (structures[_i].edgeInformationText.match(SEPERATOR)) {
+	            childEdge = RegExp.leftContext;
+	            parentEdge = RegExp.rightContext;
+	        }
+	        if (mode === 8) edgeFormat.push(TAB + structures[_i].structureId + "" + TAB + structures[_i].childNode.id + "" + ":" + childEdge + TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + NEW_LINE);
+	        if (mode === 9) edgeFormat.push(URL_TAB + structures[_i].structureId + "" + URL_TAB + structures[_i].childNode.id + "" + ":" + childEdge + URL_TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + URL_NEW_LINE);
+	    }
+	
+	    KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode);
+	}
+	
+	function recursiveSetNode(parentNode, rootNode, nodeFormat, mode) {
+	    for (var i = 0; i < parentNode.childNode.length; i++) {
+	        nodeFormat = nodePush(parentNode.childNode[i], rootNode, nodeFormat, mode);
+	        recursiveSetNode(parentNode.childNode[i], rootNode, nodeFormat, mode);
+	    }
+	    return nodeFormat;
+	}
+	
+	function nodePush(childNode, rootNode, nodeFormat, mode) {
+	    var relativeCoodX = childNode.xCood - rootNode.xCood;
+	    var reletiveCoodY = childNode.yCood - rootNode.yCood;
+	    if (mode === 8) nodeFormat.push(TAB + childNode.id + "" + TAB + childNode.name + TAB + relativeCoodX + TAB + reletiveCoodY + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + childNode.id + "" + URL_TAB + childNode.name + URL_TAB + relativeCoodX + URL_TAB + reletiveCoodY + URL_NEW_LINE);
+	    return nodeFormat;
+	}
+	
+	function KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode) {
+	    var textArea = document.getElementById("kcf_format");
+	    var str = void 0;
+	    var str2 = void 0;
+	    var url = void 0;
+	    if (mode === 8) {
+	        str = "ENTRY" + TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + nodes.length + NEW_LINE;
+	        str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
+	    } else if (mode === 9) {
+	        var date = new Date();
+	        url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
+	        str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + nodes.length + URL_NEW_LINE;
+	        str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
+	    }
+	
+	    for (var i = 0; i < nodeFormat.length; i++) {
+	        str += nodeFormat[i];
+	    }
+	
+	    for (var _i2 = 0; _i2 < edgeFormat.length; _i2++) {
+	        str2 += edgeFormat[_i2];
+	    }
+	
+	    if (mode === 8) {
+	        textArea.value = str + str2 + SLASH;
+	    } else if (mode === 9) {
+	        var runQueryUrl = url + str + str2 + SLASH + WAVE + scoreMatrix.value + WAVE;
+	        var kindRunQueryResultType = void 0;
+	        for (var _i3 = 0; _i3 < kindRunQuery.length; _i3++) {
+	            if (kindRunQuery[_i3].checked == true) {
+	                kindRunQueryResultType = kindRunQuery[_i3].value;
+	            }
+	        }
+	        runQueryUrl += kindRunQueryResultType + WAVE + database.value;
+	
+	        window.open(runQueryUrl, "_blank");
+	    }
+	}
+	
+	exports.createKCF = createKCF;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	function textClear() {
+	    var res = confirm("Textarea clear all?");
+	    if (res === true) {
+	        var textArea = document.getElementById("kcf_format");
+	        textArea.value = "KCF-Text";
+	    }
+	}
+	
+	exports.textClear = textClear;
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.eraseNode = undefined;
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function eraseNode(target, nodes, structures, brackets, stage) {
+	    for (var i = 0; i < nodes.length; i++) {
+	        if (target === nodes[i].sprite) {
+	            stageEdit.removeStage(stage, target);
+	            nodes.splice(i, 1);
+	        }
+	    }
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (target === structures[_i].parentNode.sprite || target === structures[_i].childNode.sprite) {
+	            stageEdit.removeStage(stage, structures[_i].edgeInformation);
+	            stageEdit.removeStage(stage, structures[_i].edge);
+	            structures.splice(_i, 1);
+	            _i--;
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < brackets.length; _i2++) {
+	        if (target.parentNode === brackets[_i2].startBracket.node || target.parentNode === brackets[_i2].endBracket.node) {
+	            stageEdit.removeStage(stage, brackets[_i2].startBracket.bracketShape);
+	            stageEdit.removeStage(stage, brackets[_i2].endBracket.bracketShape);
+	            stageEdit.removeStage(stage, brackets[_i2].startBracket.numOfRepeatShape);
+	            stageEdit.stageUpdate(stage);
+	            if (target.parentNode === brackets[_i2].startBracket.node) {
+	                brackets[_i2].endBracket.node.bracket = null;
+	            } else if (target.parentNode === brackets[_i2].endBracket.node) {
+	                brackets[_i2].startBracket.node.bracket = null;
+	            }
+	            brackets.splice(_i2, 1);
+	        }
+	    }
+	    return [nodes, structures, brackets];
+	}
+	
+	exports.eraseNode = eraseNode;
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.selectedMoveStructureUp = exports.selectedMoveStructureMove = exports.selectedMoveStructureDown = exports.selectedStructureDelete = exports.rectUp = exports.rectMove = undefined;
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function rectMove(startX, startY, endX, endY, stage) {
+	    var rect = new createjs.Shape();
+	    rect.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black"));
+	    rect.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
+	    if (startX < endX || startY < endY) {
+	        rect.graphics.drawRect(startX, startY, endX - startX, endY - startY);
+	    } else if (startX > endX && startY > endY) {
+	        rect.graphics.drawRect(endX, endY, startX - endX, startY - endY);
+	    }
+	
+	    rect.alpha = 0.3;
+	    stageEdit.setStage(stage, rect);
+	    stageEdit.stageUpdate(stage);
+	
+	    return rect;
+	}
+	
+	function rectUp(selectRange, startX, startY, endX, endY, nodes, moveStructureNodes, stage) {
+	    for (var i = 0; i < nodes.length; i++) {
+	        if (startX < endX || startY < endY) {
+	            if (startX < nodes[i].sprite.x && endX > nodes[i].sprite.x && startY < nodes[i].sprite.y && endY > nodes[i].sprite.y) {
+	                nodes[i].sprite.highlightShape(nodes[i].sprite);
+	                moveStructureNodes.push(nodes[i].sprite);
+	            }
+	        } else if (startX > endX && startY > endY) {
+	            if (endX < nodes[i].sprite.x && startX > nodes[i].sprite.x && endY < nodes[i].sprite.y && startY > nodes[i].sprite.y) {
+	                nodes[i].sprite.highlightShape(nodes[i].sprite);
+	                moveStructureNodes.push(nodes[i].sprite);
+	            }
+	        }
+	    }
+	    stageEdit.removeStage(stage, selectRange);
+	    stageEdit.stageUpdate(stage);
+	
+	    return moveStructureNodes;
+	}
+	
+	function selectedStructureDelete(moveStructureNodes, nodes, structures, stage) {
+	    var res = confirm("Do you delete Selected structure?");
+	    if (res == true) {
+	        for (var i = 0; i < moveStructureNodes.length; i++) {
+	            for (var j = 0; j < nodes.length; j++) {
+	                if (moveStructureNodes[i] === nodes[j].sprite) {
+	                    stageEdit.removeStage(stage, moveStructureNodes[i]);
+	                    nodes.splice(j, 1);
+	                }
+	            }
+	            for (var _j = 0; _j < structures.length; _j++) {
+	                if (moveStructureNodes[i] === structures[_j].parentNode.sprite || moveStructureNodes[i] === structures[_j].childNode.sprite) {
+	                    stageEdit.removeStage(stage, structures[_j].edge);
+	                    stageEdit.removeStage(stage, structures[_j].edgeInformation);
+	                    structures.splice(_j, 1);
+	                    _j--;
+	                }
+	            }
+	        }
+	        return [nodes, structures, res];
+	    }
+	}
+	
+	function selectedMoveStructureDown(moveStructureNodes, structures, stage) {
+	    var moveStructureXPoints = [];
+	    var moveStructureYPoints = [];
+	    var targetStructures = [];
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        moveStructureXPoints.push(stage.mouseX - moveStructureNodes[i].x);
+	        moveStructureYPoints.push(stage.mouseY - moveStructureNodes[i].y);
+	    }
+	    for (var _i = 0; _i < moveStructureNodes.length; _i++) {
+	        for (var j = 0; j < structures.length; j++) {
+	            if (moveStructureNodes[_i] === structures[j].parentNode.sprite || moveStructureNodes[_i] === structures[j].childNode.sprite) {
+	                targetStructures.push(structures[j]);
+	            }
+	        }
+	    }
+	
+	    return {
+	        moveStructurePoints: [moveStructureXPoints, moveStructureYPoints],
+	        targetStructures: targetStructures
+	    };
+	}
+	
+	function selectedMoveStructureMove(pointObj, moveStructureNodes, stage, canvas) {
+	    var movePointX = null;
+	    var movePointY = null;
+	    var usedStructure = [];
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        movePointX = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	        movePointY = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	
+	        if (movePointX > 0 + 10 && movePointX < canvas.width - 10) {
+	            moveStructureNodes[i].x = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	            moveStructureNodes[i].parentNode.xCood = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	        }
+	        if (movePointY > 0 + 10 && movePointY < canvas.height - 10) {
+	            moveStructureNodes[i].y = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	            moveStructureNodes[i].parentNode.yCood = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < pointObj.targetStructures.length; _i2++) {
+	        var counter = 0;
+	        for (var j = 0; j < usedStructure.length; j++) {
+	            if (pointObj.targetStructures[_i2] === usedStructure[j]) counter++;
+	        }
+	        if (counter === 0) {
+	            stageEdit.removeStage(stage, pointObj.targetStructures[_i2].edge);
+	            var line = new createjs.Shape();
+	            line.graphics.setStrokeStyle(3).beginStroke("#000").moveTo(pointObj.targetStructures[_i2].parentNode.sprite.x, pointObj.targetStructures[_i2].parentNode.sprite.y).lineTo(pointObj.targetStructures[_i2].childNode.sprite.x, pointObj.targetStructures[_i2].childNode.sprite.y);
+	            pointObj.targetStructures[_i2].edge = line;
+	            stageEdit.stageEdge(pointObj.targetStructures[_i2], stage);
+	            if (pointObj.targetStructures[_i2].edgeInformation != null) {
+	                pointObj.targetStructures[_i2].edgeInformation.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                pointObj.targetStructures[_i2].edgeInformation.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
+	            }
+	            if (pointObj.targetStructures[_i2].parentNode.bracket != null || pointObj.targetStructures[_i2].childNode.bracket != null) {
+	                if (pointObj.targetStructures[_i2].parentNode.bracket != null) {
+	                    if (pointObj.targetStructures[_i2].parentNode.bracket.startBracket.structure === pointObj.targetStructures[_i2]) {
+	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
+	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape.x = pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.x + 10;
+	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape.y = pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.y + 40;
+	                    } else if (pointObj.targetStructures[_i2].parentNode.bracket.endBracket.structure === pointObj.targetStructures[_i2]) {
+	                        pointObj.targetStructures[_i2].parentNode.bracket.endBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                        pointObj.targetStructures[_i2].parentNode.bracket.endBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
+	                    }
+	                } else if (pointObj.targetStructures[_i2].childNode.bracket != null) {
+	                    if (pointObj.targetStructures[_i2].childNode.bracket.startBracket.structure === pointObj.targetStructures[_i2]) {
+	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
+	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape.x = pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.x + 10;
+	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape.y = pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.y + 40;
+	                    } else if (pointObj.targetStructures[_i2].childNode.bracket.endBracket.structure === pointObj.targetStructures[_i2]) {
+	                        pointObj.targetStructures[_i2].childNode.bracket.endBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                        pointObj.targetStructures[_i2].childNode.bracket.endBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
+	                    }
+	                }
+	            }
+	
+	            // if (pointObj.targetStructures[i].parentNode.bracket != null || pointObj.targetStructures[i].childNode.bracket != null) {
+	            //     if (pointObj.targetStructures[i].parentNode.bracket != null) {
+	            //         pointObj.targetStructures[i].parentNode.bracket.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	            //         pointObj.targetStructures[i].parentNode.bracket.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
+	            //         if(pointObj.targetStructures[i].parentNode.numberOfRepeatShape != null){
+	            //             pointObj.targetStructures[i].parentNode.numberOfRepeatShape.x = pointObj.targetStructures[i].parentNode.bracket.x + 10;
+	            //             pointObj.targetStructures[i].parentNode.numberOfRepeatShape.y = pointObj.targetStructures[i].parentNode.bracket.y + 40;
+	            //         }
+	            //     }
+	            //     else if(pointObj.targetStructures[i].childNode.bracket != null){
+	            //         pointObj.targetStructures[i].childNode.bracket.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	            //         pointObj.targetStructures[i].childNode.bracket.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 -30;
+	            //     }
+	            // }
+	            //
+	            // if(pointObj.targetStructures[i].parentNode.numberOfRepeatShape != null || pointObj.targetStructures[i].childNode.numberOfRepeatShape != null){
+	            //
+	            //     else if(pointObj.targetStructures[i].childNode.numberOfRepeatShape != null){
+	            //         pointObj.targetStructures[i].childNode.numberOfRepeatShape.x = pointObj.targetStructures[i].bracket.x + 10;
+	            //         pointObj.targetStructures[i].childNode.numberOfRepeatShape.y = pointObj.targetStructures[i].bracket.y + 40;
+	            //     }
+	            // }
+	            usedStructure.push(pointObj.targetStructures[_i2]);
+	            stageEdit.stageUpdate(stage);
+	        }
+	    }
+	}
+	
+	function selectedMoveStructureUp(moveStructureNodes) {
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        moveStructureNodes[i].returnShape(moveStructureNodes[i]);
+	    }
+	}
+	
+	exports.rectMove = rectMove;
+	exports.rectUp = rectUp;
+	exports.selectedStructureDelete = selectedStructureDelete;
+	exports.selectedMoveStructureDown = selectedMoveStructureDown;
+	exports.selectedMoveStructureMove = selectedMoveStructureMove;
+	exports.selectedMoveStructureUp = selectedMoveStructureUp;
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createIUPAC = undefined;
+	
+	var _edge_information_parser = __webpack_require__(34);
+	
+	var ANOMER = /a|b/;
+	var N_ACETYL_LOWWER = /nac/g;
+	var N_ACETYL_UPPER = "NAc";
+	
+	function createIUPAC(nodes, structures) {
+	    var textArea = document.getElementById("kcf_format");
+	    textArea.value = "";
+	    var IUPACFormat = [];
+	    var rootNode = nodes[0];
+	    for (var i = 0; i < structures.length; i++) {
+	        if (rootNode.xCood < structures[i].parentNode.xCood) {
+	            rootNode = structures[i].parentNode;
+	        }
+	    }
+	    var counter = rootNode.childNode.length - 1;
+	    IUPACFormat.push("?-");
+	    recursiveSearchStructure(rootNode, structures, IUPACFormat, counter);
+	    if (IUPACFormat[IUPACFormat.length - 1] === "(") {
+	        IUPACFormat.splice(IUPACFormat.length - 1, 1);
+	    }
+	    while (IUPACFormat.length != 0) {
+	        textArea.value += IUPACFormat.pop();
+	    }
+	    // for(let i = 0; i < IUPACFormat.length; i++){
+	    //     textArea.value += IUPACFormat[i];
+	    // }
+	}
+	
+	function recursiveSearchStructure(parentNode, structures, IUPACFormat, counter) {
+	    var name = parentNode.name.charAt(0).toUpperCase() + parentNode.name.slice(1);
+	    if (N_ACETYL_LOWWER.test(name)) {
+	        name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	    }
+	    IUPACFormat.push(name);
+	    var parentParsed = null;
+	    var childParsed = null;
+	    // counter = parentNode.childNode.length - 1;
+	    if (parentNode.childNode.length === 0) {
+	        if (counter != 0) {
+	            IUPACFormat.push("(");
+	        }
+	        return;
+	    }
+	    for (var i = 0; i < parentNode.childNode.length; i++) {
+	        if (parentNode.childNode.length > 1) {
+	            if (counter > 0) {
+	                IUPACFormat.push(")");
+	                counter--;
+	            }
+	        }
+	
+	        for (var j = 0; j < structures.length; j++) {
+	            if (parentNode === structures[j].parentNode && parentNode.childNode[i] === structures[j].childNode) {
+	                var parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[j]);
+	                parentParsed = parsedEdgeInformations[0];
+	                childParsed = parsedEdgeInformations[1];
+	                var anomerPosition = parentParsed.match(ANOMER);
+	                if (anomerPosition === null) {
+	                    anomerPosition = "?";
+	                }
+	                IUPACFormat.push(childParsed);
+	                IUPACFormat.push(anomerPosition);
+	                recursiveSearchStructure(parentNode.childNode[i], structures, IUPACFormat, parentNode.childNode[i].childNode.length - 1);
+	                break;
+	            }
+	        }
+	    }
+	}
+	exports.createIUPAC = createIUPAC;
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createRepeatBracket = undefined;
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _bracket = __webpack_require__(42);
+	
+	var _bracket2 = _interopRequireDefault(_bracket);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function createRepeatBracket(moveStructureNodes, structures, stage) {
+	    var bracketObj = new _bracket2.default();
+	    bracketObj.startBracket.numOfRepeatText = document.getElementById("repeatN").value;
+	    var n = new createjs.Text(bracketObj.startBracket.numOfRepeatText, "20px serif", (0, _monosaccharide_helper.getLineColor)("black"));
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        moveStructureNodes[i] = moveStructureNodes[i].parentNode;
+	    }
+	    var resultsFourCorner = searchFourCorner(moveStructureNodes);
+	    setBracket(resultsFourCorner, structures, bracketObj, n, stage);
+	    return bracketObj;
+	
+	    // let mostRightNode = moveStructureNodes[0].parentNode;
+	    // let mostLeftNode = moveStructureNodes[0].parentNode;
+	    // let childStructures = [];
+	    // let yDistance = -30;
+	    // let rightCounter = 0;
+	    // let bracketObj = new Braket();
+	    //
+	    // for(let i = 1; i < moveStructureNodes.length; i++){
+	    //     if(mostRightNode.xCood < moveStructureNodes[i].parentNode.xCood){
+	    //         mostRightNode = moveStructureNodes[i].parentNode;
+	    //     }
+	    //     if(mostLeftNode.xCood > moveStructureNodes[i].parentNode.xCood){
+	    //         mostLeftNode = moveStructureNodes[i].parentNode;
+	    //     }
+	    // }
+	    //
+	    // for(let i = 0; i < structures.length; i++){
+	    //     if(mostRightNode === structures[i].childNode){
+	    //         createRightBracket(mostRightNode, structures[i], yDistance, stage, bracketObj);
+	    //         rightCounter++;
+	    //     }
+	    //     if(mostLeftNode === structures[i].parentNode){
+	    //         childStructures.push(structures[i]);
+	    //     }
+	    // }
+	    //
+	    // if(rightCounter === 0){
+	    //     createRightBracket(mostRightNode, null, yDistance, stage, bracketObj);
+	    // }
+	    // if(childStructures.length === 0){
+	    //     createLeftBracket(mostLeftNode, null, yDistance, stage, bracketObj);
+	    // }
+	    //
+	    // let leftChildNode = childStructures[0].childNode;
+	    // for(let i = 1; i < childStructures.length; i++){
+	    //     if(leftChildNode.xCood > childStructures[i].childNode.xCood){
+	    //         leftChildNode = childStructures[i].childNode;
+	    //     }
+	    //     else if(leftChildNode.xCood === childStructures[i].childNode.xCood) {
+	    //         if (leftChildNode.yCood > childStructures[i].childNode.yCood) {
+	    //             leftChildNode = childStructures[i].childNode;
+	    //         }
+	    //
+	    //     }
+	    // }
+	    //
+	    // for(let i = 0; i < structures.length; i++){
+	    //     if(leftChildNode === structures[i].childNode && mostLeftNode === structures[i].parentNode){
+	    //         createLeftBracket(mostLeftNode, structures[i], yDistance, stage, bracketObj)
+	    //     }
+	    // }
+	    // for(let i = 0; i < moveStructureNodes.length; i++){
+	    //     bracketObj.repeatNodes.push(moveStructureNodes[i].parentNode);
+	    // }
+	    //
+	    // return bracketObj;
+	}
+	
+	function setBracket(fourCorner, structures, bracketObj, n, stage) {
+	    var counter = 0;
+	    var distance = 20;
+	    for (var i = 0; i < structures.length; i++) {
+	        if (fourCorner[1] === structures[i].childNode) {
+	            createStartBracket(fourCorner, structures[i], bracketObj, distance, stage);
+	            counter++;
+	            break;
+	        }
+	    }
+	    if (counter === 0) {
+	        createRootStartBracket(fourCorner, bracketObj, distance, stage);
+	    }
+	
+	    counter = 0;
+	
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (fourCorner[3] === structures[_i].parentNode) {
+	            createEndBracket(fourCorner, structures[_i], bracketObj, distance, stage);
+	            counter++;
+	            break;
+	        }
+	    }
+	    if (counter === 0) {
+	        createRootEndBracket(fourCorner, bracketObj, distance, stage);
+	    }
+	
+	    setRepeat(fourCorner, n, bracketObj.startBracket.structure, distance);
+	    bracketObj.startBracket.numOfRepeatShape = n;
+	    upStage(n, stage);
+	
+	    return bracketObj;
+	}
+	
+	function setRepeat(fourCorner, n, startBracketStructure, distance) {
+	    if (startBracketStructure === null) {
+	        n.x = fourCorner[1].xCood + distance;
+	        n.y = fourCorner[2].yCood - 5;
+	    }
+	    n.x = (startBracketStructure.edge.graphics._activeInstructions[0].x + startBracketStructure.edge.graphics._activeInstructions[1].x) / 2 + distance;
+	    n.y = fourCorner[2].yCood + distance - 5;
+	}
+	
+	function createEndBracket(fourCorner, structure, bracketObj, distance, stage) {
+	    bracketObj.endBracket.bracketShape = new createjs.Shape();
+	    bracketObj.endBracket.bracketShape.graphics.setStrokeStyle(5).beginStroke((0, _monosaccharide_helper.getLineColor)("black")).moveTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2 + distance, fourCorner[0].yCood - distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2, fourCorner[0].yCood - distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2, fourCorner[2].yCood + distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2 + distance, fourCorner[2].yCood + distance);
+	    bracketObj.endBracket.structure = structure;
+	    bracketObj.endBracket.node = fourCorner[3];
+	    fourCorner[3].bracket = bracketObj;
+	    upStage(bracketObj.endBracket.bracketShape, stage);
+	}
+	
+	function createRootEndBracket(fourCorner, bracketObj, distance, stage) {
+	    bracketObj.endBracket.bracketShape = new createjs.Shape();
+	    bracketObj.endBracket.bracketShape.graphics.setStrokeStyle(5).beginStroke((0, _monosaccharide_helper.getLineColor)("black")).moveTo(fourCorner[3].xCood, fourCorner[0].yCood - distance).lineTo(fourCorner[3].xCood - distance, fourCorner[0].yCood - distance).lineTo(fourCorner[3].xCood - distance, fourCorner[2].yCood + distance).lineTo(fourCorner[3].xCood, fourCorner[2].yCood + distance);
+	    bracketObj.endBracket.node = fourCorner[3];
+	    fourCorner[3].bracket = bracketObj;
+	    upStage(bracketObj.endBracket.bracketShape, stage);
+	}
+	
+	function createStartBracket(fourCorner, structure, bracketObj, distance, stage) {
+	    bracketObj.startBracket.bracketShape = new createjs.Shape();
+	    bracketObj.startBracket.bracketShape.graphics.setStrokeStyle(5).beginStroke((0, _monosaccharide_helper.getLineColor)("black")).moveTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2 - distance, fourCorner[0].yCood - distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2, fourCorner[0].yCood - distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2, fourCorner[2].yCood + distance).lineTo((structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2 - distance, fourCorner[2].yCood + distance);
+	    bracketObj.startBracket.structure = structure;
+	    bracketObj.startBracket.node = fourCorner[1];
+	    fourCorner[1].bracket = bracketObj;
+	    upStage(bracketObj.startBracket.bracketShape, stage);
+	}
+	
+	function createRootStartBracket(fourCorner, bracketObj, distance, stage) {
+	    bracketObj.startBracket.bracketShape = new createjs.Shape();
+	    bracketObj.startBracket.bracketShape.graphics.setStrokeStyle(5).beginStroke((0, _monosaccharide_helper.getLineColor)("black")).moveTo(fourCorner[1].xCood, fourCorner[0].yCood - distance).lineTo(fourCorner[1].xCood + distance, fourCorner[0].yCood - distance).lineTo(fourCorner[1].xCood + distance, fourCorner[2].yCood + distance).lineTo(fourCorner[1].xCood, fourCorner[2].yCood + distance);
+	    bracketObj.startBracket.node = fourCorner[1];
+	    fourCorner[1].bracket = bracketObj;
+	    upStage(bracketObj.startBracket.bracketShape, stage);
+	}
+	
+	function searchFourCorner(selectedNodes) {
+	    var mostRightNode = selectedNodes[0];
+	    var mostLeftNode = selectedNodes[0];
+	    var mostTopNode = selectedNodes[0];
+	    var mostBottomNode = selectedNodes[0];
+	
+	    for (var i = 1; i < selectedNodes.length; i++) {
+	        if (mostRightNode.xCood < selectedNodes[i].xCood) mostRightNode = selectedNodes[i];else if (mostLeftNode.xCood > selectedNodes[i].xCood) mostLeftNode = selectedNodes[i];
+	        if (mostTopNode.yCood > selectedNodes[i].yCood) mostTopNode = selectedNodes[i];else if (mostBottomNode.yCood < selectedNodes[i].yCood) mostBottomNode = selectedNodes[i];
+	    }
+	
+	    return [mostTopNode, mostRightNode, mostBottomNode, mostLeftNode];
+	}
+	
+	function createRightBracket(mostRightNode, structure, yDistance, stage, bracketObj) {
+	    //     let bracket = new createjs.Text("]", "50px serif", getLineColor("black"));
+	    //     if(structure === null){
+	    //         bracket.x = mostRightNode.xCood + 50;
+	    //         bracket.y = mostRightNode.yCood + yDistance;
+	    //     }
+	    //     else {
+	    //         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
+	    //         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
+	    //         bracketObj.startBracket.structure = structure;
+	    //         structure.bracket = true;
+	    //     }
+	    //     bracketObj.startBracket.bracketShape = bracket;
+	    //     mostRightNode.bracket = bracketObj;
+	    //     bracketObj.startBracket.node = mostRightNode;
+	    //     numberOfRepeat(bracket, mostRightNode, stage, bracketObj);
+	    //     upStage(bracket, stage);
+	    // }
+	    //
+	    // function createLeftBracket(mostLeftNode ,structure, yDistance, stage, bracketObj){
+	    //     let bracket = new createjs.Text("[", "50px serif", getLineColor("black"));
+	    //     if(structure === null){
+	    //         bracket.x = mostLeftNode.xCood - 50;
+	    //         bracket.y = mostLeftNode.yCood + yDistance;
+	    //     }
+	    //     else {
+	    //         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
+	    //         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
+	    //         bracketObj.endBracket.structure = structure;
+	    //         structure.bracket = true;
+	    //     }
+	    //     bracketObj.endBracket.bracketShape = bracket;
+	    //     mostLeftNode.bracket = bracketObj;
+	    //     bracketObj.endBracket.node = mostLeftNode;
+	    //     upStage(bracket, stage);
+	
+	}
+	
+	function numberOfRepeat(bracket, mostRightNode, stage, bracketObj) {
+	    // let xDistance = 10;
+	    // let yDistance = 40;
+	    // let n = document.getElementById("repeatN").value;
+	    // let repeat = new createjs.Text(n, "20px serif", getLineColor("black"));
+	    // repeat.x = bracket.x + xDistance;
+	    // repeat.y = bracket.y + yDistance;
+	    // bracketObj.startBracket.numOfRepeatShape = repeat;
+	    // bracketObj.startBracket.numOfRepeatText = n;
+	    // upStage(repeat, stage);
+	}
+	
+	function upStage(bracket, stage) {
+	    stageEdit.setStage(stage, bracket);
+	    stageEdit.stageUpdate(stage);
+	}
+	
+	exports.createRepeatBracket = createRepeatBracket;
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Bracket = function Bracket() {
+	    _classCallCheck(this, Bracket);
+	
+	    this.startBracket = {
+	        bracketShape: null,
+	        structure: null,
+	        numOfRepeatShape: null,
+	        numOfRepeatText: null,
+	        node: null
+	    };
+	    this.endBracket = {
+	        bracketShape: null,
+	        structure: null,
+	        node: null
+	    };
+	    this.repeatNodes = [];
+	};
+	
+	module.exports = Bracket;
 
 /***/ }
 /******/ ]);

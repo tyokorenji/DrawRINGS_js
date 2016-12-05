@@ -1,4 +1,4 @@
-ENTRY       Blood_Group_H_Antigen
+ENTRY       Blood_Group_H_Antigen       Glycan
 NODE        2
             1     gal     17.0     6.0
             2     fuc     9.0     6.0

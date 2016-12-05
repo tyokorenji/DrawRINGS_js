@@ -2,12 +2,16 @@
 
 import Node from '../node';
 import Structure from '../structure';
+import * as stageEdit from './edit_stage';
+import * as createjs from '../../../bower_components/EaselJS';
+import { setCoordinate }  from './set_coordinate';
+
 
 class KCFParser {
     constructor(text) {
         this.text = text;
     }
-    parse() {
+    parse(canvas, stage) {
         let lines = removeNullLines(generateLines(this.text));
 
         if (checkSyntax(lines) === false) {
@@ -16,9 +20,11 @@ class KCFParser {
         }
 
         let result = analyzeLines(lines);
+
+        return connectStructures(result[0], result[1], canvas, stage);
         //return result;
 
-        DrawKCF(this.text);
+        // DrawKCF(this.text);
     }
 }
 
@@ -140,7 +146,15 @@ function analyzeLines(lines) {
     }
     return structures;
     */
-    return edgesObj;
+    let nodesAry = [];
+    let edgesAry = [];
+    for(let i = 0; i < Object.keys(nodesObj).length; i++){
+        nodesAry.push(nodesObj[Object.keys(nodesObj)[i]]);
+    }
+    for(let i = 0; i < Object.keys(edgesObj).length; i++){
+        edgesAry.push(edgesObj[Object.keys(edgesObj)[i]]);
+    }
+    return [nodesAry, edgesAry];
 }
 
 function parseNodes(lines) {
@@ -155,11 +169,14 @@ function parseNodes(lines) {
 
         let id = tokens[0];
         let name = tokens[1];
+        let xCood = tokens[2];
+        let yCood = tokens[3];
         if (nodesObj[id] !== undefined) {
             return null;
         }
         // TODO: Node の constructor 側で name から Sugar/Modification の判定を行っておく.
-        nodesObj[id] = new Node(id, name);
+        // name = name.toLowerCase();
+        nodesObj[id] = new Node(id, name, xCood, yCood);
     }
     return nodesObj;
 }
@@ -186,7 +203,7 @@ function parseEdges(lines, nodesObj) {
         let parent = genObj.parent;
         let edgeInfo = genObj.edgeInfo;
 
-        edgesObj[id] = new Structure(id, child, parent, edgeInfo);
+        edgesObj[id] = new Structure(id, parent, child, edgeInfo);
     }
     return edgesObj;
 }
@@ -255,72 +272,60 @@ function generateConnection(lToken, rToken, nodesObj) {
 
 
 
-function connectStructures(nodes, edges) {
+function connectStructures(nodes, edges, canvas, stage) {
+    setCoordinate(nodes, edges, canvas);
+    upStage(edges, stage);
+    for(let i = 0; i < nodes.length; i++){
+        nodes[i].sprite.parentNode = nodes[i];
+    }
+    return [nodes, edges]
+
 
 }
 
-function DrawKCF(KCFtext) {
-    let text = KCFtext.replace(/\s/g, "space");
-    let splitKCFs = text.split("space");
-    // if(mode === 4){
-    //     splitKCFs =
-    // }
-    let DrawKCFNodeObject = function(number, monosaccharide, x, y){
-        this.nodeNumber = number;
-        this.monosaccharide = monosaccharide;
-        this.paramX = x;
-        this.paramY = y;
-    }
-    let DrawKCFEdgeObject = function(anomer, childId, childLinkagePosition, parentId, parentLinkagePosition){
-        this.anomer = anomer;
-        this.childId = childId;
-        this.childLinkagePsition = childLinkagePosition;
-        this.parentId = parentId;
-        this.parentLinkagePosition = parentLinkagePosition;
-    }
-    let DrawKCFNodeObjects = new Array();
-    let DrawKCFNodeObjectsKey = 0;
-    let DrawKCFEdgeObjects = new Array;
-    let DrawKCFEdgeObjectKey = 0;
-    let i;
-    for(i = 0; i < splitKCFs.length; i++){
-        if(splitKCFs[i] === ""){
-            splitKCFs.splice(i,1);
-            i--;
-        }
-    }
-    if(splitKCFs[0] != "ENTRY"){
-        alert("please write KCF format.\n for exsample \" ENTRY    Glycan...\"");
-        return;
-    }
-    else if(splitKCFs[2] != "NODE"){
-        return;
-    }
-    else{
-        for(i = 4; i < splitKCFs.length; i = i + 4) {
-            if(splitKCFs[i] === "EDGE"){
-                break;
-            }
-            else {
-                let DrawKCFNode = new DrawKCFNodeObject(splitKCFs[i],splitKCFs[i + 1], splitKCFs[i + 2], splitKCFs[i + 3]);
-                DrawKCFNodeObjects[DrawKCFNodeObjectsKey] = DrawKCFNode;
-                DrawKCFNodeObjectsKey++;
-            }
-        }
-        i = i + 2;
-        for( i; i < splitKCFs.length; i = i + 3 ){
-            if(splitKCFs[i] === SLASH){
-                break;
-            }
-            let childNodeInformations = splitKCFs[i+1].split("");
-            let parentNodeInformations = splitKCFs[i+2].split("");
-            let DrawKCFEdge = new DrawKCFEdgeObject(childNodeInformations[2], childNodeInformations[0], childNodeInformations[3], parentNodeInformations[0], parentNodeInformations[2]);
-            DrawKCFEdgeObjects[DrawKCFEdgeObjectKey] = DrawKCFEdge;
-            DrawKCFEdgeObjectKey++;
-        }
-    }
-    buildGlycan(DrawKCFNodeObjects, DrawKCFEdgeObjects);
-    console.log(splitKCFs);
-};
 
-export { KCFParser };
+function upStage(edges, stage){
+    let line = null;
+    let text = null;
+    let addedNodes = [];
+    let parentCounter = 0;
+    let childCounter = 0;
+    for(let i = 0; i < edges.length; i++){
+        line = new createjs.Shape();
+        line.graphics.setStrokeStyle(3)
+            .beginStroke("#000")
+            .moveTo(edges[i].parentNode.xCood, edges[i].parentNode.yCood)
+            .lineTo(edges[i].childNode.xCood, edges[i].childNode.yCood);
+        edges[i].edge = line;
+        for(let j = 0; j < addedNodes.length; j++) {
+            if (addedNodes[j] === edges[i].parentNode) {
+                parentCounter++;
+            }
+            else if(addedNodes[j] === edges[i].childNode){
+                childCounter++;
+            }
+        }
+        if(parentCounter === 0) {
+            edges[i].parentNode.sprite = edges[i].parentNode.sprite.nodeDraw(edges[i].parentNode.name, edges[i].parentNode.xCood, edges[i].parentNode.yCood, stage);
+            addedNodes.push(edges[i].parentNode);
+        }
+        if(childCounter === 0) {
+            edges[i].childNode.sprite = edges[i].childNode.sprite.nodeDraw(edges[i].childNode.name, edges[i].childNode.xCood, edges[i].childNode.yCood, stage);
+            addedNodes.push(edges[i].childNode);
+        }
+        stageEdit.stageEdge(edges[i], stage);
+        text = new createjs.Text(edges[i].edgeInformationText, "12px serif", "rgb(255,0,0)");
+        text.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+        text.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
+        edges[i].edgeInformation = text;
+        stageEdit.setStage(stage, text);
+        stageEdit.stageUpdate(stage);
+        parentCounter = 0;
+        childCounter = 0;
+        // addedNodes.push(edges[i].childNode);
+    }
+}
+
+
+
+export { KCFParser, connectStructures };

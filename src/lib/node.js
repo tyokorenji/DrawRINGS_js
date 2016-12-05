@@ -1,30 +1,34 @@
-import * as createjs from 'EaselJS';
+"use strict";
 
-class Node extends createjs.Shape {
-    constructor(nodeId, nodeName) {
-        super();
-        this.param = {
-            id: nodeId,
-            monosaccharide: nodeName,
-            sortParamX: 0,
-            sortParamY: 0,
-            otherNodeNameText: null
-        };
+import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR, MONOSACCHARIDES } from './util/monosaccharide_helper';
+import Sugar from './sugar';
+import Modification from './Modification';
+
+
+class Node{
+    constructor(id, name, xCood, yCood){
+        this.id = id;
+        this.sprite = nodeClass(name);
+        this.name = name;
+        this.xCood = xCood;
+        this.yCood = yCood;
+        this.childNode = [];
+        this.bracket = null;
     }
 }
 
-export default createjs.promote(Node, "Shape");
-
-/*
-var Node = function Node(nodeId, nodeName) {
-    this.Shape_constructor();
-    this.param = {
-        id: nodeId,
-        monosaccharide: nodeName,
-        sortParamX: 0,
-        sortParamY: 0,
-    };
+function nodeClass(name){
+    "use strict";
+    let MONOSACCHRIDESKeys = Object.keys(MONOSACCHARIDES);
+    for(let i=0; i < MONOSACCHRIDESKeys.length; i++){
+        for(let j=0; j <= 10; j++){
+            if(MONOSACCHARIDES[ MONOSACCHRIDESKeys[i] ][j] === name.toLowerCase()){
+                let shape = new Sugar(name);
+                return shape;
+            }
+        }
+    }
+    return new Modification(name);
 }
-createjs.extend(Node, createjs.Shape);
-createjs.promote(Node, "Shape");
-*/
+
+module.exports =  Node;
