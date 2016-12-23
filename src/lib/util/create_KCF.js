@@ -1,5 +1,7 @@
 "use strict";
 
+import { createRepeatBracket, setBracket, searchFourCorner } from './create_bracket';
+
 const TAB = "    ";
 const NEW_LINE = "\n";
 const COLON = ":";
@@ -10,7 +12,7 @@ const WAVE = "~";
 
 const SEPERATOR = new RegExp("-");
 
-function createKCF(mode, nodes, structures, kindRunQuery, database, scoreMatrix){
+function createKCF(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix){
     if(nodes.length < 1){
         alert("Please build glycan.");
         return;
@@ -46,7 +48,22 @@ function createKCF(mode, nodes, structures, kindRunQuery, database, scoreMatrix)
         if(mode === 9) edgeFormat.push(URL_TAB + structures[i].structureId + "" + URL_TAB + structures[i].childNode.id + "" + ":" + childEdge + URL_TAB + structures[i].parentNode.id + "" + ":" + parentEdge + URL_NEW_LINE);
     }
 
-    KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode);
+    let bracketFormat = [];
+    if(brackets.length != 0){
+        for(let i = 0; i < brackets.length; i++){
+            let resultsFourCorner = searchFourCorner(brackets[i].repeatNodes);
+            let id = i + 1;
+            let relativeCoodLeftX = parseInt(resultsFourCorner[3].xCood) - parseInt(rootNode.xCood);
+            let relativeCoodRightX = parseInt(resultsFourCorner[1].xCood) - parseInt(rootNode.xCood);
+            let relativeCoodTopY = parseInt(resultsFourCorner[0].yCood) - parseInt(rootNode.yCood);
+            let relativeCoodBottomY = parseInt(resultsFourCorner[2].yCood) - parseInt(rootNode.yCood);
+            bracketFormat.push(TAB + id + "" + TAB +  relativeCoodLeftX + "" + TAB + relativeCoodTopY + "" + TAB + relativeCoodLeftX + "" + TAB + relativeCoodBottomY + "" + NEW_LINE
+                + TAB + id + "" + TAB + relativeCoodRightX + "" + TAB + relativeCoodBottomY + "" + TAB + relativeCoodRightX + "" + TAB + relativeCoodTopY + "" + NEW_LINE
+                + TAB + id + "" + TAB + brackets[i].startBracket.numOfRepeatText + NEW_LINE);
+        }
+    }
+
+    KCFOut(nodeFormat, edgeFormat, bracketFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode);
 }
 
 function recursiveSetNode(parentNode, rootNode, nodeFormat, mode){
@@ -65,14 +82,16 @@ function nodePush(childNode, rootNode, nodeFormat, mode){
     return nodeFormat;
 }
 
-function KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode){
+function KCFOut(nodeFormat, edgeFormat, bracketFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode){
     let textArea = document.getElementById("kcf_format");
     let str;
     let str2;
+    let str3 = "";
     let url;
     if(mode === 8){
         str = "ENTRY"+ TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + nodes.length + NEW_LINE;
         str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
+
     }
     else if(mode === 9){
         let date = new Date();
@@ -89,8 +108,16 @@ function KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, databas
         str2 += edgeFormat[i];
     }
 
+    if(bracketFormat.length != 0){
+        str3 =  "BRACKET";
+        for(let i = 0; i < bracketFormat.length; i++){
+            str3 += bracketFormat[i];
+        }
+    }
+
+
     if(mode === 8) {
-        textArea.value = str + str2 + SLASH;
+        textArea.value = str + str2 +  str3 + SLASH;
     }
     else if(mode === 9) {
         let runQueryUrl = url + str + str2 + SLASH + WAVE + scoreMatrix.value + WAVE;

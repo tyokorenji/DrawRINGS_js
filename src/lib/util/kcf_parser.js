@@ -5,6 +5,9 @@ import Structure from '../structure';
 import * as stageEdit from './edit_stage';
 import * as createjs from '../../../bower_components/EaselJS';
 import { setCoordinate }  from './set_coordinate';
+import Bracket from './bracket';
+import { createRepeatBracket, setBracket, searchFourCorner} from './create_bracket';
+import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR } from './monosaccharide_helper';
 
 
 class KCFParser {
@@ -20,11 +23,25 @@ class KCFParser {
         }
 
         let result = analyzeLines(lines);
+        let brackets = [];
+        if(result[2].length != 0) {
+            brackets = analyzeBrackets(result[0], result[2]);
+        }
 
-        return connectStructures(result[0], result[1], canvas, stage);
+        return connectStructures(result[0], result[1], brackets, canvas, stage);
         //return result;
 
         // DrawKCF(this.text);
+    }
+}
+
+class parsedBrackets {
+    constructor(top_left, bottom_left, bottom_right, top_right, nText){
+        this.top_left = top_left;
+        this.bottom_left = bottom_left;
+        this.bottom_right = bottom_right;
+        this.top_right = top_right;
+        this.nText = nText;
     }
 }
 
@@ -35,6 +52,7 @@ const FLAGS = {
 
     NODE_FLAG: /^NODE/i,
     EDGE_FLAG: /^EDGE/i,
+    BRACKET_FLAG: /^BRACKET/i,
     TERMINAL_FLAG: /^\/\/\/$/
 };
 const SPACE_SEPARATOR = /\s+/;
@@ -116,6 +134,7 @@ function checkSyntax(lines) {
 function analyzeLines(lines) {
     let nodeLines = [];
     let edgeLines = [];
+    let bracketLines = [];
 
     for (let i=0; i<lines.length; i++) {
         let line = lines[i];
@@ -134,11 +153,26 @@ function analyzeLines(lines) {
                 edgeLines.push(lines[i + j + 1]);
             }
             i += edgeSize;
-
+        } else if(FLAGS.BRACKET_FLAG.test(line)){
+            for(let j = i; ;j++){
+                line = lines[j];
+                if(FLAGS.TERMINAL_FLAG.test(line)){
+                    i = j - 1;
+                    break;
+                }
+                else {
+                    bracketLines.push(line);
+                }
+            }
         }
+
     }
     let nodesObj = parseNodes(nodeLines);
     let edgesObj = parseEdges(edgeLines, nodesObj);
+    let bracketObj = {};
+    if(bracketLines.length != 0) {
+        bracketObj = parseBracket(bracketLines);
+    }
     /*
     let structures = null;
     if (nodes && edges) {
@@ -148,13 +182,19 @@ function analyzeLines(lines) {
     */
     let nodesAry = [];
     let edgesAry = [];
+    let bracketAry = [];
     for(let i = 0; i < Object.keys(nodesObj).length; i++){
         nodesAry.push(nodesObj[Object.keys(nodesObj)[i]]);
     }
     for(let i = 0; i < Object.keys(edgesObj).length; i++){
         edgesAry.push(edgesObj[Object.keys(edgesObj)[i]]);
     }
-    return [nodesAry, edgesAry];
+    if(bracketObj != null) {
+        for (let i = 0; i < Object.keys(bracketObj).length; i++) {
+            bracketAry.push(bracketObj[Object.keys(bracketObj)[i]]);
+        }
+    }
+    return [nodesAry, edgesAry, bracketAry];
 }
 
 function parseNodes(lines) {
@@ -206,6 +246,54 @@ function parseEdges(lines, nodesObj) {
         edgesObj[id] = new Structure(id, parent, child, edgeInfo);
     }
     return edgesObj;
+}
+
+function parseBracket(lines){
+    let bracketObj = {};
+    for(let i = 0; i < lines.length; i++){
+        let line = lines[i];
+        let line2 = lines[i+1];
+        let line3 = lines[i+2];
+        let tokens = line.split(SPACE_SEPARATOR);
+        let tokens2 = line2.split(SPACE_SEPARATOR);
+        let tokens3 = line3.split(SPACE_SEPARATOR);
+        if(i === 0){
+            tokens.splice(0, 1);
+        }
+        tokens2.splice(0, 1);
+        tokens3.splice(0, 1);
+        let id = tokens[0];
+        let top_left = [parseInt(tokens[1]), parseInt(tokens[2])];
+        let bottom_left = [parseInt(tokens[3]), parseInt(tokens[4])];
+        let bottom_right = [parseInt(tokens2[0]), parseInt(tokens2[1])];
+        let top_right = [parseInt(tokens2[2]), parseInt(tokens2[3])];
+        let nText = tokens3[0];
+
+        bracketObj[id] = new parsedBrackets(top_left, bottom_left, bottom_right, top_right, nText);
+        i = i + 2;
+    }
+    return bracketObj;
+}
+
+function analyzeBrackets(nodes, parseBrackets){
+    let brackets = [];
+    for(let i = 0; i < nodes.length; i++){
+        nodes[i].xCood = parseInt(nodes[i].xCood);
+        nodes[i].yCood = parseInt(nodes[i].yCood);
+    }
+    for(let i = 0; i < parseBrackets.length; i++) {
+        let bracketsObj = new Bracket();
+        bracketsObj.startBracket.numOfRepeatText = parseBrackets[i].nText;
+        for (let j = 0; j < nodes.length; j++) {
+            let targetBracket = parseBrackets[i];
+            if(targetBracket.top_left[0] <= nodes[j].xCood && targetBracket.top_left[1] <= nodes[j].yCood &&
+                targetBracket.bottom_right[0] >= nodes[j].xCood && targetBracket.bottom_right[1] >= nodes[j].yCood){
+                    bracketsObj.repeatNodes.push(nodes[j]);
+            }
+        }
+        brackets.push(bracketsObj);
+    }
+    return brackets;
 }
 
 
@@ -272,19 +360,19 @@ function generateConnection(lToken, rToken, nodesObj) {
 
 
 
-function connectStructures(nodes, edges, canvas, stage) {
+function connectStructures(nodes, edges, brackets, canvas, stage) {
     setCoordinate(nodes, edges, canvas);
-    upStage(edges, stage);
+    upStage(edges, brackets, stage);
     for(let i = 0; i < nodes.length; i++){
         nodes[i].sprite.parentNode = nodes[i];
     }
-    return [nodes, edges]
+    return [nodes, edges, brackets]
 
 
 }
 
 
-function upStage(edges, stage){
+function upStage(edges, brackets, stage){
     let line = null;
     let text = null;
     let addedNodes = [];
@@ -323,6 +411,11 @@ function upStage(edges, stage){
         parentCounter = 0;
         childCounter = 0;
         // addedNodes.push(edges[i].childNode);
+    }
+    for(let i = 0; i < brackets.length; i++) {
+        let resultsFourCorner = searchFourCorner(brackets[i].repeatNodes);
+        let n = new createjs.Text(brackets[i].startBracket.numOfRepeatText, "20px serif", getLineColor("black"));
+        setBracket(resultsFourCorner, edges, brackets[i], n, stage);
     }
 }
 

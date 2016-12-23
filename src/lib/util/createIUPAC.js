@@ -1,74 +1,301 @@
 "use strict";
 
 import { edgeInformationParser } from './edge_information_parser';
+import { createRepeatBracket, setBracket ,searchFourCorner } from './create_bracket';
+import Modification from '../Modification';
+import Sugar from '../sugar';
 
 const ANOMER = /a|b/;
 const N_ACETYL_LOWWER = /nac/g;
 const N_ACETYL_UPPER = "NAc";
+const DOUBLE_SLASH = "//";
+const SPACE_SEPARATOR = /\s+/;
+const UNKNOWN = "?";
 
-function createIUPAC(nodes, structures) {
+function createIUPAC(nodes, structures, brackets) {
     let textArea = document.getElementById("kcf_format");
     textArea.value = "";
     let IUPACFormat = [];
     let rootNode = nodes[0];
+    let usedNodes = [];
+    let rootBracket = 0;
+    let bracket = null;
+    for(let i = 0; i < brackets.length; i++){
+        parsedBracket(brackets[i]);
+    }
     for(let i = 0; i < structures.length; i++) {
         if (rootNode.xCood < structures[i].parentNode.xCood) {
             rootNode = structures[i].parentNode;
         }
     }
-    let counter = rootNode.childNode.length - 1;
-    IUPACFormat.push("?-");
-    recursiveSearchStructure(rootNode, structures, IUPACFormat, counter);
-    if(IUPACFormat[IUPACFormat.length - 1] === "("){
-        IUPACFormat.splice(IUPACFormat.length - 1,1);
+    let counter = 0;
+    for(let i = 0; i < brackets.length; i++){
+        bracket = brackets[i];
+        for(let j = 0; j < bracket.repeatSugar.length; j++){
+            if(rootNode === bracket.repeatSugar[j]){
+                setStartBracket(IUPACFormat, bracket);
+                rootBracket++;
+            }
+        }
     }
-    while(IUPACFormat.length != 0){
-        textArea.value += IUPACFormat.pop()
+    IUPACFormat.push("(?1-");
+    let childModification = [];
+    for(let i = 0; i < rootNode.childNode.length; i++){
+        if (rootNode.childNode[i].sprite.constructor === Modification){
+            childModification.push(rootNode.childNode[i]);
+        }
     }
-    // for(let i = 0; i < IUPACFormat.length; i++){
-    //     textArea.value += IUPACFormat[i];
-    // }
-
-}
-
-function recursiveSearchStructure(parentNode, structures, IUPACFormat, counter){
-    let name = parentNode.name.charAt(0).toUpperCase() + parentNode.name.slice(1);
+    for(let i = 0; i < childModification.length; i++){
+        for(let j = 0; j < structures.length; j++){
+            if(rootNode === structures[j].parentNode && childModification[i] === structures[j].childNode){
+                let parsedEdgeInformations = edgeInformationParser(structures[j]);
+                let childParsed = parsedEdgeInformations[1];
+                let name = childModification[i].name.charAt(0).toUpperCase() + childModification[i].name.slice(1);
+                if(N_ACETYL_LOWWER.test(name)){
+                    name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+                }
+                IUPACFormat.push(name);
+                IUPACFormat.push(childParsed);
+            }
+        }
+    }
+    let name = rootNode.name.charAt(0).toUpperCase() + rootNode.name.slice(1);
     if(N_ACETYL_LOWWER.test(name)){
         name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
     }
     IUPACFormat.push(name);
-    let parentParsed = null;
-    let childParsed = null;
-    // counter = parentNode.childNode.length - 1;
-    if(parentNode.childNode.length === 0){
-        if(counter != 0){
-            IUPACFormat.push("(");
-        }
-        return;
+    usedNodes.push(rootNode);
+    if(rootBracket != 0){
+        counter = setRecursiveRepeat(bracket, IUPACFormat, structures, counter, rootNode, "?", usedNodes);
+        rootBracket = null;
     }
-    for(let i = 0; i < parentNode.childNode.length; i++){
-        if(parentNode.childNode.length > 1){
-            if(counter > 0) {
-                IUPACFormat.push(")");
-                counter--;
+    // let parentNode = null;
+    // for(let i = 0; i < usedNodes.length; i++){
+    //     if(rootNode === usedNodes[i]){
+    //
+    //     }
+    // }
+    recursiveSearchStructure(rootNode, structures, brackets, IUPACFormat, counter, usedNodes);
+    // if(IUPACFormat[IUPACFormat.length - 1] === "["){
+    //     IUPACFormat.splice(IUPACFormat.length - 1,1);
+    // }
+    while(IUPACFormat.length != 0){
+        textArea.value += IUPACFormat.pop();
+    }
+}
+
+function setRecursiveRepeat(bracket, IUPACFormat, structures, counter, parentNode, repeatHed, usedNodes){
+    let childSugars = [];
+    let childSugar = null;
+    let check = 0;
+    let childNodeModification = [];
+    if(bracket.repeatSugar[bracket.repeatSugar.length - 1] === parentNode){
+        setEndBracket(IUPACFormat, repeatHed);
+        return counter;
+    }
+    else {
+        for(let i = 0; i < parentNode.childNode.length; i++) {
+            if (parentNode.childNode[i].sprite.constructor === Sugar) {
+                childSugars.push(parentNode.childNode[i]);
             }
         }
+        let branchCounter = childSugars.length;
 
-        for(let j = 0; j < structures.length; j++){
-            if(parentNode === structures[j].parentNode && parentNode.childNode[i] === structures[j].childNode){
-                let parsedEdgeInformations = edgeInformationParser(structures[j]);
-                parentParsed = parsedEdgeInformations[0];
-                childParsed = parsedEdgeInformations[1];
-                let anomerPosition = parentParsed.match(ANOMER);
-                if(anomerPosition === null){
-                    anomerPosition = "?";
-                }
-                IUPACFormat.push(childParsed);
-                IUPACFormat.push(anomerPosition);
-                recursiveSearchStructure(parentNode.childNode[i], structures, IUPACFormat, parentNode.childNode[i].childNode.length - 1);
-                break;
+        for (let i = 0; i < childSugars.length; i++) {
+            if (branchCounter >= 2) {
+                IUPACFormat.push("]");
+                branchCounter--;
+                counter++;
             }
+           for(let j = 0; j < bracket.repeatSugar.length; j++){
+               if(childSugars[i] === bracket.repeatSugar[j]){
+                   childSugar = childSugars[i];
+                   check++;
+               }
+           }
+           if(check === 0){
+               continue;
+           }
+            for(let j = 0; j < structures.length; j++){
+                if(parentNode === structures[j].parentNode && childSugar === structures[j].childNode){
+                    let parsedEdgeInformations = edgeInformationParser(structures[j]);
+                    let parentParsed = parsedEdgeInformations[0];
+                    let childParsed = parsedEdgeInformations[1];
+                    let anomerPosition = parentParsed.match(ANOMER);
+
+                    IUPACFormat.push(")");
+                    IUPACFormat.push(childParsed);
+
+                    IUPACFormat.push("-");
+                    if(anomerPosition === null){
+                        IUPACFormat.push(parentParsed);
+                        IUPACFormat.push(UNKNOWN);
+                    }
+                    else {
+                        IUPACFormat.push(parentParsed);
+                    }
+                    IUPACFormat.push("(");
+                }
+            }
+            for(let j = 0; j < childSugar.childNode.length; j++){
+                if(childSugar.childNode[j].sprite.constructor === Modification){
+                    childNodeModification.push(childSugar.childNode[j]);
+                }
+            }
+            for(let j = 0; j < childNodeModification.length; j++){
+                for(let l = 0; l < structures.length; l++){
+                    if(childSugar === structures[l].parentNode && childNodeModification[j] === structures[l].childNode){
+                        let parsedEdgeInformations = edgeInformationParser(structures[l]);
+                        let childParsed = parsedEdgeInformations[1];
+                        let name = childNodeModification[j].name.charAt(0).toUpperCase() + childNodeModification[j].name.slice(1);
+                        if(N_ACETYL_LOWWER.test(name)){
+                            name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+                        }
+                        IUPACFormat.push(name);
+                        IUPACFormat.push(childParsed);
+                    }
+                }
+            }
+            let name = childSugar.name.charAt(0).toUpperCase() + childSugar.name.slice(1);
+            if(N_ACETYL_LOWWER.test(name)){
+                name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+            }
+            IUPACFormat.push(name);
+            usedNodes.push(childSugar);
+            counter = setRecursiveRepeat(bracket, IUPACFormat, structures, counter, childSugar, repeatHed, usedNodes);
+            check++;
+        }
+        if(childSugars.length === 0){
+            if(counter > 0){
+                IUPACFormat.push("[");
+                counter--;
+                return counter;
+            }
+        }
+    }
+
+}
+
+function recursiveSearchStructure(parentNode, structures, brackets, IUPACFormat, counter, usedNodes){
+    let childSugars = [];
+    let childNodeModification = [];
+    let check = 0;
+    let bracketCounter = 0;
+    let bracketHeader = 0;
+    let spareBox = null;
+    let repeatHed = "";
+    let bracket = null;
+    for(let i = 0; i < parentNode.childNode.length; i++){
+        if(parentNode.childNode[i].sprite.constructor === Sugar){
+            childSugars.push(parentNode.childNode[i]);
+        }
+    }
+    let branchCounter = childSugars.length;
+
+    for(let i = 0; i < childSugars.length; i++){
+        if(branchCounter >= 2){
+            IUPACFormat.push("]");
+            branchCounter--;
+            counter++;
+        }
+        let childSugar = childSugars[i];
+        for(let j = 0; j < usedNodes.length; j++){
+            if(childSugar === usedNodes[j]){
+                check++;
+            }
+        }
+        if(check != 0){
+            check = 0;
+            continue;
+        }
+        // for(let j = 0; j < brackets.length; j++){
+        //     bracket = brackets[i];
+        //     if(childSugar === bracket.repeatSugar[0]){
+        //         setStartBracket(IUPACFormat, bracket);
+        //         bracketCounter++;
+        //         bracketHeader++;
+        //     }
+        // }
+        for(let j = 0; j < structures.length; j++){
+            if(parentNode === structures[j].parentNode && childSugar === structures[j].childNode){
+                let parsedEdgeInformations = edgeInformationParser(structures[j]);
+                let parentParsed = parsedEdgeInformations[0];
+                let childParsed = parsedEdgeInformations[1];
+                let anomerPosition = parentParsed.match(ANOMER);
+
+                IUPACFormat.push(")");
+                IUPACFormat.push(childParsed);
+
+                IUPACFormat.push("-");
+                if(anomerPosition === null){
+                    IUPACFormat.push(parentParsed);
+                    IUPACFormat.push(UNKNOWN);
+                }
+                else {
+                    IUPACFormat.push(parentParsed);
+                }
+                IUPACFormat.push("(");
+            }
+        }
+        for(let j = 0; j < childSugar.childNode.length; j++){
+            if(childSugar.childNode[j].sprite.constructor === Modification){
+                childNodeModification.push(childSugar.childNode[j]);
+            }
+        }
+        for(let j = 0; j < childNodeModification.length; j++){
+            for(let l = 0; l < structures.length; l++){
+                if(childSugar === structures[l].parentNode && childNodeModification[j] === structures[l].childNode){
+                    let parsedEdgeInformations = edgeInformationParser(structures[l]);
+                    let childParsed = parsedEdgeInformations[1];
+                    let name = childNodeModification[j].name.charAt(0).toUpperCase() + childNodeModification[j].name.slice(1);
+                    if(N_ACETYL_LOWWER.test(name)){
+                        name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+                    }
+                    IUPACFormat.push(name);
+                    IUPACFormat.push(childParsed);
+                }
+            }
+        }
+        let name = childSugar.name.charAt(0).toUpperCase() + childSugar.name.slice(1);
+        if(N_ACETYL_LOWWER.test(name)){
+            name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+        }
+        IUPACFormat.push(name);
+
+        counter = recursiveSearchStructure(childSugar, structures, brackets, IUPACFormat, counter, usedNodes);
+    }
+    if(childSugars.length === 0){
+        if(counter > 0){
+            IUPACFormat.push("[");
+            counter--;
+            return counter;
+        }
+    }
+    // else {
+    //     counter = recursiveSearchStructure(childSugar, structures, brackets, IUPACFormat, counter, usedNodes);
+    // }
+}
+
+function parsedBracket(bracket){
+    for(let i = 0; i < bracket.repeatNodes.length; i++){
+        if(bracket.repeatNodes[i].sprite.constructor === Sugar){
+            bracket.repeatSugar.push(bracket.repeatNodes[i]);
+        }
+        else {
+            bracket.repeatModification.push(bracket.repeatNodes[i]);
         }
     }
 }
+
+function setStartBracket(IUPACFormat, bracket){
+    IUPACFormat.push(bracket.startBracket.numOfRepeatText);
+    IUPACFormat.push("]");
+}
+
+function setEndBracket(IUPACFormat, childEdge){
+    IUPACFormat.push(")");
+    IUPACFormat.push(childEdge);
+    IUPACFormat.push("[");
+}
+
 export { createIUPAC };

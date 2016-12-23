@@ -15,64 +15,36 @@ function createRepeatBracket(moveStructureNodes, structures, stage){
     }
     let resultsFourCorner = searchFourCorner(moveStructureNodes);
     setBracket(resultsFourCorner, structures, bracketObj, n, stage);
+    for(let i = 0; i < moveStructureNodes.length; i++){
+        bracketObj.repeatNodes.push(moveStructureNodes[i]);
+    }
+    let rootNode = searchRootNode(structures);
+    let repeatKey = [];
+    sortRepeatNode(bracketObj, rootNode, repeatKey);
+    bracketObj.repeatNodes = repeatKey;
     return bracketObj;
 
-    // let mostRightNode = moveStructureNodes[0].parentNode;
-    // let mostLeftNode = moveStructureNodes[0].parentNode;
-    // let childStructures = [];
-    // let yDistance = -30;
-    // let rightCounter = 0;
-    // let bracketObj = new Braket();
-    //
-    // for(let i = 1; i < moveStructureNodes.length; i++){
-    //     if(mostRightNode.xCood < moveStructureNodes[i].parentNode.xCood){
-    //         mostRightNode = moveStructureNodes[i].parentNode;
-    //     }
-    //     if(mostLeftNode.xCood > moveStructureNodes[i].parentNode.xCood){
-    //         mostLeftNode = moveStructureNodes[i].parentNode;
-    //     }
-    // }
-    //
-    // for(let i = 0; i < structures.length; i++){
-    //     if(mostRightNode === structures[i].childNode){
-    //         createRightBracket(mostRightNode, structures[i], yDistance, stage, bracketObj);
-    //         rightCounter++;
-    //     }
-    //     if(mostLeftNode === structures[i].parentNode){
-    //         childStructures.push(structures[i]);
-    //     }
-    // }
-    //
-    // if(rightCounter === 0){
-    //     createRightBracket(mostRightNode, null, yDistance, stage, bracketObj);
-    // }
-    // if(childStructures.length === 0){
-    //     createLeftBracket(mostLeftNode, null, yDistance, stage, bracketObj);
-    // }
-    //
-    // let leftChildNode = childStructures[0].childNode;
-    // for(let i = 1; i < childStructures.length; i++){
-    //     if(leftChildNode.xCood > childStructures[i].childNode.xCood){
-    //         leftChildNode = childStructures[i].childNode;
-    //     }
-    //     else if(leftChildNode.xCood === childStructures[i].childNode.xCood) {
-    //         if (leftChildNode.yCood > childStructures[i].childNode.yCood) {
-    //             leftChildNode = childStructures[i].childNode;
-    //         }
-    //
-    //     }
-    // }
-    //
-    // for(let i = 0; i < structures.length; i++){
-    //     if(leftChildNode === structures[i].childNode && mostLeftNode === structures[i].parentNode){
-    //         createLeftBracket(mostLeftNode, structures[i], yDistance, stage, bracketObj)
-    //     }
-    // }
-    // for(let i = 0; i < moveStructureNodes.length; i++){
-    //     bracketObj.repeatNodes.push(moveStructureNodes[i].parentNode);
-    // }
-    //
-    // return bracketObj;
+}
+
+function sortRepeatNode(bracketObj, parentNode, repeatKey){
+    for(let i = 0; i  < bracketObj.repeatNodes.length; i++){
+        if(parentNode === bracketObj.repeatNodes[i]){
+            repeatKey.push(parentNode);
+        }
+    }
+    for(let i = 0; i < parentNode.childNode.length; i++){
+        sortRepeatNode(bracketObj, parentNode.childNode[i], repeatKey);
+    }
+}
+
+function searchRootNode(structures){
+    let rootNode = structures[0].parentNode;
+    for(let i = 1; i < structures.length; i++){
+        if(rootNode.xCood < structures[i].parentNode.xCood){
+            rootNode = structures[i].parentNode;
+        }
+    }
+    return rootNode;
 }
 
 function setBracket(fourCorner, structures, bracketObj, n, stage){
@@ -114,8 +86,10 @@ function setRepeat(fourCorner, n, startBracketStructure, distance){
         n.x = fourCorner[1].xCood + distance;
         n.y = fourCorner[2].yCood - 5;
     }
-    n.x = (startBracketStructure.edge.graphics._activeInstructions[0].x + startBracketStructure.edge.graphics._activeInstructions[1].x) / 2 + distance;
-    n.y = fourCorner[2].yCood + distance - 5;
+    else {
+        n.x = (startBracketStructure.edge.graphics._activeInstructions[0].x + startBracketStructure.edge.graphics._activeInstructions[1].x) / 2 + distance;
+        n.y = fourCorner[2].yCood + distance - 5;
+    }
 
 }
 
@@ -189,59 +163,11 @@ function searchFourCorner(selectedNodes){
     return [mostTopNode, mostRightNode, mostBottomNode, mostLeftNode];
 }
 
-function createRightBracket(mostRightNode ,structure, yDistance, stage, bracketObj){
-//     let bracket = new createjs.Text("]", "50px serif", getLineColor("black"));
-//     if(structure === null){
-//         bracket.x = mostRightNode.xCood + 50;
-//         bracket.y = mostRightNode.yCood + yDistance;
-//     }
-//     else {
-//         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
-//         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
-//         bracketObj.startBracket.structure = structure;
-//         structure.bracket = true;
-//     }
-//     bracketObj.startBracket.bracketShape = bracket;
-//     mostRightNode.bracket = bracketObj;
-//     bracketObj.startBracket.node = mostRightNode;
-//     numberOfRepeat(bracket, mostRightNode, stage, bracketObj);
-//     upStage(bracket, stage);
-// }
-//
-// function createLeftBracket(mostLeftNode ,structure, yDistance, stage, bracketObj){
-//     let bracket = new createjs.Text("[", "50px serif", getLineColor("black"));
-//     if(structure === null){
-//         bracket.x = mostLeftNode.xCood - 50;
-//         bracket.y = mostLeftNode.yCood + yDistance;
-//     }
-//     else {
-//         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
-//         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
-//         bracketObj.endBracket.structure = structure;
-//         structure.bracket = true;
-//     }
-//     bracketObj.endBracket.bracketShape = bracket;
-//     mostLeftNode.bracket = bracketObj;
-//     bracketObj.endBracket.node = mostLeftNode;
-//     upStage(bracket, stage);
 
-}
-
-function numberOfRepeat(bracket, mostRightNode, stage, bracketObj){
-    // let xDistance = 10;
-    // let yDistance = 40;
-    // let n = document.getElementById("repeatN").value;
-    // let repeat = new createjs.Text(n, "20px serif", getLineColor("black"));
-    // repeat.x = bracket.x + xDistance;
-    // repeat.y = bracket.y + yDistance;
-    // bracketObj.startBracket.numOfRepeatShape = repeat;
-    // bracketObj.startBracket.numOfRepeatText = n;
-    // upStage(repeat, stage);
-}
 
 function upStage(bracket, stage){
     stageEdit.setStage(stage, bracket);
     stageEdit.stageUpdate(stage);
 }
 
-export { createRepeatBracket };
+export { createRepeatBracket, setBracket, searchFourCorner};

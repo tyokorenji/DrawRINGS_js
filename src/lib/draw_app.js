@@ -31,7 +31,7 @@ import { eraseNode } from './util/erase_node';
 import * as stageEdit from './util/edit_stage';
 import { rectMove, rectUp, selectedStructureDelete, selectedMoveStructureDown, selectedMoveStructureMove, selectedMoveStructureUp } from './util/select_function';
 import { createIUPAC } from  './util/createIUPAC';
-import { createRepeatBracket } from './util/create_bracket';
+import { createRepeatBracket, setBracket, searchFourCorner } from './util/create_bracket';
 
 console.log(Node);
 console.log(Structure);
@@ -92,6 +92,10 @@ function __run(canvas) {
         }
     }
 
+    /**
+     *  Textareaの大きさを画面の大きさに対して変化させる
+     */
+
     function setTextareaSize() {
         let canvas = $('#canvas');
         let w = parseInt(canvas.css('width'), 10);
@@ -101,6 +105,10 @@ function __run(canvas) {
         //textarea.css('width', w);
         textarea.css('height', h);
     }
+
+    /**
+     * RunQueryで出すダイアログボックスの設定
+     */
 
     jQuery(function($){
         $("#runQueryDialogBox").dialog({
@@ -126,6 +134,10 @@ function __run(canvas) {
             $("#runQueryDialogBox").dialog("open");
         });
     });
+
+    /**
+     * repeat構造の繰り返し回数を聞くときのダイアログボックスの設定
+     */
 
     jQuery(function($){
         $("#numberOfRepeat").dialog({
@@ -192,6 +204,7 @@ function __run(canvas) {
     // リサイズ処理
     /**
      * TODO: GUI
+     * Windowがリサイズしたときのcanvasの大きさをリサイズする処理
      */
     function handleResize(event) {
         // 画面幅・高さを取得
@@ -213,7 +226,7 @@ function __run(canvas) {
                     for(let l = 0; l < nodes.length; l++){
                         nodes[l].childNode = [];
                     }
-                    let results = connectStructures(nodes, structures, canvas, stage);
+                    let results = connectStructures(nodes, structures, brackets, canvas, stage);
                     for (let j = 0; j < nodes.length; j++) {
                         nodes[j] = results[0][j];
                         nodes[j].sprite.addEventListener("mousedown", handleDown);
@@ -222,13 +235,18 @@ function __run(canvas) {
                         structures[j] = results[1][j];
                         structures[j].edge.addEventListener("click", edgeClick);
                     }
+                    for(let j = 0; j < brackets.length; j++){
+                        brackets[j] = results[2][j];
+                    }
                 }
 
             }
         }
     }
 
-
+    /**
+     * fileをuploadする時の処理
+     */
     fileLoadId.addEventListener("change", function(evt){
         let file = evt.target.files;
         let fileReader = new FileReader();
@@ -239,13 +257,18 @@ function __run(canvas) {
         $("#kcfFileLoad").val("");
     }, false);
 
-
+    /**
+     * 選択されたNodeの種類を決めるハッシュ値を変数に格納するための関数
+     * @param k: Nodeのハッシュ値
+     */
     let nodeMenu = function(k){
         nodeHashKey = k;
         nodeShape = 0;
     };
     window.nodeMenu = nodeMenu;
-
+    /**
+     * 未定義のnodeや修飾を格納する関数
+     */
     let nodeTextMenu = function(){
         nodeShape = 1;
         nodeHashKey = document.nodeForm.nodeText.value;
@@ -280,6 +303,9 @@ function __run(canvas) {
         for(let i = 0; i < results[1].length; i++){
             results[1][i].edge.addEventListener("click", edgeClick);
             structures.push(results[1][i]);
+        }
+        for(let i = 0; i < results[2].length; i++){
+            brackets.push(results[2][i]);
         }
     };
     window.structureMenu = structureMenu;
@@ -339,7 +365,7 @@ function __run(canvas) {
             let kindRunQuery =  document.kindRnuQueryResult.type;
             let database = document.database.databaseSelect;
             let scoreMatrix = document.scoreMatrix.scoreSelect;
-            createKCF(mode, nodes, structures, kindRunQuery, database, scoreMatrix);
+            createKCF(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix);
         }
         if(mode === 10){
             let parser = new KCFParser(fileLoadTextareaId.value);
@@ -352,37 +378,49 @@ function __run(canvas) {
                 results[1][i].edge.addEventListener("click", edgeClick);
                 structures.push(results[1][i]);
             }
+            for(let i = 0; i < results[2].length; i++){
+                brackets.push(results[2][i]);
+            }
         }
         if(mode === 11){
             textClear();
         }
         if(mode === 12){
-            createIUPAC(nodes, structures);
+            createIUPAC(nodes, structures, brackets);
         }
     };
 
     window.edits = edits;
 
-    window.addEventListener("mousedown",WindowClick);
+    // window.addEventListener("click",WindowClick);
     function WindowClick() {
         if (moveStructureNodes.length != 0) {
             for (let i = 0; i < moveStructureNodes.length; i++) {
                 moveStructureNodes[i].returnShape(moveStructureNodes[i]);
             }
             canvas.addEventListener("mousedown", canvasMouseDown);
-            // $('#structureDelete').addClass('hidden-menu');
+            $('#structureDelete').addClass('hidden-menu');
+            canvas.removeEventListener("mousedown", WindowClick);
         }
 
     }
 
     //Node
+    /**
+     * windowをロードしたときからcanvasに対してmousedownイベントを行うと"cavasMouseDown"関数の処理を行うと設定
+     */
     canvas.addEventListener("mousedown", canvasMouseDown);
+    /**
+     * canvasをmousedownした時の処理
+     * @param e：イベント
+     */
     function canvasMouseDown(e){
         if(mode != 1 && mode != 2 && mode != 4) return;
         /**
-         * "Select" 始まり
+         * "Select" の処理
          */
         if(mode === 1){
+            // window.removeEventListener("click", WindowClick);
             XY(e);
             selectX = mouseX;
             selectY = mouseY;
@@ -390,6 +428,9 @@ function __run(canvas) {
             canvas.addEventListener("mousemove", selectMove);
             canvas.addEventListener("mouseup", selectUp);
         }
+        /**
+         * "Node"の処理
+         */
         else if(mode === 2){
             XY(e);
             let node = null;
@@ -412,7 +453,7 @@ function __run(canvas) {
     }
 
     /**
-     *"Select"ドラッグしたまま。四角を作る
+     *"Select"のドラッグ時の処理
      */
     function selectMove(){
         if(selectRange != null){
@@ -424,50 +465,57 @@ function __run(canvas) {
     }
 
     /**
-     * "Select" 四角作り終わり。
-     * 四角内のnodeを見つけ、枠線の色と透明度を変化している
+     * "Select" ドラッグを終了した時の処理
      */
     function selectUp(){
-        moveStructureNodes = rectUp(selectRange, selectX, selectY, mouseX, mouseY, nodes, moveStructureNodes, stage);
+        moveStructureNodes = rectUp(selectRange, selectX, selectY, mouseX, mouseY, nodes, stage);
         for(let i = 0; i < moveStructureNodes.length; i++){
             moveStructureNodes[i].addEventListener("mousedown", selectMoveStructureDown);
         }
         $('#structureDelete').removeClass('hidden-menu');
+        canvas.addEventListener("mousedown", WindowClick);
         canvas.removeEventListener("mousemove", selectMove);
         canvas.removeEventListener("mouseup", selectUp);
         canvas.removeEventListener("mousedown", canvasMouseDown);
     }
 
     /**
-     *"Select" 選択範囲を右クリックすることで削除する
+     *"Select" structureDreleteのボタンを押した時の処理
      */
 
     function selectStructureDelete(){
         if(mode != 1) return;
-        canvas.removeEventListener("mousemove", selectMove);
-        canvas.removeEventListener("mouseup", selectUp);
-        window.removeEventListener("mousedown", WindowClick);
+        // canvas.removeEventListener("mousemove", selectMove);
+        // canvas.removeEventListener("mouseup", selectUp);
+        canvas.removeEventListener("mousedown", WindowClick);
         let results = selectedStructureDelete(moveStructureNodes, nodes, structures, stage);
         nodes = results[0];
         structures = results[1];
         if(results){
             moveStructureNodes = [];
             // document.removeEventListener("contextmenu", selectStructureDelete,false);
-            window.addEventListener("mousedown",WindowClick);
+            // window.addEventListener("click",WindowClick);
             $('#structureDelete').addClass('hidden-menu');
+            canvas.addEventListener("mousedown", canvasMouseDown);
         }
     }
     window.selectStructureDelete = selectStructureDelete;
 
+    /**
+     * "select" repeatBracketのボタンを押した時の処理
+     * @returns {null}
+     */
     function repeatBracket(){
+        canvas.removeEventListener("mousedown", WindowClick);
         if (moveStructureNodes.length != 0) {
             let bracketObj = createRepeatBracket(moveStructureNodes, structures, stage);
-            // for (let i = 0; i < moveStructureNodes.length; i++) {
-            //     moveStructureNodes[i].returnShape(moveStructureNodes[i]);
-            // }
+            for (let i = 0; i < moveStructureNodes.length; i++) {
+                moveStructureNodes[i].sprite.returnShape(moveStructureNodes[i].sprite);
+            }
             canvas.addEventListener("mousedown", canvasMouseDown);
             $('#structureDelete').addClass('hidden-menu');
             brackets.push(bracketObj);
+            moveStructureNodes = [];
         }
         else {
             return null;
@@ -475,12 +523,13 @@ function __run(canvas) {
     }
     window.repeatBracket = repeatBracket;
 
-    /**
-     *"Select" 選択範囲内のオブジェクトをドラッグして移動
-     */
 
+    /**
+     * "Select & MoveNode" 選択された構造をmousedownしたときの処理
+     * @param event
+     */
     function selectMoveStructureDown(event){
-        window.removeEventListener("mousedown",WindowClick);
+        canvas.removeEventListener("mousedown",WindowClick);
         canvas.removeEventListener("mousedown", canvasMouseDown);
         for(let i = 0; i < moveStructureNodes.length; i++){
             moveStructure.push(moveStructureNodes[i]);
@@ -492,7 +541,7 @@ function __run(canvas) {
     }
 
     /**
-     *"Select" 移動終了
+     *"Select & MoveNode" 選択範囲内のオブジェクトをドラッグしたときの処理
      */
 
     function selectMoveStructureMove(){
@@ -500,9 +549,12 @@ function __run(canvas) {
         canvas.removeEventListener("mousemove", selectMove);
         canvas.removeEventListener("mouseup", selectUp);
         $('#structureDelete').addClass('hidden-menu');
-        selectedMoveStructureMove(pointObj, moveStructure, stage, canvas);
+        selectedMoveStructureMove(pointObj, moveStructure, structures, stage, canvas);
     }
 
+    /**
+     *"Select & MoveNode" 選択した構造を移動中にmouseUpした時の処理
+     */
     function selectMoveStructureUp(event){
         if(mode != 1 && mode != 7) return;
         selectedMoveStructureUp(moveStructure);
@@ -514,7 +566,7 @@ function __run(canvas) {
         pointObj = {};
         target.removeEventListener("pressmove", selectMoveStructureMove);
         target.removeEventListener("pressup", selectMoveStructureUp);
-        window.addEventListener("mousedown",WindowClick);
+        // window.addEventListener("click",WindowClick);
         canvas.addEventListener("mousedown", canvasMouseDown);
         $('#structureDelete').addClass('hidden-menu');
     }
@@ -544,7 +596,7 @@ function __run(canvas) {
         }
 
         else if (mode === 7) {
-            window.removeEventListener("mousedown",WindowClick);
+            canvas.removeEventListener("mousedown",WindowClick);
             let target = event.target;
             target.highlightShape(target);
             moveStructure.push(target);

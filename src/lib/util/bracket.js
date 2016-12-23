@@ -16,6 +16,8 @@ class Bracket {
             node: null
         };
         this.repeatNodes = [];
+        this.repeatSugar = [];
+        this.repeatModification = [];
     }
 }
 

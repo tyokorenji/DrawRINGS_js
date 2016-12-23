@@ -119,25 +119,25 @@
 	
 	var _kcf_parser = __webpack_require__(32);
 	
-	var _clear_all = __webpack_require__(35);
+	var _clear_all = __webpack_require__(37);
 	
-	var _create_KCF = __webpack_require__(36);
+	var _create_KCF = __webpack_require__(38);
 	
 	var _set_edge_text = __webpack_require__(25);
 	
-	var _text_clear = __webpack_require__(37);
+	var _text_clear = __webpack_require__(39);
 	
-	var _erase_node = __webpack_require__(38);
+	var _erase_node = __webpack_require__(40);
 	
 	var _edit_stage = __webpack_require__(24);
 	
 	var stageEdit = _interopRequireWildcard(_edit_stage);
 	
-	var _select_function = __webpack_require__(39);
+	var _select_function = __webpack_require__(41);
 	
-	var _createIUPAC = __webpack_require__(40);
+	var _createIUPAC = __webpack_require__(42);
 	
-	var _create_bracket = __webpack_require__(41);
+	var _create_bracket = __webpack_require__(36);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -213,6 +213,10 @@
 	        }
 	    }
 	
+	    /**
+	     *  Textareaの大きさを画面の大きさに対して変化させる
+	     */
+	
 	    function setTextareaSize() {
 	        var canvas = (0, _jquery2.default)('#canvas');
 	        var w = parseInt(canvas.css('width'), 10);
@@ -222,6 +226,10 @@
 	        //textarea.css('width', w);
 	        textarea.css('height', h);
 	    }
+	
+	    /**
+	     * RunQueryで出すダイアログボックスの設定
+	     */
 	
 	    (0, _jquery2.default)(function ($) {
 	        $("#runQueryDialogBox").dialog({
@@ -245,6 +253,10 @@
 	            $("#runQueryDialogBox").dialog("open");
 	        });
 	    });
+	
+	    /**
+	     * repeat構造の繰り返し回数を聞くときのダイアログボックスの設定
+	     */
 	
 	    (0, _jquery2.default)(function ($) {
 	        $("#numberOfRepeat").dialog({
@@ -304,6 +316,7 @@
 	    // リサイズ処理
 	    /**
 	     * TODO: GUI
+	     * Windowがリサイズしたときのcanvasの大きさをリサイズする処理
 	     */
 	    function handleResize(event) {
 	        // 画面幅・高さを取得
@@ -325,7 +338,7 @@
 	                    for (var l = 0; l < nodes.length; l++) {
 	                        nodes[l].childNode = [];
 	                    }
-	                    var results = (0, _kcf_parser.connectStructures)(nodes, structures, canvas, stage);
+	                    var results = (0, _kcf_parser.connectStructures)(nodes, structures, brackets, canvas, stage);
 	                    for (var j = 0; j < nodes.length; j++) {
 	                        nodes[j] = results[0][j];
 	                        nodes[j].sprite.addEventListener("mousedown", handleDown);
@@ -334,11 +347,17 @@
 	                        structures[_j] = results[1][_j];
 	                        structures[_j].edge.addEventListener("click", edgeClick);
 	                    }
+	                    for (var _j2 = 0; _j2 < brackets.length; _j2++) {
+	                        brackets[_j2] = results[2][_j2];
+	                    }
 	                }
 	            }
 	        }
 	    }
 	
+	    /**
+	     * fileをuploadする時の処理
+	     */
 	    fileLoadId.addEventListener("change", function (evt) {
 	        var file = evt.target.files;
 	        var fileReader = new FileReader();
@@ -349,12 +368,18 @@
 	        (0, _jquery2.default)("#kcfFileLoad").val("");
 	    }, false);
 	
+	    /**
+	     * 選択されたNodeの種類を決めるハッシュ値を変数に格納するための関数
+	     * @param k: Nodeのハッシュ値
+	     */
 	    var nodeMenu = function nodeMenu(k) {
 	        nodeHashKey = k;
 	        nodeShape = 0;
 	    };
 	    window.nodeMenu = nodeMenu;
-	
+	    /**
+	     * 未定義のnodeや修飾を格納する関数
+	     */
 	    var nodeTextMenu = function nodeTextMenu() {
 	        nodeShape = 1;
 	        nodeHashKey = document.nodeForm.nodeText.value;
@@ -388,6 +413,9 @@
 	        for (var _i = 0; _i < results[1].length; _i++) {
 	            results[1][_i].edge.addEventListener("click", edgeClick);
 	            structures.push(results[1][_i]);
+	        }
+	        for (var _i2 = 0; _i2 < results[2].length; _i2++) {
+	            brackets.push(results[2][_i2]);
 	        }
 	    };
 	    window.structureMenu = structureMenu;
@@ -442,7 +470,7 @@
 	            var kindRunQuery = document.kindRnuQueryResult.type;
 	            var database = document.database.databaseSelect;
 	            var scoreMatrix = document.scoreMatrix.scoreSelect;
-	            (0, _create_KCF.createKCF)(mode, nodes, structures, kindRunQuery, database, scoreMatrix);
+	            (0, _create_KCF.createKCF)(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix);
 	        }
 	        if (mode === 10) {
 	            var parser = new _kcf_parser.KCFParser(fileLoadTextareaId.value);
@@ -451,68 +479,84 @@
 	                results[0][i].sprite.addEventListener("mousedown", handleDown);
 	                nodes.push(results[0][i]);
 	            }
-	            for (var _i2 = 0; _i2 < results[1].length; _i2++) {
-	                results[1][_i2].edge.addEventListener("click", edgeClick);
-	                structures.push(results[1][_i2]);
+	            for (var _i3 = 0; _i3 < results[1].length; _i3++) {
+	                results[1][_i3].edge.addEventListener("click", edgeClick);
+	                structures.push(results[1][_i3]);
+	            }
+	            for (var _i4 = 0; _i4 < results[2].length; _i4++) {
+	                brackets.push(results[2][_i4]);
 	            }
 	        }
 	        if (mode === 11) {
 	            (0, _text_clear.textClear)();
 	        }
 	        if (mode === 12) {
-	            (0, _createIUPAC.createIUPAC)(nodes, structures);
+	            (0, _createIUPAC.createIUPAC)(nodes, structures, brackets);
 	        }
 	    };
 	
 	    window.edits = edits;
 	
-	    window.addEventListener("mousedown", WindowClick);
+	    // window.addEventListener("click",WindowClick);
 	    function WindowClick() {
 	        if (moveStructureNodes.length != 0) {
 	            for (var i = 0; i < moveStructureNodes.length; i++) {
 	                moveStructureNodes[i].returnShape(moveStructureNodes[i]);
 	            }
 	            canvas.addEventListener("mousedown", canvasMouseDown);
-	            // $('#structureDelete').addClass('hidden-menu');
+	            (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
+	            canvas.removeEventListener("mousedown", WindowClick);
 	        }
 	    }
 	
 	    //Node
+	    /**
+	     * windowをロードしたときからcanvasに対してmousedownイベントを行うと"cavasMouseDown"関数の処理を行うと設定
+	     */
 	    canvas.addEventListener("mousedown", canvasMouseDown);
+	    /**
+	     * canvasをmousedownした時の処理
+	     * @param e：イベント
+	     */
 	    function canvasMouseDown(e) {
 	        if (mode != 1 && mode != 2 && mode != 4) return;
 	        /**
-	         * "Select" 始まり
+	         * "Select" の処理
 	         */
 	        if (mode === 1) {
+	            // window.removeEventListener("click", WindowClick);
 	            XY(e);
 	            selectX = mouseX;
 	            selectY = mouseY;
 	            moveStructureNodes = [];
 	            canvas.addEventListener("mousemove", selectMove);
 	            canvas.addEventListener("mouseup", selectUp);
-	        } else if (mode === 2) {
-	            XY(e);
-	            var node = null;
-	            if (nodeShape === 1) {
-	                node = new _node2.default(nodeId, nodeHashKey, mouseX, mouseY);
-	                nodeId++;
-	                // node.sprite = new Modification();
-	            } else {
-	                node = new _node2.default(nodeId, _node_hash.NODE_HASH[nodeHashKey], mouseX, mouseY);
-	                nodeId++;
-	                // node.sprite = new  Sugar();
-	            }
-	            node.sprite = node.sprite.nodeDraw(node.name, node.xCood, node.yCood, stage);
-	            node.sprite.parentNode = node;
-	            node.sprite.addEventListener("mousedown", handleDown);
-	            nodes.push(node);
-	            nodeId++;
 	        }
+	        /**
+	         * "Node"の処理
+	         */
+	        else if (mode === 2) {
+	                XY(e);
+	                var node = null;
+	                if (nodeShape === 1) {
+	                    node = new _node2.default(nodeId, nodeHashKey, mouseX, mouseY);
+	                    nodeId++;
+	                    // node.sprite = new Modification();
+	                } else {
+	                    node = new _node2.default(nodeId, _node_hash.NODE_HASH[nodeHashKey], mouseX, mouseY);
+	                    nodeId++;
+	                    // node.sprite = new  Sugar();
+	                }
+	                node.sprite = node.sprite.nodeDraw(node.name, node.xCood, node.yCood, stage);
+	                node.sprite.parentNode = node;
+	                node.sprite.addEventListener("mousedown", handleDown);
+	                nodes.push(node);
+	                nodeId++;
+	            }
 	    }
 	
 	    /**
-	     *"Select"ドラッグしたまま。四角を作る
+	     *"Select"のドラッグ時の処理
 	     */
 	    function selectMove() {
 	        if (selectRange != null) {
@@ -524,50 +568,57 @@
 	    }
 	
 	    /**
-	     * "Select" 四角作り終わり。
-	     * 四角内のnodeを見つけ、枠線の色と透明度を変化している
+	     * "Select" ドラッグを終了した時の処理
 	     */
 	    function selectUp() {
-	        moveStructureNodes = (0, _select_function.rectUp)(selectRange, selectX, selectY, mouseX, mouseY, nodes, moveStructureNodes, stage);
+	        moveStructureNodes = (0, _select_function.rectUp)(selectRange, selectX, selectY, mouseX, mouseY, nodes, stage);
 	        for (var i = 0; i < moveStructureNodes.length; i++) {
 	            moveStructureNodes[i].addEventListener("mousedown", selectMoveStructureDown);
 	        }
 	        (0, _jquery2.default)('#structureDelete').removeClass('hidden-menu');
+	        canvas.addEventListener("mousedown", WindowClick);
 	        canvas.removeEventListener("mousemove", selectMove);
 	        canvas.removeEventListener("mouseup", selectUp);
 	        canvas.removeEventListener("mousedown", canvasMouseDown);
 	    }
 	
 	    /**
-	     *"Select" 選択範囲を右クリックすることで削除する
+	     *"Select" structureDreleteのボタンを押した時の処理
 	     */
 	
 	    function selectStructureDelete() {
 	        if (mode != 1) return;
-	        canvas.removeEventListener("mousemove", selectMove);
-	        canvas.removeEventListener("mouseup", selectUp);
-	        window.removeEventListener("mousedown", WindowClick);
+	        // canvas.removeEventListener("mousemove", selectMove);
+	        // canvas.removeEventListener("mouseup", selectUp);
+	        canvas.removeEventListener("mousedown", WindowClick);
 	        var results = (0, _select_function.selectedStructureDelete)(moveStructureNodes, nodes, structures, stage);
 	        nodes = results[0];
 	        structures = results[1];
 	        if (results) {
 	            moveStructureNodes = [];
 	            // document.removeEventListener("contextmenu", selectStructureDelete,false);
-	            window.addEventListener("mousedown", WindowClick);
+	            // window.addEventListener("click",WindowClick);
 	            (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
+	            canvas.addEventListener("mousedown", canvasMouseDown);
 	        }
 	    }
 	    window.selectStructureDelete = selectStructureDelete;
 	
+	    /**
+	     * "select" repeatBracketのボタンを押した時の処理
+	     * @returns {null}
+	     */
 	    function repeatBracket() {
+	        canvas.removeEventListener("mousedown", WindowClick);
 	        if (moveStructureNodes.length != 0) {
 	            var bracketObj = (0, _create_bracket.createRepeatBracket)(moveStructureNodes, structures, stage);
-	            // for (let i = 0; i < moveStructureNodes.length; i++) {
-	            //     moveStructureNodes[i].returnShape(moveStructureNodes[i]);
-	            // }
+	            for (var i = 0; i < moveStructureNodes.length; i++) {
+	                moveStructureNodes[i].sprite.returnShape(moveStructureNodes[i].sprite);
+	            }
 	            canvas.addEventListener("mousedown", canvasMouseDown);
 	            (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
 	            brackets.push(bracketObj);
+	            moveStructureNodes = [];
 	        } else {
 	            return null;
 	        }
@@ -575,11 +626,11 @@
 	    window.repeatBracket = repeatBracket;
 	
 	    /**
-	     *"Select" 選択範囲内のオブジェクトをドラッグして移動
+	     * "Select & MoveNode" 選択された構造をmousedownしたときの処理
+	     * @param event
 	     */
-	
 	    function selectMoveStructureDown(event) {
-	        window.removeEventListener("mousedown", WindowClick);
+	        canvas.removeEventListener("mousedown", WindowClick);
 	        canvas.removeEventListener("mousedown", canvasMouseDown);
 	        for (var i = 0; i < moveStructureNodes.length; i++) {
 	            moveStructure.push(moveStructureNodes[i]);
@@ -591,7 +642,7 @@
 	    }
 	
 	    /**
-	     *"Select" 移動終了
+	     *"Select & MoveNode" 選択範囲内のオブジェクトをドラッグしたときの処理
 	     */
 	
 	    function selectMoveStructureMove() {
@@ -599,9 +650,12 @@
 	        canvas.removeEventListener("mousemove", selectMove);
 	        canvas.removeEventListener("mouseup", selectUp);
 	        (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
-	        (0, _select_function.selectedMoveStructureMove)(pointObj, moveStructure, stage, canvas);
+	        (0, _select_function.selectedMoveStructureMove)(pointObj, moveStructure, structures, stage, canvas);
 	    }
 	
+	    /**
+	     *"Select & MoveNode" 選択した構造を移動中にmouseUpした時の処理
+	     */
 	    function selectMoveStructureUp(event) {
 	        if (mode != 1 && mode != 7) return;
 	        (0, _select_function.selectedMoveStructureUp)(moveStructure);
@@ -613,7 +667,7 @@
 	        pointObj = {};
 	        target.removeEventListener("pressmove", selectMoveStructureMove);
 	        target.removeEventListener("pressup", selectMoveStructureUp);
-	        window.addEventListener("mousedown", WindowClick);
+	        // window.addEventListener("click",WindowClick);
 	        canvas.addEventListener("mousedown", canvasMouseDown);
 	        (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
 	    }
@@ -639,7 +693,7 @@
 	            structures = results[1];
 	            brackets = results[2];
 	        } else if (mode === 7) {
-	            window.removeEventListener("mousedown", WindowClick);
+	            canvas.removeEventListener("mousedown", WindowClick);
 	            var target = event.target;
 	            target.highlightShape(target);
 	            moveStructure.push(target);
@@ -44861,6 +44915,14 @@
 	
 	var _set_coordinate = __webpack_require__(33);
 	
+	var _bracket = __webpack_require__(35);
+	
+	var _bracket2 = _interopRequireDefault(_bracket);
+	
+	var _create_bracket = __webpack_require__(36);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -44885,8 +44947,12 @@
 	            }
 	
 	            var result = analyzeLines(lines);
+	            var brackets = [];
+	            if (result[2].length != 0) {
+	                brackets = analyzeBrackets(result[0], result[2]);
+	            }
 	
-	            return connectStructures(result[0], result[1], canvas, stage);
+	            return connectStructures(result[0], result[1], brackets, canvas, stage);
 	            //return result;
 	
 	            // DrawKCF(this.text);
@@ -44895,6 +44961,16 @@
 	
 	    return KCFParser;
 	}();
+	
+	var parsedBrackets = function parsedBrackets(top_left, bottom_left, bottom_right, top_right, nText) {
+	    _classCallCheck(this, parsedBrackets);
+	
+	    this.top_left = top_left;
+	    this.bottom_left = bottom_left;
+	    this.bottom_right = bottom_right;
+	    this.top_right = top_right;
+	    this.nText = nText;
+	};
 	
 	// i オプションをつけることで、大文字・小文字を区別しないでマッチングさせる.
 	
@@ -44905,6 +44981,7 @@
 	
 	    NODE_FLAG: /^NODE/i,
 	    EDGE_FLAG: /^EDGE/i,
+	    BRACKET_FLAG: /^BRACKET/i,
 	    TERMINAL_FLAG: /^\/\/\/$/
 	};
 	var SPACE_SEPARATOR = /\s+/;
@@ -44986,6 +45063,7 @@
 	function analyzeLines(lines) {
 	    var nodeLines = [];
 	    var edgeLines = [];
+	    var bracketLines = [];
 	
 	    for (var i = 0; i < lines.length; i++) {
 	        var line = lines[i];
@@ -45003,10 +45081,24 @@
 	                edgeLines.push(lines[i + _j + 1]);
 	            }
 	            i += edgeSize;
+	        } else if (FLAGS.BRACKET_FLAG.test(line)) {
+	            for (var _j2 = i;; _j2++) {
+	                line = lines[_j2];
+	                if (FLAGS.TERMINAL_FLAG.test(line)) {
+	                    i = _j2 - 1;
+	                    break;
+	                } else {
+	                    bracketLines.push(line);
+	                }
+	            }
 	        }
 	    }
 	    var nodesObj = parseNodes(nodeLines);
 	    var edgesObj = parseEdges(edgeLines, nodesObj);
+	    var bracketObj = {};
+	    if (bracketLines.length != 0) {
+	        bracketObj = parseBracket(bracketLines);
+	    }
 	    /*
 	    let structures = null;
 	    if (nodes && edges) {
@@ -45016,13 +45108,19 @@
 	    */
 	    var nodesAry = [];
 	    var edgesAry = [];
+	    var bracketAry = [];
 	    for (var _i = 0; _i < Object.keys(nodesObj).length; _i++) {
 	        nodesAry.push(nodesObj[Object.keys(nodesObj)[_i]]);
 	    }
 	    for (var _i2 = 0; _i2 < Object.keys(edgesObj).length; _i2++) {
 	        edgesAry.push(edgesObj[Object.keys(edgesObj)[_i2]]);
 	    }
-	    return [nodesAry, edgesAry];
+	    if (bracketObj != null) {
+	        for (var _i3 = 0; _i3 < Object.keys(bracketObj).length; _i3++) {
+	            bracketAry.push(bracketObj[Object.keys(bracketObj)[_i3]]);
+	        }
+	    }
+	    return [nodesAry, edgesAry, bracketAry];
 	}
 	
 	function parseNodes(lines) {
@@ -45074,6 +45172,53 @@
 	        edgesObj[id] = new _structure2.default(id, parent, child, edgeInfo);
 	    }
 	    return edgesObj;
+	}
+	
+	function parseBracket(lines) {
+	    var bracketObj = {};
+	    for (var i = 0; i < lines.length; i++) {
+	        var line = lines[i];
+	        var line2 = lines[i + 1];
+	        var line3 = lines[i + 2];
+	        var tokens = line.split(SPACE_SEPARATOR);
+	        var tokens2 = line2.split(SPACE_SEPARATOR);
+	        var tokens3 = line3.split(SPACE_SEPARATOR);
+	        if (i === 0) {
+	            tokens.splice(0, 1);
+	        }
+	        tokens2.splice(0, 1);
+	        tokens3.splice(0, 1);
+	        var id = tokens[0];
+	        var top_left = [parseInt(tokens[1]), parseInt(tokens[2])];
+	        var bottom_left = [parseInt(tokens[3]), parseInt(tokens[4])];
+	        var bottom_right = [parseInt(tokens2[0]), parseInt(tokens2[1])];
+	        var top_right = [parseInt(tokens2[2]), parseInt(tokens2[3])];
+	        var nText = tokens3[0];
+	
+	        bracketObj[id] = new parsedBrackets(top_left, bottom_left, bottom_right, top_right, nText);
+	        i = i + 2;
+	    }
+	    return bracketObj;
+	}
+	
+	function analyzeBrackets(nodes, parseBrackets) {
+	    var brackets = [];
+	    for (var i = 0; i < nodes.length; i++) {
+	        nodes[i].xCood = parseInt(nodes[i].xCood);
+	        nodes[i].yCood = parseInt(nodes[i].yCood);
+	    }
+	    for (var _i4 = 0; _i4 < parseBrackets.length; _i4++) {
+	        var bracketsObj = new _bracket2.default();
+	        bracketsObj.startBracket.numOfRepeatText = parseBrackets[_i4].nText;
+	        for (var j = 0; j < nodes.length; j++) {
+	            var targetBracket = parseBrackets[_i4];
+	            if (targetBracket.top_left[0] <= nodes[j].xCood && targetBracket.top_left[1] <= nodes[j].yCood && targetBracket.bottom_right[0] >= nodes[j].xCood && targetBracket.bottom_right[1] >= nodes[j].yCood) {
+	                bracketsObj.repeatNodes.push(nodes[j]);
+	            }
+	        }
+	        brackets.push(bracketsObj);
+	    }
+	    return brackets;
 	}
 	
 	function generateConnection(lToken, rToken, nodesObj) {
@@ -45134,16 +45279,16 @@
 	    };
 	}
 	
-	function connectStructures(nodes, edges, canvas, stage) {
+	function connectStructures(nodes, edges, brackets, canvas, stage) {
 	    (0, _set_coordinate.setCoordinate)(nodes, edges, canvas);
-	    upStage(edges, stage);
+	    upStage(edges, brackets, stage);
 	    for (var i = 0; i < nodes.length; i++) {
 	        nodes[i].sprite.parentNode = nodes[i];
 	    }
-	    return [nodes, edges];
+	    return [nodes, edges, brackets];
 	}
 	
-	function upStage(edges, stage) {
+	function upStage(edges, brackets, stage) {
 	    var line = null;
 	    var text = null;
 	    var addedNodes = [];
@@ -45178,6 +45323,11 @@
 	        parentCounter = 0;
 	        childCounter = 0;
 	        // addedNodes.push(edges[i].childNode);
+	    }
+	    for (var _i5 = 0; _i5 < brackets.length; _i5++) {
+	        var resultsFourCorner = (0, _create_bracket.searchFourCorner)(brackets[_i5].repeatNodes);
+	        var n = new createjs.Text(brackets[_i5].startBracket.numOfRepeatText, "20px serif", (0, _monosaccharide_helper.getLineColor)("black"));
+	        (0, _create_bracket.setBracket)(resultsFourCorner, edges, brackets[_i5], n, stage);
 	    }
 	}
 	
@@ -45415,172 +45565,39 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	"used strict";
 	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.clearAll = undefined;
+	var _EaselJS = __webpack_require__(3);
 	
-	var _edit_stage = __webpack_require__(24);
-	
-	var stageEdit = _interopRequireWildcard(_edit_stage);
+	var createjs = _interopRequireWildcard(_EaselJS);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	function clearAll(nodes, structures, brackets, stage) {
-	    for (var i = 0; i < structures.length; i++) {
-	        stageEdit.removeStage(stage, structures[i].edge);
-	        stageEdit.removeStage(stage, structures[i].edgeInformation);
-	    }
-	    for (var j = 0; j < nodes.length; j++) {
-	        stageEdit.removeStage(stage, nodes[j].sprite);
-	        stageEdit.stageUpdate(stage);
-	    }
-	    for (var k = 0; k < brackets.length; k++) {
-	        stageEdit.removeStage(stage, brackets[k].startBracket.bracketShape);
-	        stageEdit.removeStage(stage, brackets[k].startBracket.numOfRepeatShape);
-	        stageEdit.removeStage(stage, brackets[k].endBracket.bracketShape);
-	        stageEdit.stageUpdate(stage);
-	    }
-	    stageEdit.stageUpdate(stage);
-	}
-	exports.clearAll = clearAll;
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Bracket = function Bracket() {
+	    _classCallCheck(this, Bracket);
+	
+	    this.startBracket = {
+	        bracketShape: null,
+	        structure: null,
+	        numOfRepeatShape: null,
+	        numOfRepeatText: null,
+	        node: null
+	    };
+	    this.endBracket = {
+	        bracketShape: null,
+	        structure: null,
+	        node: null
+	    };
+	    this.repeatNodes = [];
+	    this.repeatSugar = [];
+	    this.repeatModification = [];
+	};
+	
+	module.exports = Bracket;
 
 /***/ },
 /* 36 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var TAB = "    ";
-	var NEW_LINE = "\n";
-	var COLON = ":";
-	var SLASH = "///";
-	var URL_TAB = "%20";
-	var URL_NEW_LINE = "%30";
-	var WAVE = "~";
-	
-	var SEPERATOR = new RegExp("-");
-	
-	function createKCF(mode, nodes, structures, kindRunQuery, database, scoreMatrix) {
-	    if (nodes.length < 1) {
-	        alert("Please build glycan.");
-	        return;
-	    }
-	
-	    var rootNode = null;
-	
-	    for (var i = 0; i < nodes.length; i++) {
-	        var counter = 0;
-	        for (var j = 0; j < structures.length; j++) {
-	            if (nodes[i] === structures[j].childNode) {
-	                counter++;
-	            }
-	        }
-	        if (counter === 0) {
-	            rootNode = nodes[i];
-	        }
-	    }
-	    var nodeFormat = [];
-	    if (mode === 8) nodeFormat.push(TAB + rootNode.id + "" + TAB + rootNode.name + TAB + "0" + TAB + "0" + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + rootNode.id + "" + URL_TAB + rootNode.name + URL_TAB + "0" + URL_TAB + "0" + URL_NEW_LINE);
-	    nodeFormat = recursiveSetNode(rootNode, rootNode, nodeFormat, mode);
-	
-	    var edgeFormat = [];
-	    var childEdge = null;
-	    var parentEdge = null;
-	    for (var _i = 0; _i < structures.length; _i++) {
-	        if (structures[_i].edgeInformationText.match(SEPERATOR)) {
-	            childEdge = RegExp.leftContext;
-	            parentEdge = RegExp.rightContext;
-	        }
-	        if (mode === 8) edgeFormat.push(TAB + structures[_i].structureId + "" + TAB + structures[_i].childNode.id + "" + ":" + childEdge + TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + NEW_LINE);
-	        if (mode === 9) edgeFormat.push(URL_TAB + structures[_i].structureId + "" + URL_TAB + structures[_i].childNode.id + "" + ":" + childEdge + URL_TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + URL_NEW_LINE);
-	    }
-	
-	    KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode);
-	}
-	
-	function recursiveSetNode(parentNode, rootNode, nodeFormat, mode) {
-	    for (var i = 0; i < parentNode.childNode.length; i++) {
-	        nodeFormat = nodePush(parentNode.childNode[i], rootNode, nodeFormat, mode);
-	        recursiveSetNode(parentNode.childNode[i], rootNode, nodeFormat, mode);
-	    }
-	    return nodeFormat;
-	}
-	
-	function nodePush(childNode, rootNode, nodeFormat, mode) {
-	    var relativeCoodX = childNode.xCood - rootNode.xCood;
-	    var reletiveCoodY = childNode.yCood - rootNode.yCood;
-	    if (mode === 8) nodeFormat.push(TAB + childNode.id + "" + TAB + childNode.name + TAB + relativeCoodX + TAB + reletiveCoodY + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + childNode.id + "" + URL_TAB + childNode.name + URL_TAB + relativeCoodX + URL_TAB + reletiveCoodY + URL_NEW_LINE);
-	    return nodeFormat;
-	}
-	
-	function KCFOut(nodeFormat, edgeFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode) {
-	    var textArea = document.getElementById("kcf_format");
-	    var str = void 0;
-	    var str2 = void 0;
-	    var url = void 0;
-	    if (mode === 8) {
-	        str = "ENTRY" + TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + nodes.length + NEW_LINE;
-	        str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
-	    } else if (mode === 9) {
-	        var date = new Date();
-	        url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
-	        str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + nodes.length + URL_NEW_LINE;
-	        str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
-	    }
-	
-	    for (var i = 0; i < nodeFormat.length; i++) {
-	        str += nodeFormat[i];
-	    }
-	
-	    for (var _i2 = 0; _i2 < edgeFormat.length; _i2++) {
-	        str2 += edgeFormat[_i2];
-	    }
-	
-	    if (mode === 8) {
-	        textArea.value = str + str2 + SLASH;
-	    } else if (mode === 9) {
-	        var runQueryUrl = url + str + str2 + SLASH + WAVE + scoreMatrix.value + WAVE;
-	        var kindRunQueryResultType = void 0;
-	        for (var _i3 = 0; _i3 < kindRunQuery.length; _i3++) {
-	            if (kindRunQuery[_i3].checked == true) {
-	                kindRunQueryResultType = kindRunQuery[_i3].value;
-	            }
-	        }
-	        runQueryUrl += kindRunQueryResultType + WAVE + database.value;
-	
-	        window.open(runQueryUrl, "_blank");
-	    }
-	}
-	
-	exports.createKCF = createKCF;
-
-/***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	function textClear() {
-	    var res = confirm("Textarea clear all?");
-	    if (res === true) {
-	        var textArea = document.getElementById("kcf_format");
-	        textArea.value = "KCF-Text";
-	    }
-	}
-	
-	exports.textClear = textClear;
-
-/***/ },
-/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -45588,58 +45605,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.eraseNode = undefined;
-	
-	var _edit_stage = __webpack_require__(24);
-	
-	var stageEdit = _interopRequireWildcard(_edit_stage);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function eraseNode(target, nodes, structures, brackets, stage) {
-	    for (var i = 0; i < nodes.length; i++) {
-	        if (target === nodes[i].sprite) {
-	            stageEdit.removeStage(stage, target);
-	            nodes.splice(i, 1);
-	        }
-	    }
-	    for (var _i = 0; _i < structures.length; _i++) {
-	        if (target === structures[_i].parentNode.sprite || target === structures[_i].childNode.sprite) {
-	            stageEdit.removeStage(stage, structures[_i].edgeInformation);
-	            stageEdit.removeStage(stage, structures[_i].edge);
-	            structures.splice(_i, 1);
-	            _i--;
-	        }
-	    }
-	    for (var _i2 = 0; _i2 < brackets.length; _i2++) {
-	        if (target.parentNode === brackets[_i2].startBracket.node || target.parentNode === brackets[_i2].endBracket.node) {
-	            stageEdit.removeStage(stage, brackets[_i2].startBracket.bracketShape);
-	            stageEdit.removeStage(stage, brackets[_i2].endBracket.bracketShape);
-	            stageEdit.removeStage(stage, brackets[_i2].startBracket.numOfRepeatShape);
-	            stageEdit.stageUpdate(stage);
-	            if (target.parentNode === brackets[_i2].startBracket.node) {
-	                brackets[_i2].endBracket.node.bracket = null;
-	            } else if (target.parentNode === brackets[_i2].endBracket.node) {
-	                brackets[_i2].startBracket.node.bracket = null;
-	            }
-	            brackets.splice(_i2, 1);
-	        }
-	    }
-	    return [nodes, structures, brackets];
-	}
-	
-	exports.eraseNode = eraseNode;
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.selectedMoveStructureUp = exports.selectedMoveStructureMove = exports.selectedMoveStructureDown = exports.selectedStructureDelete = exports.rectUp = exports.rectMove = undefined;
+	exports.searchFourCorner = exports.setBracket = exports.createRepeatBracket = undefined;
 	
 	var _EaselJS = __webpack_require__(3);
 	
@@ -45651,292 +45617,7 @@
 	
 	var stageEdit = _interopRequireWildcard(_edit_stage);
 	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function rectMove(startX, startY, endX, endY, stage) {
-	    var rect = new createjs.Shape();
-	    rect.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black"));
-	    rect.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
-	    if (startX < endX || startY < endY) {
-	        rect.graphics.drawRect(startX, startY, endX - startX, endY - startY);
-	    } else if (startX > endX && startY > endY) {
-	        rect.graphics.drawRect(endX, endY, startX - endX, startY - endY);
-	    }
-	
-	    rect.alpha = 0.3;
-	    stageEdit.setStage(stage, rect);
-	    stageEdit.stageUpdate(stage);
-	
-	    return rect;
-	}
-	
-	function rectUp(selectRange, startX, startY, endX, endY, nodes, moveStructureNodes, stage) {
-	    for (var i = 0; i < nodes.length; i++) {
-	        if (startX < endX || startY < endY) {
-	            if (startX < nodes[i].sprite.x && endX > nodes[i].sprite.x && startY < nodes[i].sprite.y && endY > nodes[i].sprite.y) {
-	                nodes[i].sprite.highlightShape(nodes[i].sprite);
-	                moveStructureNodes.push(nodes[i].sprite);
-	            }
-	        } else if (startX > endX && startY > endY) {
-	            if (endX < nodes[i].sprite.x && startX > nodes[i].sprite.x && endY < nodes[i].sprite.y && startY > nodes[i].sprite.y) {
-	                nodes[i].sprite.highlightShape(nodes[i].sprite);
-	                moveStructureNodes.push(nodes[i].sprite);
-	            }
-	        }
-	    }
-	    stageEdit.removeStage(stage, selectRange);
-	    stageEdit.stageUpdate(stage);
-	
-	    return moveStructureNodes;
-	}
-	
-	function selectedStructureDelete(moveStructureNodes, nodes, structures, stage) {
-	    var res = confirm("Do you delete Selected structure?");
-	    if (res == true) {
-	        for (var i = 0; i < moveStructureNodes.length; i++) {
-	            for (var j = 0; j < nodes.length; j++) {
-	                if (moveStructureNodes[i] === nodes[j].sprite) {
-	                    stageEdit.removeStage(stage, moveStructureNodes[i]);
-	                    nodes.splice(j, 1);
-	                }
-	            }
-	            for (var _j = 0; _j < structures.length; _j++) {
-	                if (moveStructureNodes[i] === structures[_j].parentNode.sprite || moveStructureNodes[i] === structures[_j].childNode.sprite) {
-	                    stageEdit.removeStage(stage, structures[_j].edge);
-	                    stageEdit.removeStage(stage, structures[_j].edgeInformation);
-	                    structures.splice(_j, 1);
-	                    _j--;
-	                }
-	            }
-	        }
-	        return [nodes, structures, res];
-	    }
-	}
-	
-	function selectedMoveStructureDown(moveStructureNodes, structures, stage) {
-	    var moveStructureXPoints = [];
-	    var moveStructureYPoints = [];
-	    var targetStructures = [];
-	    for (var i = 0; i < moveStructureNodes.length; i++) {
-	        moveStructureXPoints.push(stage.mouseX - moveStructureNodes[i].x);
-	        moveStructureYPoints.push(stage.mouseY - moveStructureNodes[i].y);
-	    }
-	    for (var _i = 0; _i < moveStructureNodes.length; _i++) {
-	        for (var j = 0; j < structures.length; j++) {
-	            if (moveStructureNodes[_i] === structures[j].parentNode.sprite || moveStructureNodes[_i] === structures[j].childNode.sprite) {
-	                targetStructures.push(structures[j]);
-	            }
-	        }
-	    }
-	
-	    return {
-	        moveStructurePoints: [moveStructureXPoints, moveStructureYPoints],
-	        targetStructures: targetStructures
-	    };
-	}
-	
-	function selectedMoveStructureMove(pointObj, moveStructureNodes, stage, canvas) {
-	    var movePointX = null;
-	    var movePointY = null;
-	    var usedStructure = [];
-	    for (var i = 0; i < moveStructureNodes.length; i++) {
-	        movePointX = stage.mouseX - pointObj.moveStructurePoints[0][i];
-	        movePointY = stage.mouseY - pointObj.moveStructurePoints[1][i];
-	
-	        if (movePointX > 0 + 10 && movePointX < canvas.width - 10) {
-	            moveStructureNodes[i].x = stage.mouseX - pointObj.moveStructurePoints[0][i];
-	            moveStructureNodes[i].parentNode.xCood = stage.mouseX - pointObj.moveStructurePoints[0][i];
-	        }
-	        if (movePointY > 0 + 10 && movePointY < canvas.height - 10) {
-	            moveStructureNodes[i].y = stage.mouseY - pointObj.moveStructurePoints[1][i];
-	            moveStructureNodes[i].parentNode.yCood = stage.mouseY - pointObj.moveStructurePoints[1][i];
-	        }
-	    }
-	    for (var _i2 = 0; _i2 < pointObj.targetStructures.length; _i2++) {
-	        var counter = 0;
-	        for (var j = 0; j < usedStructure.length; j++) {
-	            if (pointObj.targetStructures[_i2] === usedStructure[j]) counter++;
-	        }
-	        if (counter === 0) {
-	            stageEdit.removeStage(stage, pointObj.targetStructures[_i2].edge);
-	            var line = new createjs.Shape();
-	            line.graphics.setStrokeStyle(3).beginStroke("#000").moveTo(pointObj.targetStructures[_i2].parentNode.sprite.x, pointObj.targetStructures[_i2].parentNode.sprite.y).lineTo(pointObj.targetStructures[_i2].childNode.sprite.x, pointObj.targetStructures[_i2].childNode.sprite.y);
-	            pointObj.targetStructures[_i2].edge = line;
-	            stageEdit.stageEdge(pointObj.targetStructures[_i2], stage);
-	            if (pointObj.targetStructures[_i2].edgeInformation != null) {
-	                pointObj.targetStructures[_i2].edgeInformation.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                pointObj.targetStructures[_i2].edgeInformation.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
-	            }
-	            if (pointObj.targetStructures[_i2].parentNode.bracket != null || pointObj.targetStructures[_i2].childNode.bracket != null) {
-	                if (pointObj.targetStructures[_i2].parentNode.bracket != null) {
-	                    if (pointObj.targetStructures[_i2].parentNode.bracket.startBracket.structure === pointObj.targetStructures[_i2]) {
-	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
-	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape.x = pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.x + 10;
-	                        pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape.y = pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape.y + 40;
-	                    } else if (pointObj.targetStructures[_i2].parentNode.bracket.endBracket.structure === pointObj.targetStructures[_i2]) {
-	                        pointObj.targetStructures[_i2].parentNode.bracket.endBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                        pointObj.targetStructures[_i2].parentNode.bracket.endBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
-	                    }
-	                } else if (pointObj.targetStructures[_i2].childNode.bracket != null) {
-	                    if (pointObj.targetStructures[_i2].childNode.bracket.startBracket.structure === pointObj.targetStructures[_i2]) {
-	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
-	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape.x = pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.x + 10;
-	                        pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape.y = pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape.y + 40;
-	                    } else if (pointObj.targetStructures[_i2].childNode.bracket.endBracket.structure === pointObj.targetStructures[_i2]) {
-	                        pointObj.targetStructures[_i2].childNode.bracket.endBracket.bracketShape.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	                        pointObj.targetStructures[_i2].childNode.bracket.endBracket.bracketShape.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
-	                    }
-	                }
-	            }
-	
-	            // if (pointObj.targetStructures[i].parentNode.bracket != null || pointObj.targetStructures[i].childNode.bracket != null) {
-	            //     if (pointObj.targetStructures[i].parentNode.bracket != null) {
-	            //         pointObj.targetStructures[i].parentNode.bracket.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	            //         pointObj.targetStructures[i].parentNode.bracket.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 - 30;
-	            //         if(pointObj.targetStructures[i].parentNode.numberOfRepeatShape != null){
-	            //             pointObj.targetStructures[i].parentNode.numberOfRepeatShape.x = pointObj.targetStructures[i].parentNode.bracket.x + 10;
-	            //             pointObj.targetStructures[i].parentNode.numberOfRepeatShape.y = pointObj.targetStructures[i].parentNode.bracket.y + 40;
-	            //         }
-	            //     }
-	            //     else if(pointObj.targetStructures[i].childNode.bracket != null){
-	            //         pointObj.targetStructures[i].childNode.bracket.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
-	            //         pointObj.targetStructures[i].childNode.bracket.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2 -30;
-	            //     }
-	            // }
-	            //
-	            // if(pointObj.targetStructures[i].parentNode.numberOfRepeatShape != null || pointObj.targetStructures[i].childNode.numberOfRepeatShape != null){
-	            //
-	            //     else if(pointObj.targetStructures[i].childNode.numberOfRepeatShape != null){
-	            //         pointObj.targetStructures[i].childNode.numberOfRepeatShape.x = pointObj.targetStructures[i].bracket.x + 10;
-	            //         pointObj.targetStructures[i].childNode.numberOfRepeatShape.y = pointObj.targetStructures[i].bracket.y + 40;
-	            //     }
-	            // }
-	            usedStructure.push(pointObj.targetStructures[_i2]);
-	            stageEdit.stageUpdate(stage);
-	        }
-	    }
-	}
-	
-	function selectedMoveStructureUp(moveStructureNodes) {
-	    for (var i = 0; i < moveStructureNodes.length; i++) {
-	        moveStructureNodes[i].returnShape(moveStructureNodes[i]);
-	    }
-	}
-	
-	exports.rectMove = rectMove;
-	exports.rectUp = rectUp;
-	exports.selectedStructureDelete = selectedStructureDelete;
-	exports.selectedMoveStructureDown = selectedMoveStructureDown;
-	exports.selectedMoveStructureMove = selectedMoveStructureMove;
-	exports.selectedMoveStructureUp = selectedMoveStructureUp;
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.createIUPAC = undefined;
-	
-	var _edge_information_parser = __webpack_require__(34);
-	
-	var ANOMER = /a|b/;
-	var N_ACETYL_LOWWER = /nac/g;
-	var N_ACETYL_UPPER = "NAc";
-	
-	function createIUPAC(nodes, structures) {
-	    var textArea = document.getElementById("kcf_format");
-	    textArea.value = "";
-	    var IUPACFormat = [];
-	    var rootNode = nodes[0];
-	    for (var i = 0; i < structures.length; i++) {
-	        if (rootNode.xCood < structures[i].parentNode.xCood) {
-	            rootNode = structures[i].parentNode;
-	        }
-	    }
-	    var counter = rootNode.childNode.length - 1;
-	    IUPACFormat.push("?-");
-	    recursiveSearchStructure(rootNode, structures, IUPACFormat, counter);
-	    if (IUPACFormat[IUPACFormat.length - 1] === "(") {
-	        IUPACFormat.splice(IUPACFormat.length - 1, 1);
-	    }
-	    while (IUPACFormat.length != 0) {
-	        textArea.value += IUPACFormat.pop();
-	    }
-	    // for(let i = 0; i < IUPACFormat.length; i++){
-	    //     textArea.value += IUPACFormat[i];
-	    // }
-	}
-	
-	function recursiveSearchStructure(parentNode, structures, IUPACFormat, counter) {
-	    var name = parentNode.name.charAt(0).toUpperCase() + parentNode.name.slice(1);
-	    if (N_ACETYL_LOWWER.test(name)) {
-	        name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
-	    }
-	    IUPACFormat.push(name);
-	    var parentParsed = null;
-	    var childParsed = null;
-	    // counter = parentNode.childNode.length - 1;
-	    if (parentNode.childNode.length === 0) {
-	        if (counter != 0) {
-	            IUPACFormat.push("(");
-	        }
-	        return;
-	    }
-	    for (var i = 0; i < parentNode.childNode.length; i++) {
-	        if (parentNode.childNode.length > 1) {
-	            if (counter > 0) {
-	                IUPACFormat.push(")");
-	                counter--;
-	            }
-	        }
-	
-	        for (var j = 0; j < structures.length; j++) {
-	            if (parentNode === structures[j].parentNode && parentNode.childNode[i] === structures[j].childNode) {
-	                var parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[j]);
-	                parentParsed = parsedEdgeInformations[0];
-	                childParsed = parsedEdgeInformations[1];
-	                var anomerPosition = parentParsed.match(ANOMER);
-	                if (anomerPosition === null) {
-	                    anomerPosition = "?";
-	                }
-	                IUPACFormat.push(childParsed);
-	                IUPACFormat.push(anomerPosition);
-	                recursiveSearchStructure(parentNode.childNode[i], structures, IUPACFormat, parentNode.childNode[i].childNode.length - 1);
-	                break;
-	            }
-	        }
-	    }
-	}
-	exports.createIUPAC = createIUPAC;
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.createRepeatBracket = undefined;
-	
-	var _EaselJS = __webpack_require__(3);
-	
-	var createjs = _interopRequireWildcard(_EaselJS);
-	
-	var _monosaccharide_helper = __webpack_require__(21);
-	
-	var _edit_stage = __webpack_require__(24);
-	
-	var stageEdit = _interopRequireWildcard(_edit_stage);
-	
-	var _bracket = __webpack_require__(42);
+	var _bracket = __webpack_require__(35);
 	
 	var _bracket2 = _interopRequireDefault(_bracket);
 	
@@ -45953,64 +45634,35 @@
 	    }
 	    var resultsFourCorner = searchFourCorner(moveStructureNodes);
 	    setBracket(resultsFourCorner, structures, bracketObj, n, stage);
+	    for (var _i = 0; _i < moveStructureNodes.length; _i++) {
+	        bracketObj.repeatNodes.push(moveStructureNodes[_i]);
+	    }
+	    var rootNode = searchRootNode(structures);
+	    var repeatKey = [];
+	    sortRepeatNode(bracketObj, rootNode, repeatKey);
+	    bracketObj.repeatNodes = repeatKey;
 	    return bracketObj;
+	}
 	
-	    // let mostRightNode = moveStructureNodes[0].parentNode;
-	    // let mostLeftNode = moveStructureNodes[0].parentNode;
-	    // let childStructures = [];
-	    // let yDistance = -30;
-	    // let rightCounter = 0;
-	    // let bracketObj = new Braket();
-	    //
-	    // for(let i = 1; i < moveStructureNodes.length; i++){
-	    //     if(mostRightNode.xCood < moveStructureNodes[i].parentNode.xCood){
-	    //         mostRightNode = moveStructureNodes[i].parentNode;
-	    //     }
-	    //     if(mostLeftNode.xCood > moveStructureNodes[i].parentNode.xCood){
-	    //         mostLeftNode = moveStructureNodes[i].parentNode;
-	    //     }
-	    // }
-	    //
-	    // for(let i = 0; i < structures.length; i++){
-	    //     if(mostRightNode === structures[i].childNode){
-	    //         createRightBracket(mostRightNode, structures[i], yDistance, stage, bracketObj);
-	    //         rightCounter++;
-	    //     }
-	    //     if(mostLeftNode === structures[i].parentNode){
-	    //         childStructures.push(structures[i]);
-	    //     }
-	    // }
-	    //
-	    // if(rightCounter === 0){
-	    //     createRightBracket(mostRightNode, null, yDistance, stage, bracketObj);
-	    // }
-	    // if(childStructures.length === 0){
-	    //     createLeftBracket(mostLeftNode, null, yDistance, stage, bracketObj);
-	    // }
-	    //
-	    // let leftChildNode = childStructures[0].childNode;
-	    // for(let i = 1; i < childStructures.length; i++){
-	    //     if(leftChildNode.xCood > childStructures[i].childNode.xCood){
-	    //         leftChildNode = childStructures[i].childNode;
-	    //     }
-	    //     else if(leftChildNode.xCood === childStructures[i].childNode.xCood) {
-	    //         if (leftChildNode.yCood > childStructures[i].childNode.yCood) {
-	    //             leftChildNode = childStructures[i].childNode;
-	    //         }
-	    //
-	    //     }
-	    // }
-	    //
-	    // for(let i = 0; i < structures.length; i++){
-	    //     if(leftChildNode === structures[i].childNode && mostLeftNode === structures[i].parentNode){
-	    //         createLeftBracket(mostLeftNode, structures[i], yDistance, stage, bracketObj)
-	    //     }
-	    // }
-	    // for(let i = 0; i < moveStructureNodes.length; i++){
-	    //     bracketObj.repeatNodes.push(moveStructureNodes[i].parentNode);
-	    // }
-	    //
-	    // return bracketObj;
+	function sortRepeatNode(bracketObj, parentNode, repeatKey) {
+	    for (var i = 0; i < bracketObj.repeatNodes.length; i++) {
+	        if (parentNode === bracketObj.repeatNodes[i]) {
+	            repeatKey.push(parentNode);
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < parentNode.childNode.length; _i2++) {
+	        sortRepeatNode(bracketObj, parentNode.childNode[_i2], repeatKey);
+	    }
+	}
+	
+	function searchRootNode(structures) {
+	    var rootNode = structures[0].parentNode;
+	    for (var i = 1; i < structures.length; i++) {
+	        if (rootNode.xCood < structures[i].parentNode.xCood) {
+	            rootNode = structures[i].parentNode;
+	        }
+	    }
+	    return rootNode;
 	}
 	
 	function setBracket(fourCorner, structures, bracketObj, n, stage) {
@@ -46029,9 +45681,9 @@
 	
 	    counter = 0;
 	
-	    for (var _i = 0; _i < structures.length; _i++) {
-	        if (fourCorner[3] === structures[_i].parentNode) {
-	            createEndBracket(fourCorner, structures[_i], bracketObj, distance, stage);
+	    for (var _i3 = 0; _i3 < structures.length; _i3++) {
+	        if (fourCorner[3] === structures[_i3].parentNode) {
+	            createEndBracket(fourCorner, structures[_i3], bracketObj, distance, stage);
 	            counter++;
 	            break;
 	        }
@@ -46051,9 +45703,10 @@
 	    if (startBracketStructure === null) {
 	        n.x = fourCorner[1].xCood + distance;
 	        n.y = fourCorner[2].yCood - 5;
+	    } else {
+	        n.x = (startBracketStructure.edge.graphics._activeInstructions[0].x + startBracketStructure.edge.graphics._activeInstructions[1].x) / 2 + distance;
+	        n.y = fourCorner[2].yCood + distance - 5;
 	    }
-	    n.x = (startBracketStructure.edge.graphics._activeInstructions[0].x + startBracketStructure.edge.graphics._activeInstructions[1].x) / 2 + distance;
-	    n.y = fourCorner[2].yCood + distance - 5;
 	}
 	
 	function createEndBracket(fourCorner, structure, bracketObj, distance, stage) {
@@ -46104,62 +45757,534 @@
 	    return [mostTopNode, mostRightNode, mostBottomNode, mostLeftNode];
 	}
 	
-	function createRightBracket(mostRightNode, structure, yDistance, stage, bracketObj) {
-	    //     let bracket = new createjs.Text("]", "50px serif", getLineColor("black"));
-	    //     if(structure === null){
-	    //         bracket.x = mostRightNode.xCood + 50;
-	    //         bracket.y = mostRightNode.yCood + yDistance;
-	    //     }
-	    //     else {
-	    //         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
-	    //         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
-	    //         bracketObj.startBracket.structure = structure;
-	    //         structure.bracket = true;
-	    //     }
-	    //     bracketObj.startBracket.bracketShape = bracket;
-	    //     mostRightNode.bracket = bracketObj;
-	    //     bracketObj.startBracket.node = mostRightNode;
-	    //     numberOfRepeat(bracket, mostRightNode, stage, bracketObj);
-	    //     upStage(bracket, stage);
-	    // }
-	    //
-	    // function createLeftBracket(mostLeftNode ,structure, yDistance, stage, bracketObj){
-	    //     let bracket = new createjs.Text("[", "50px serif", getLineColor("black"));
-	    //     if(structure === null){
-	    //         bracket.x = mostLeftNode.xCood - 50;
-	    //         bracket.y = mostLeftNode.yCood + yDistance;
-	    //     }
-	    //     else {
-	    //         bracket.x = (structure.edge.graphics._activeInstructions[0].x + structure.edge.graphics._activeInstructions[1].x) / 2;
-	    //         bracket.y = (structure.edge.graphics._activeInstructions[0].y + structure.edge.graphics._activeInstructions[1].y) / 2 + yDistance;
-	    //         bracketObj.endBracket.structure = structure;
-	    //         structure.bracket = true;
-	    //     }
-	    //     bracketObj.endBracket.bracketShape = bracket;
-	    //     mostLeftNode.bracket = bracketObj;
-	    //     bracketObj.endBracket.node = mostLeftNode;
-	    //     upStage(bracket, stage);
-	
-	}
-	
-	function numberOfRepeat(bracket, mostRightNode, stage, bracketObj) {
-	    // let xDistance = 10;
-	    // let yDistance = 40;
-	    // let n = document.getElementById("repeatN").value;
-	    // let repeat = new createjs.Text(n, "20px serif", getLineColor("black"));
-	    // repeat.x = bracket.x + xDistance;
-	    // repeat.y = bracket.y + yDistance;
-	    // bracketObj.startBracket.numOfRepeatShape = repeat;
-	    // bracketObj.startBracket.numOfRepeatText = n;
-	    // upStage(repeat, stage);
-	}
-	
 	function upStage(bracket, stage) {
 	    stageEdit.setStage(stage, bracket);
 	    stageEdit.stageUpdate(stage);
 	}
 	
 	exports.createRepeatBracket = createRepeatBracket;
+	exports.setBracket = setBracket;
+	exports.searchFourCorner = searchFourCorner;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	"used strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.clearAll = undefined;
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function clearAll(nodes, structures, brackets, stage) {
+	    for (var i = 0; i < structures.length; i++) {
+	        stageEdit.removeStage(stage, structures[i].edge);
+	        stageEdit.removeStage(stage, structures[i].edgeInformation);
+	    }
+	    for (var j = 0; j < nodes.length; j++) {
+	        stageEdit.removeStage(stage, nodes[j].sprite);
+	        stageEdit.stageUpdate(stage);
+	    }
+	    for (var k = 0; k < brackets.length; k++) {
+	        stageEdit.removeStage(stage, brackets[k].startBracket.bracketShape);
+	        stageEdit.removeStage(stage, brackets[k].startBracket.numOfRepeatShape);
+	        stageEdit.removeStage(stage, brackets[k].endBracket.bracketShape);
+	        stageEdit.stageUpdate(stage);
+	    }
+	    stageEdit.stageUpdate(stage);
+	}
+	exports.clearAll = clearAll;
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createKCF = undefined;
+	
+	var _create_bracket = __webpack_require__(36);
+	
+	var TAB = "    ";
+	var NEW_LINE = "\n";
+	var COLON = ":";
+	var SLASH = "///";
+	var URL_TAB = "%20";
+	var URL_NEW_LINE = "%30";
+	var WAVE = "~";
+	
+	var SEPERATOR = new RegExp("-");
+	
+	function createKCF(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix) {
+	    if (nodes.length < 1) {
+	        alert("Please build glycan.");
+	        return;
+	    }
+	
+	    var rootNode = null;
+	
+	    for (var i = 0; i < nodes.length; i++) {
+	        var counter = 0;
+	        for (var j = 0; j < structures.length; j++) {
+	            if (nodes[i] === structures[j].childNode) {
+	                counter++;
+	            }
+	        }
+	        if (counter === 0) {
+	            rootNode = nodes[i];
+	        }
+	    }
+	    var nodeFormat = [];
+	    if (mode === 8) nodeFormat.push(TAB + rootNode.id + "" + TAB + rootNode.name + TAB + "0" + TAB + "0" + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + rootNode.id + "" + URL_TAB + rootNode.name + URL_TAB + "0" + URL_TAB + "0" + URL_NEW_LINE);
+	    nodeFormat = recursiveSetNode(rootNode, rootNode, nodeFormat, mode);
+	
+	    var edgeFormat = [];
+	    var childEdge = null;
+	    var parentEdge = null;
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (structures[_i].edgeInformationText.match(SEPERATOR)) {
+	            childEdge = RegExp.leftContext;
+	            parentEdge = RegExp.rightContext;
+	        }
+	        if (mode === 8) edgeFormat.push(TAB + structures[_i].structureId + "" + TAB + structures[_i].childNode.id + "" + ":" + childEdge + TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + NEW_LINE);
+	        if (mode === 9) edgeFormat.push(URL_TAB + structures[_i].structureId + "" + URL_TAB + structures[_i].childNode.id + "" + ":" + childEdge + URL_TAB + structures[_i].parentNode.id + "" + ":" + parentEdge + URL_NEW_LINE);
+	    }
+	
+	    var bracketFormat = [];
+	    if (brackets.length != 0) {
+	        for (var _i2 = 0; _i2 < brackets.length; _i2++) {
+	            var resultsFourCorner = (0, _create_bracket.searchFourCorner)(brackets[_i2].repeatNodes);
+	            var id = _i2 + 1;
+	            var relativeCoodLeftX = parseInt(resultsFourCorner[3].xCood) - parseInt(rootNode.xCood);
+	            var relativeCoodRightX = parseInt(resultsFourCorner[1].xCood) - parseInt(rootNode.xCood);
+	            var relativeCoodTopY = parseInt(resultsFourCorner[0].yCood) - parseInt(rootNode.yCood);
+	            var relativeCoodBottomY = parseInt(resultsFourCorner[2].yCood) - parseInt(rootNode.yCood);
+	            bracketFormat.push(TAB + id + "" + TAB + relativeCoodLeftX + "" + TAB + relativeCoodTopY + "" + TAB + relativeCoodLeftX + "" + TAB + relativeCoodBottomY + "" + NEW_LINE + TAB + id + "" + TAB + relativeCoodRightX + "" + TAB + relativeCoodBottomY + "" + TAB + relativeCoodRightX + "" + TAB + relativeCoodTopY + "" + NEW_LINE + TAB + id + "" + TAB + brackets[_i2].startBracket.numOfRepeatText + NEW_LINE);
+	        }
+	    }
+	
+	    KCFOut(nodeFormat, edgeFormat, bracketFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode);
+	}
+	
+	function recursiveSetNode(parentNode, rootNode, nodeFormat, mode) {
+	    for (var i = 0; i < parentNode.childNode.length; i++) {
+	        nodeFormat = nodePush(parentNode.childNode[i], rootNode, nodeFormat, mode);
+	        recursiveSetNode(parentNode.childNode[i], rootNode, nodeFormat, mode);
+	    }
+	    return nodeFormat;
+	}
+	
+	function nodePush(childNode, rootNode, nodeFormat, mode) {
+	    var relativeCoodX = childNode.xCood - rootNode.xCood;
+	    var reletiveCoodY = childNode.yCood - rootNode.yCood;
+	    if (mode === 8) nodeFormat.push(TAB + childNode.id + "" + TAB + childNode.name + TAB + relativeCoodX + TAB + reletiveCoodY + NEW_LINE);else if (mode === 9) nodeFormat.push(URL_TAB + childNode.id + "" + URL_TAB + childNode.name + URL_TAB + relativeCoodX + URL_TAB + reletiveCoodY + URL_NEW_LINE);
+	    return nodeFormat;
+	}
+	
+	function KCFOut(nodeFormat, edgeFormat, bracketFormat, nodes, structures, kindRunQuery, database, scoreMatrix, mode) {
+	    var textArea = document.getElementById("kcf_format");
+	    var str = void 0;
+	    var str2 = void 0;
+	    var str3 = "";
+	    var url = void 0;
+	    if (mode === 8) {
+	        str = "ENTRY" + TAB + TAB + TAB + "Glycan" + NEW_LINE + "NODE" + TAB + TAB + nodes.length + NEW_LINE;
+	        str2 = "EDGE" + TAB + TAB + structures.length + NEW_LINE;
+	    } else if (mode === 9) {
+	        var date = new Date();
+	        url = "http://www.rings.t.soka.ac.jp/cgi-bin/runmatching.pl?DrawRINGS" + date.getTime() + ".txt~";
+	        str = "ENTRY" + URL_TAB + "Glycan" + URL_NEW_LINE + "NODE" + URL_TAB + nodes.length + URL_NEW_LINE;
+	        str2 = "EDGE" + URL_TAB + structures.length + URL_NEW_LINE;
+	    }
+	
+	    for (var i = 0; i < nodeFormat.length; i++) {
+	        str += nodeFormat[i];
+	    }
+	
+	    for (var _i3 = 0; _i3 < edgeFormat.length; _i3++) {
+	        str2 += edgeFormat[_i3];
+	    }
+	
+	    if (bracketFormat.length != 0) {
+	        str3 = "BRACKET";
+	        for (var _i4 = 0; _i4 < bracketFormat.length; _i4++) {
+	            str3 += bracketFormat[_i4];
+	        }
+	    }
+	
+	    if (mode === 8) {
+	        textArea.value = str + str2 + str3 + SLASH;
+	    } else if (mode === 9) {
+	        var runQueryUrl = url + str + str2 + SLASH + WAVE + scoreMatrix.value + WAVE;
+	        var kindRunQueryResultType = void 0;
+	        for (var _i5 = 0; _i5 < kindRunQuery.length; _i5++) {
+	            if (kindRunQuery[_i5].checked == true) {
+	                kindRunQueryResultType = kindRunQuery[_i5].value;
+	            }
+	        }
+	        runQueryUrl += kindRunQueryResultType + WAVE + database.value;
+	
+	        window.open(runQueryUrl, "_blank");
+	    }
+	}
+	
+	exports.createKCF = createKCF;
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	function textClear() {
+	    var res = confirm("Textarea clear all?");
+	    if (res === true) {
+	        var textArea = document.getElementById("kcf_format");
+	        textArea.value = "KCF-Text";
+	    }
+	}
+	
+	exports.textClear = textClear;
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.eraseNode = undefined;
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _create_bracket = __webpack_require__(36);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function eraseNode(target, nodes, structures, brackets, stage) {
+	    var rootNode = nodes[0];
+	    var nodes_id = 1;
+	    var structure_id = 1;
+	    for (var i = 0; i < structures.length; i++) {
+	        if (rootNode.xCood < structures[i].parentNode.xCood) {
+	            rootNode = structures[i].parentNode;
+	        }
+	    }
+	    recursiveSearchChildNode(rootNode, target);
+	    for (var _i = 0; _i < nodes.length; _i++) {
+	        if (target === nodes[_i].sprite) {
+	            stageEdit.removeStage(stage, target);
+	            nodes.splice(_i, 1);
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < structures.length; _i2++) {
+	        if (target === structures[_i2].parentNode.sprite || target === structures[_i2].childNode.sprite) {
+	            stageEdit.removeStage(stage, structures[_i2].edgeInformation);
+	            stageEdit.removeStage(stage, structures[_i2].edge);
+	            structures.splice(_i2, 1);
+	            _i2--;
+	        }
+	    }
+	    for (var _i3 = 0; _i3 < nodes.length; _i3++) {
+	        nodes[_i3].id = nodes_id;
+	        nodes_id++;
+	    }
+	    for (var _i4 = 0; _i4 < structures.length; _i4++) {
+	        structures[_i4].structureId = structure_id;
+	        structure_id++;
+	    }
+	    for (var _i5 = 0; _i5 < brackets.length; _i5++) {
+	        var repeatNodes = brackets[_i5];
+	        for (var j = 0; j < repeatNodes.repeatNodes.length; j++) {
+	            if (target.parentNode === repeatNodes.repeatNodes[j]) {
+	                stageEdit.removeStage(stage, repeatNodes.startBracket.bracketShape);
+	                stageEdit.removeStage(stage, repeatNodes.endBracket.bracketShape);
+	                stageEdit.removeStage(stage, repeatNodes.startBracket.numOfRepeatShape);
+	                stageEdit.stageUpdate(stage);
+	                var resultsFourCorner = (0, _create_bracket.searchFourCorner)(repeatNodes.repeatNodes);
+	                if (target.parentNode === resultsFourCorner[1]) {
+	                    resultsFourCorner[3].bracket = null;
+	                } else if (target.parentNode === resultsFourCorner[3]) {
+	                    resultsFourCorner[_i5].bracket = null;
+	                } else {
+	                    resultsFourCorner[3].bracket = null;
+	                    resultsFourCorner[1].bracket = null;
+	                }
+	            }
+	        }
+	        brackets.splice(_i5, 1);
+	        _i5--;
+	    }
+	    return [nodes, structures, brackets];
+	}
+	
+	function recursiveSearchChildNode(parentNode, target) {
+	    if (parentNode.childNode.length === 0) {
+	        return;
+	    } else {
+	        for (var i = 0; i < parentNode.childNode.length; i++) {
+	            if (parentNode.childNode[i].sprite === target) {
+	                parentNode.childNode.splice(i, 1);
+	                i--;
+	            }
+	        }
+	        if (parentNode.childNode.length === 0) {
+	            return;
+	        } else {
+	            for (var _i6 = 0; _i6 < parentNode.childNode.length; _i6++) {
+	                recursiveSearchChildNode(parentNode.childNode[_i6], target);
+	            }
+	        }
+	    }
+	}
+	
+	exports.eraseNode = eraseNode;
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.selectedMoveStructureUp = exports.selectedMoveStructureMove = exports.selectedMoveStructureDown = exports.selectedStructureDelete = exports.rectUp = exports.rectMove = undefined;
+	
+	var _EaselJS = __webpack_require__(3);
+	
+	var createjs = _interopRequireWildcard(_EaselJS);
+	
+	var _monosaccharide_helper = __webpack_require__(21);
+	
+	var _edit_stage = __webpack_require__(24);
+	
+	var stageEdit = _interopRequireWildcard(_edit_stage);
+	
+	var _create_bracket = __webpack_require__(36);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	/**
+	 * "Select" ドラッグして四角を書いて行く処理を行う
+	 * 呼び出し: ../draw_app.js selectMove
+	 * @param startX: mousedownしたときのXの相対座標
+	 * @param startY: mousedownしたときのYの相対座標
+	 * @param endX: ドラッグして動いているmouseのXの相対座標
+	 * @param endY: ドラッグして動いているmouseのYの相対座標
+	 * @param stage: EaselJSのstage
+	 * @returns rect: 四角のshapeの
+	 */
+	function rectMove(startX, startY, endX, endY, stage) {
+	    var rect = new createjs.Shape();
+	    rect.graphics.beginStroke((0, _monosaccharide_helper.getLineColor)("black"));
+	    rect.graphics.beginFill(_monosaccharide_helper.MONOSACCHARIDE_COLOR.WHITE);
+	    if (startX < endX || startY < endY) {
+	        rect.graphics.drawRect(startX, startY, endX - startX, endY - startY);
+	    } else if (startX > endX && startY > endY) {
+	        rect.graphics.drawRect(endX, endY, startX - endX, startY - endY);
+	    }
+	
+	    rect.alpha = 0.3;
+	    stageEdit.setStage(stage, rect);
+	    stageEdit.stageUpdate(stage);
+	
+	    return rect;
+	}
+	
+	/**
+	 * "Select" 選択範囲内のNodeを選択状態にし、そのNodeだけの配列を作る。また四角を削除する
+	 * 呼び出し: ../draw_app.js selectUp
+	 * @param selectRange: 四角のshape
+	 * @param startX: mousedownしたときのXの相対座標
+	 * @param startY: mousedownしたときのYの相対座標
+	 * @param endX: ドラッグ終わった後の最終Xの相対座標
+	 * @param endY: ドラッグ終わった後の最終Yの相対座標
+	 * @param nodes: canvas上に描画されているNode全てを格納している配列
+	 * @param stage: EaselJSのstage
+	 * @returns moveStructureNodes: 選択範囲内のNodeをまとめた配列
+	 */
+	
+	function rectUp(selectRange, startX, startY, endX, endY, nodes, stage) {
+	    var moveStructureNodes = [];
+	    for (var i = 0; i < nodes.length; i++) {
+	        if (startX < endX || startY < endY) {
+	            if (startX < nodes[i].sprite.x && endX > nodes[i].sprite.x && startY < nodes[i].sprite.y && endY > nodes[i].sprite.y) {
+	                nodes[i].sprite.highlightShape(nodes[i].sprite);
+	                moveStructureNodes.push(nodes[i].sprite);
+	            }
+	        } else if (startX > endX && startY > endY) {
+	            if (endX < nodes[i].sprite.x && startX > nodes[i].sprite.x && endY < nodes[i].sprite.y && startY > nodes[i].sprite.y) {
+	                nodes[i].sprite.highlightShape(nodes[i].sprite);
+	                moveStructureNodes.push(nodes[i].sprite);
+	            }
+	        }
+	    }
+	    stageEdit.removeStage(stage, selectRange);
+	    stageEdit.stageUpdate(stage);
+	
+	    return moveStructureNodes;
+	}
+	
+	/**
+	 * "Select" 選択された範囲を削除する処理を行う
+	 * 呼び出し: ../draw_app.js selectStructureDelete
+	 * @param moveStructureNodes: 選択範囲内のNodeをまとめた配列
+	 * @param nodes: canvas上に描画されているNode全てを格納している配列
+	 * @param structures: canvas上に描画されているStructure全てを格納している配列
+	 * @param stage: EaselJSのstage
+	 * @returns [Array, Array, Boolean]: nodes: canvasに残っているNodeの全てをまとめた配列。structures: canvas方に残ったStructureを全てまとめた配列。 res: ユーザーへ問いかけへの返答
+	 */
+	function selectedStructureDelete(moveStructureNodes, nodes, structures, stage) {
+	    var res = confirm("Do you delete Selected structure?");
+	    if (res == true) {
+	        for (var i = 0; i < moveStructureNodes.length; i++) {
+	            for (var j = 0; j < nodes.length; j++) {
+	                if (moveStructureNodes[i] === nodes[j].sprite) {
+	                    stageEdit.removeStage(stage, moveStructureNodes[i]);
+	                    nodes.splice(j, 1);
+	                }
+	            }
+	            for (var _j = 0; _j < structures.length; _j++) {
+	                if (moveStructureNodes[i] === structures[_j].parentNode.sprite || moveStructureNodes[i] === structures[_j].childNode.sprite) {
+	                    stageEdit.removeStage(stage, structures[_j].edge);
+	                    stageEdit.removeStage(stage, structures[_j].edgeInformation);
+	                    structures.splice(_j, 1);
+	                    _j--;
+	                }
+	            }
+	        }
+	        return [nodes, structures, res];
+	    }
+	}
+	
+	/**
+	 * "Select" 選択した構造を移動するときの処理
+	 * 呼び出し: ../draw_app.js selectMoveStructureDown
+	 * @param moveStructureNodes: 選択範囲内のNodeをまとめた配列
+	 * @param structures: canvas上に描画されているStructure全てを格納している配列
+	 * @param stage: EaselJSのstage
+	 * @returns {{moveStructurePoints: [Array, Array], targetStructures: Array}} moveStructurePoints: 起点となる座標　targetStructure: 選択範囲内のStructureオブジェクト
+	 */
+	function selectedMoveStructureDown(moveStructureNodes, structures, stage) {
+	    var moveStructureXPoints = [];
+	    var moveStructureYPoints = [];
+	    var targetStructures = [];
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        moveStructureXPoints.push(stage.mouseX - moveStructureNodes[i].x);
+	        moveStructureYPoints.push(stage.mouseY - moveStructureNodes[i].y);
+	    }
+	    for (var _i = 0; _i < moveStructureNodes.length; _i++) {
+	        for (var j = 0; j < structures.length; j++) {
+	            if (moveStructureNodes[_i] === structures[j].parentNode.sprite || moveStructureNodes[_i] === structures[j].childNode.sprite) {
+	                targetStructures.push(structures[j]);
+	            }
+	        }
+	    }
+	
+	    return {
+	        moveStructurePoints: [moveStructureXPoints, moveStructureYPoints],
+	        targetStructures: targetStructures
+	    };
+	}
+	
+	/**
+	 * "Select" 選択された構造をドラッグしていると時の処理
+	 * 呼び出し: ../draw_app.js selectMoveStructureMove
+	 * @param pointObj:　{{moveStructurePoints: [Array, Array], targetStructures: Array}} moveStructurePoints: 起点となる座標　targetStructure: 選択範囲内のStructureオブジェクト
+	 * @param moveStructureNodes: 選択範囲内のNode
+	 * @param structures: canvas上に描画されているStructure全てを格納している配列
+	 * @param stage: EaselJSのstage
+	 * @param canvas: HTML5のcanvas
+	 */
+	
+	function selectedMoveStructureMove(pointObj, moveStructureNodes, structures, stage, canvas) {
+	    var movePointX = null;
+	    var movePointY = null;
+	    var usedStructure = [];
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        movePointX = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	        movePointY = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	
+	        if (movePointX > 0 + 10 && movePointX < canvas.width - 10) {
+	            moveStructureNodes[i].x = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	            moveStructureNodes[i].parentNode.xCood = stage.mouseX - pointObj.moveStructurePoints[0][i];
+	        }
+	        if (movePointY > 0 + 10 && movePointY < canvas.height - 10) {
+	            moveStructureNodes[i].y = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	            moveStructureNodes[i].parentNode.yCood = stage.mouseY - pointObj.moveStructurePoints[1][i];
+	        }
+	    }
+	    for (var _i2 = 0; _i2 < pointObj.targetStructures.length; _i2++) {
+	        var counter = 0;
+	        for (var j = 0; j < usedStructure.length; j++) {
+	            if (pointObj.targetStructures[_i2] === usedStructure[j]) counter++;
+	        }
+	        if (counter === 0) {
+	            stageEdit.removeStage(stage, pointObj.targetStructures[_i2].edge);
+	            var line = new createjs.Shape();
+	            line.graphics.setStrokeStyle(3).beginStroke("#000").moveTo(pointObj.targetStructures[_i2].parentNode.sprite.x, pointObj.targetStructures[_i2].parentNode.sprite.y).lineTo(pointObj.targetStructures[_i2].childNode.sprite.x, pointObj.targetStructures[_i2].childNode.sprite.y);
+	            pointObj.targetStructures[_i2].edge = line;
+	            stageEdit.stageEdge(pointObj.targetStructures[_i2], stage);
+	            if (pointObj.targetStructures[_i2].edgeInformation != null) {
+	                pointObj.targetStructures[_i2].edgeInformation.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
+	                pointObj.targetStructures[_i2].edgeInformation.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
+	            }
+	            if (pointObj.targetStructures[_i2].parentNode.bracket != null) {
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].parentNode.bracket.startBracket.bracketShape);
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape);
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].parentNode.bracket.endBracket.bracketShape);
+	                var resultsFourCorner = (0, _create_bracket.searchFourCorner)(pointObj.targetStructures[_i2].parentNode.bracket.repeatNodes);
+	                (0, _create_bracket.setBracket)(resultsFourCorner, structures, pointObj.targetStructures[_i2].parentNode.bracket, pointObj.targetStructures[_i2].parentNode.bracket.startBracket.numOfRepeatShape, stage);
+	            }
+	            if (pointObj.targetStructures[_i2].childNode.bracket != null) {
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].childNode.bracket.startBracket.bracketShape);
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape);
+	                stageEdit.removeStage(stage, pointObj.targetStructures[_i2].childNode.bracket.endBracket.bracketShape);
+	                var _resultsFourCorner = (0, _create_bracket.searchFourCorner)(pointObj.targetStructures[_i2].childNode.bracket.repeatNodes);
+	                (0, _create_bracket.setBracket)(_resultsFourCorner, structures, pointObj.targetStructures[_i2].childNode.bracket, pointObj.targetStructures[_i2].childNode.bracket.startBracket.numOfRepeatShape, stage);
+	            }
+	            usedStructure.push(pointObj.targetStructures[_i2]);
+	            stageEdit.stageUpdate(stage);
+	        }
+	    }
+	}
+	
+	/**
+	 * "Select" 選択した構造の移動が終了したときの処理
+	 * 呼び出し: ../draw_app.js selectMoveStructureUp
+	 * @param moveStructureNodes: 選択されているNodeの配列
+	 */
+	function selectedMoveStructureUp(moveStructureNodes) {
+	    for (var i = 0; i < moveStructureNodes.length; i++) {
+	        moveStructureNodes[i].returnShape(moveStructureNodes[i]);
+	    }
+	}
+	
+	exports.rectMove = rectMove;
+	exports.rectUp = rectUp;
+	exports.selectedStructureDelete = selectedStructureDelete;
+	exports.selectedMoveStructureDown = selectedMoveStructureDown;
+	exports.selectedMoveStructureMove = selectedMoveStructureMove;
+	exports.selectedMoveStructureUp = selectedMoveStructureUp;
 
 /***/ },
 /* 42 */
@@ -46167,33 +46292,314 @@
 
 	"use strict";
 	
-	var _EaselJS = __webpack_require__(3);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createIUPAC = undefined;
 	
-	var createjs = _interopRequireWildcard(_EaselJS);
+	var _edge_information_parser = __webpack_require__(34);
 	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _create_bracket = __webpack_require__(36);
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var _Modification = __webpack_require__(28);
 	
-	var Bracket = function Bracket() {
-	    _classCallCheck(this, Bracket);
+	var _Modification2 = _interopRequireDefault(_Modification);
 	
-	    this.startBracket = {
-	        bracketShape: null,
-	        structure: null,
-	        numOfRepeatShape: null,
-	        numOfRepeatText: null,
-	        node: null
-	    };
-	    this.endBracket = {
-	        bracketShape: null,
-	        structure: null,
-	        node: null
-	    };
-	    this.repeatNodes = [];
-	};
+	var _sugar = __webpack_require__(22);
 	
-	module.exports = Bracket;
+	var _sugar2 = _interopRequireDefault(_sugar);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ANOMER = /a|b/;
+	var N_ACETYL_LOWWER = /nac/g;
+	var N_ACETYL_UPPER = "NAc";
+	var DOUBLE_SLASH = "//";
+	var SPACE_SEPARATOR = /\s+/;
+	var UNKNOWN = "?";
+	
+	function createIUPAC(nodes, structures, brackets) {
+	    var textArea = document.getElementById("kcf_format");
+	    textArea.value = "";
+	    var IUPACFormat = [];
+	    var rootNode = nodes[0];
+	    var usedNodes = [];
+	    var rootBracket = 0;
+	    var bracket = null;
+	    for (var i = 0; i < brackets.length; i++) {
+	        parsedBracket(brackets[i]);
+	    }
+	    for (var _i = 0; _i < structures.length; _i++) {
+	        if (rootNode.xCood < structures[_i].parentNode.xCood) {
+	            rootNode = structures[_i].parentNode;
+	        }
+	    }
+	    var counter = 0;
+	    for (var _i2 = 0; _i2 < brackets.length; _i2++) {
+	        bracket = brackets[_i2];
+	        for (var j = 0; j < bracket.repeatSugar.length; j++) {
+	            if (rootNode === bracket.repeatSugar[j]) {
+	                setStartBracket(IUPACFormat, bracket);
+	                rootBracket++;
+	            }
+	        }
+	    }
+	    IUPACFormat.push("(?1-");
+	    var childModification = [];
+	    for (var _i3 = 0; _i3 < rootNode.childNode.length; _i3++) {
+	        if (rootNode.childNode[_i3].sprite.constructor === _Modification2.default) {
+	            childModification.push(rootNode.childNode[_i3]);
+	        }
+	    }
+	    for (var _i4 = 0; _i4 < childModification.length; _i4++) {
+	        for (var _j = 0; _j < structures.length; _j++) {
+	            if (rootNode === structures[_j].parentNode && childModification[_i4] === structures[_j].childNode) {
+	                var parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[_j]);
+	                var childParsed = parsedEdgeInformations[1];
+	                var _name = childModification[_i4].name.charAt(0).toUpperCase() + childModification[_i4].name.slice(1);
+	                if (N_ACETYL_LOWWER.test(_name)) {
+	                    _name = _name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	                }
+	                IUPACFormat.push(_name);
+	                IUPACFormat.push(childParsed);
+	            }
+	        }
+	    }
+	    var name = rootNode.name.charAt(0).toUpperCase() + rootNode.name.slice(1);
+	    if (N_ACETYL_LOWWER.test(name)) {
+	        name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	    }
+	    IUPACFormat.push(name);
+	    usedNodes.push(rootNode);
+	    if (rootBracket != 0) {
+	        counter = setRecursiveRepeat(bracket, IUPACFormat, structures, counter, rootNode, "?", usedNodes);
+	        rootBracket = null;
+	    }
+	    // let parentNode = null;
+	    // for(let i = 0; i < usedNodes.length; i++){
+	    //     if(rootNode === usedNodes[i]){
+	    //
+	    //     }
+	    // }
+	    recursiveSearchStructure(rootNode, structures, brackets, IUPACFormat, counter, usedNodes);
+	    // if(IUPACFormat[IUPACFormat.length - 1] === "["){
+	    //     IUPACFormat.splice(IUPACFormat.length - 1,1);
+	    // }
+	    while (IUPACFormat.length != 0) {
+	        textArea.value += IUPACFormat.pop();
+	    }
+	}
+	
+	function setRecursiveRepeat(bracket, IUPACFormat, structures, counter, parentNode, repeatHed, usedNodes) {
+	    var childSugars = [];
+	    var childSugar = null;
+	    var check = 0;
+	    var childNodeModification = [];
+	    if (bracket.repeatSugar[bracket.repeatSugar.length - 1] === parentNode) {
+	        setEndBracket(IUPACFormat, repeatHed);
+	        return counter;
+	    } else {
+	        for (var i = 0; i < parentNode.childNode.length; i++) {
+	            if (parentNode.childNode[i].sprite.constructor === _sugar2.default) {
+	                childSugars.push(parentNode.childNode[i]);
+	            }
+	        }
+	        var branchCounter = childSugars.length;
+	
+	        for (var _i5 = 0; _i5 < childSugars.length; _i5++) {
+	            if (branchCounter >= 2) {
+	                IUPACFormat.push("]");
+	                branchCounter--;
+	                counter++;
+	            }
+	            for (var j = 0; j < bracket.repeatSugar.length; j++) {
+	                if (childSugars[_i5] === bracket.repeatSugar[j]) {
+	                    childSugar = childSugars[_i5];
+	                    check++;
+	                }
+	            }
+	            if (check === 0) {
+	                continue;
+	            }
+	            for (var _j2 = 0; _j2 < structures.length; _j2++) {
+	                if (parentNode === structures[_j2].parentNode && childSugar === structures[_j2].childNode) {
+	                    var parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[_j2]);
+	                    var parentParsed = parsedEdgeInformations[0];
+	                    var childParsed = parsedEdgeInformations[1];
+	                    var anomerPosition = parentParsed.match(ANOMER);
+	
+	                    IUPACFormat.push(")");
+	                    IUPACFormat.push(childParsed);
+	
+	                    IUPACFormat.push("-");
+	                    if (anomerPosition === null) {
+	                        IUPACFormat.push(parentParsed);
+	                        IUPACFormat.push(UNKNOWN);
+	                    } else {
+	                        IUPACFormat.push(parentParsed);
+	                    }
+	                    IUPACFormat.push("(");
+	                }
+	            }
+	            for (var _j3 = 0; _j3 < childSugar.childNode.length; _j3++) {
+	                if (childSugar.childNode[_j3].sprite.constructor === _Modification2.default) {
+	                    childNodeModification.push(childSugar.childNode[_j3]);
+	                }
+	            }
+	            for (var _j4 = 0; _j4 < childNodeModification.length; _j4++) {
+	                for (var l = 0; l < structures.length; l++) {
+	                    if (childSugar === structures[l].parentNode && childNodeModification[_j4] === structures[l].childNode) {
+	                        var _parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[l]);
+	                        var _childParsed = _parsedEdgeInformations[1];
+	                        var _name2 = childNodeModification[_j4].name.charAt(0).toUpperCase() + childNodeModification[_j4].name.slice(1);
+	                        if (N_ACETYL_LOWWER.test(_name2)) {
+	                            _name2 = _name2.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	                        }
+	                        IUPACFormat.push(_name2);
+	                        IUPACFormat.push(_childParsed);
+	                    }
+	                }
+	            }
+	            var name = childSugar.name.charAt(0).toUpperCase() + childSugar.name.slice(1);
+	            if (N_ACETYL_LOWWER.test(name)) {
+	                name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	            }
+	            IUPACFormat.push(name);
+	            usedNodes.push(childSugar);
+	            counter = setRecursiveRepeat(bracket, IUPACFormat, structures, counter, childSugar, repeatHed, usedNodes);
+	            check++;
+	        }
+	        if (childSugars.length === 0) {
+	            if (counter > 0) {
+	                IUPACFormat.push("[");
+	                counter--;
+	                return counter;
+	            }
+	        }
+	    }
+	}
+	
+	function recursiveSearchStructure(parentNode, structures, brackets, IUPACFormat, counter, usedNodes) {
+	    var childSugars = [];
+	    var childNodeModification = [];
+	    var check = 0;
+	    var bracketCounter = 0;
+	    var bracketHeader = 0;
+	    var spareBox = null;
+	    var repeatHed = "";
+	    var bracket = null;
+	    for (var i = 0; i < parentNode.childNode.length; i++) {
+	        if (parentNode.childNode[i].sprite.constructor === _sugar2.default) {
+	            childSugars.push(parentNode.childNode[i]);
+	        }
+	    }
+	    var branchCounter = childSugars.length;
+	
+	    for (var _i6 = 0; _i6 < childSugars.length; _i6++) {
+	        if (branchCounter >= 2) {
+	            IUPACFormat.push("]");
+	            branchCounter--;
+	            counter++;
+	        }
+	        var childSugar = childSugars[_i6];
+	        for (var j = 0; j < usedNodes.length; j++) {
+	            if (childSugar === usedNodes[j]) {
+	                check++;
+	            }
+	        }
+	        if (check != 0) {
+	            check = 0;
+	            continue;
+	        }
+	        // for(let j = 0; j < brackets.length; j++){
+	        //     bracket = brackets[i];
+	        //     if(childSugar === bracket.repeatSugar[0]){
+	        //         setStartBracket(IUPACFormat, bracket);
+	        //         bracketCounter++;
+	        //         bracketHeader++;
+	        //     }
+	        // }
+	        for (var _j5 = 0; _j5 < structures.length; _j5++) {
+	            if (parentNode === structures[_j5].parentNode && childSugar === structures[_j5].childNode) {
+	                var parsedEdgeInformations = (0, _edge_information_parser.edgeInformationParser)(structures[_j5]);
+	                var parentParsed = parsedEdgeInformations[0];
+	                var childParsed = parsedEdgeInformations[1];
+	                var anomerPosition = parentParsed.match(ANOMER);
+	
+	                IUPACFormat.push(")");
+	                IUPACFormat.push(childParsed);
+	
+	                IUPACFormat.push("-");
+	                if (anomerPosition === null) {
+	                    IUPACFormat.push(parentParsed);
+	                    IUPACFormat.push(UNKNOWN);
+	                } else {
+	                    IUPACFormat.push(parentParsed);
+	                }
+	                IUPACFormat.push("(");
+	            }
+	        }
+	        for (var _j6 = 0; _j6 < childSugar.childNode.length; _j6++) {
+	            if (childSugar.childNode[_j6].sprite.constructor === _Modification2.default) {
+	                childNodeModification.push(childSugar.childNode[_j6]);
+	            }
+	        }
+	        for (var _j7 = 0; _j7 < childNodeModification.length; _j7++) {
+	            for (var l = 0; l < structures.length; l++) {
+	                if (childSugar === structures[l].parentNode && childNodeModification[_j7] === structures[l].childNode) {
+	                    var _parsedEdgeInformations2 = (0, _edge_information_parser.edgeInformationParser)(structures[l]);
+	                    var _childParsed2 = _parsedEdgeInformations2[1];
+	                    var _name3 = childNodeModification[_j7].name.charAt(0).toUpperCase() + childNodeModification[_j7].name.slice(1);
+	                    if (N_ACETYL_LOWWER.test(_name3)) {
+	                        _name3 = _name3.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	                    }
+	                    IUPACFormat.push(_name3);
+	                    IUPACFormat.push(_childParsed2);
+	                }
+	            }
+	        }
+	        var name = childSugar.name.charAt(0).toUpperCase() + childSugar.name.slice(1);
+	        if (N_ACETYL_LOWWER.test(name)) {
+	            name = name.replace(N_ACETYL_LOWWER, N_ACETYL_UPPER);
+	        }
+	        IUPACFormat.push(name);
+	
+	        counter = recursiveSearchStructure(childSugar, structures, brackets, IUPACFormat, counter, usedNodes);
+	    }
+	    if (childSugars.length === 0) {
+	        if (counter > 0) {
+	            IUPACFormat.push("[");
+	            counter--;
+	            return counter;
+	        }
+	    }
+	    // else {
+	    //     counter = recursiveSearchStructure(childSugar, structures, brackets, IUPACFormat, counter, usedNodes);
+	    // }
+	}
+	
+	function parsedBracket(bracket) {
+	    for (var i = 0; i < bracket.repeatNodes.length; i++) {
+	        if (bracket.repeatNodes[i].sprite.constructor === _sugar2.default) {
+	            bracket.repeatSugar.push(bracket.repeatNodes[i]);
+	        } else {
+	            bracket.repeatModification.push(bracket.repeatNodes[i]);
+	        }
+	    }
+	}
+	
+	function setStartBracket(IUPACFormat, bracket) {
+	    IUPACFormat.push(bracket.startBracket.numOfRepeatText);
+	    IUPACFormat.push("]");
+	}
+	
+	function setEndBracket(IUPACFormat, childEdge) {
+	    IUPACFormat.push(")");
+	    IUPACFormat.push(childEdge);
+	    IUPACFormat.push("[");
+	}
+	
+	exports.createIUPAC = createIUPAC;
 
 /***/ }
 /******/ ]);
