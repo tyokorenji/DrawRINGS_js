@@ -27,7 +27,7 @@ class Modification extends createjs.Text{
     };
 
     highlightShape(shape){
-        shape.alpha = 1.0;
+        shape.alpha = 0.5;
         shape.color = getLineColor("red");
     }
     returnShape(shape){

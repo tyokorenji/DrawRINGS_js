@@ -281,12 +281,12 @@ function __run(canvas) {
     window.edgeMenu = edgeMenu;
 
     let edgeTextMenu = function(){
-        if(!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)){
-            alert("Please write \nAnomer(a or b)" + 1 + "~" +6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
-        }
-        else{
+        // if(!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)){
+        //     alert("Please write \nAnomer(a or b)" + 1 + "~" +6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
+        // }
+        // else{
             edgeMenu(document.edgeForm.edgeText.value);
-        }
+        // }
     };
     window.edgeTextMenu = edgeTextMenu;
 
@@ -569,6 +569,7 @@ function __run(canvas) {
         // window.addEventListener("click",WindowClick);
         canvas.addEventListener("mousedown", canvasMouseDown);
         $('#structureDelete').addClass('hidden-menu');
+        nodes = nodes;
     }
 
 // Edge Move Node

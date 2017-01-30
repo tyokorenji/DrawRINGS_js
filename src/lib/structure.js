@@ -6,7 +6,7 @@ class Structure {
         this.edgeInformation = null;
         this.edgeInformationText = edgeInformation;
         this.edge = edge;
-        this.bracket = null;
+        // this.bracket = null;
     }
 }
 

@@ -392,11 +392,12 @@
 	    window.edgeMenu = edgeMenu;
 	
 	    var edgeTextMenu = function edgeTextMenu() {
-	        if (!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)) {
-	            alert("Please write \nAnomer(a or b)" + 1 + "~" + 6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
-	        } else {
-	            edgeMenu(document.edgeForm.edgeText.value);
-	        }
+	        // if(!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)){
+	        //     alert("Please write \nAnomer(a or b)" + 1 + "~" +6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
+	        // }
+	        // else{
+	        edgeMenu(document.edgeForm.edgeText.value);
+	        // }
 	    };
 	    window.edgeTextMenu = edgeTextMenu;
 	
@@ -670,6 +671,7 @@
 	        // window.addEventListener("click",WindowClick);
 	        canvas.addEventListener("mousedown", canvasMouseDown);
 	        (0, _jquery2.default)('#structureDelete').addClass('hidden-menu');
+	        nodes = nodes;
 	    }
 	
 	    // Edge Move Node
@@ -43886,7 +43888,7 @@
 	    this.edgeInformation = null;
 	    this.edgeInformationText = edgeInformation;
 	    this.edge = edge;
-	    this.bracket = null;
+	    // this.bracket = null;
 	};
 	
 	module.exports = Structure;
@@ -44494,7 +44496,7 @@
 	    }, {
 	        key: 'highlightShape',
 	        value: function highlightShape(shape) {
-	            shape.alpha = 1.0;
+	            shape.alpha = 0.5;
 	            shape.color = (0, _monosaccharide_helper.getLineColor)("red");
 	        }
 	    }, {
