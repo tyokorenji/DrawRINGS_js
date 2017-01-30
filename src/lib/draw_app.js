@@ -455,12 +455,12 @@ function __run(canvas) {
     /**
      *"Select"のドラッグ時の処理
      */
-    function selectMove(){
+    function selectMove(e){
         if(selectRange != null){
             stageEdit.removeStage(stage, selectRange);
             stageEdit.stageUpdate(stage);
         }
-        XY(event);
+        XY(e);
         selectRange = rectMove(selectX, selectY, mouseX, mouseY, stage);
     }
 

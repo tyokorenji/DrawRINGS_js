@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var bowerResolver = new webpack.ResolverPlugin(new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main']));
 
 module.exports = {
-    entry: path.join(__dirname, 'src', 'main.js'),
+    entry: ['babel-polyfill', path.join(__dirname, 'src', 'main.js')],
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'

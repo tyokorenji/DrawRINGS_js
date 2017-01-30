@@ -103,6 +103,10 @@ function checkSyntax(lines) {
     let hasEdge = false;
     let hasTerminal = false;
 
+    if (!Number.parseInt) {
+        Number.parseInt = parseInt;
+    }
+
     for (let i=0; i<lines.length; i++) {
         let line = lines[i];
         if (FLAGS.ENTRY_FLAG.test(line)) {
@@ -135,6 +139,10 @@ function analyzeLines(lines) {
     let nodeLines = [];
     let edgeLines = [];
     let bracketLines = [];
+
+    if (!Number.parseInt) {
+        Number.parseInt = parseInt;
+    }
 
     for (let i=0; i<lines.length; i++) {
         let line = lines[i];
