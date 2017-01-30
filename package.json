@@ -5,9 +5,9 @@
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "rm -rf dist/*.js && webpack --config webpack-release.config.js --progress",
-    "build": "rm -rf dist/*.js && webpack --config webpack.config.js --progress",
-    "watch": "rm -rf dist/*.js && webpack --config webpack.config.js --progress --watch"
+    "release": "./setup.sh && webpack --config webpack-release.config.js --progress",
+    "build": "./setup.sh && webpack --config webpack.config.js --progress",
+    "watch": "./setup.sh && webpack --config webpack.config.js --progress --watch"
   },
   "keywords": [],
   "author": "",
