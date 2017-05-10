@@ -9,7 +9,9 @@ import Bracket from './bracket';
 import { createRepeatBracket, setBracket, searchFourCorner} from './create_bracket';
 import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR } from './monosaccharide_helper';
 
-
+/**
+ * "Draw KCF"機能のためのクラス
+ */
 class KCFParser {
     constructor(text) {
         this.text = text;
@@ -17,6 +19,7 @@ class KCFParser {
     parse(canvas, stage) {
         let lines = removeNullLines(generateLines(this.text));
 
+        //KCF形式の文法にエラーがあるかの確認をする
         if (checkSyntax(lines) === false) {
             // TODO: 読み込みエラー. 文法にエラーがある.
             return null;
@@ -24,17 +27,20 @@ class KCFParser {
 
         let result = analyzeLines(lines);
         let brackets = [];
+        //Bracketクラスを作成
         if(result[2].length != 0) {
             brackets = analyzeBrackets(result[0], result[2]);
         }
 
+        //それぞれの情報からcanvas上に構造を描画していく
         return connectStructures(result[0], result[1], brackets, canvas, stage);
-        //return result;
 
-        // DrawKCF(this.text);
     }
 }
 
+/**
+ * Bracketを作成するために一時的に情報を保存しておくクラス
+ */
 class parsedBrackets {
     constructor(top_left, bottom_left, bottom_right, top_right, nText){
         this.top_left = top_left;
@@ -60,7 +66,8 @@ const TOKEN_SEPARATOR = /:/;
 const ALPHA_BETA_CHECK = /a|b/i;
 
 /**
- * KCFファイルから読み込んだ文字列情報を行頭/行末から空白文字が除去された形で行ごとに配列化する.
+ * KCFファイルから読み込んだ文字列情報を行頭/行末から
+ 空白文字が除去された形で行ごとに配列化する.
  * @param text KCFファイル文字列.
  * @returns {Array|*} 行単位に分割されたKCFファイル情報配列
  * .
@@ -94,7 +101,8 @@ function removeNullLines(lines) {
 /**
  * KCFファイルの文法をチェックする.
  * @param lines KCFファイル情報配列.
- * @returns {boolean} 文法エラーがなければ true、文法エラーがあるならば false.
+ * @returns {boolean} 文法エラーがなければ
+ true、文法エラーがあるならば false.
  */
 function checkSyntax(lines) {
     "use strict";
@@ -107,6 +115,7 @@ function checkSyntax(lines) {
         Number.parseInt = parseInt;
     }
 
+    //"ENTRY"、"NODE"、"EDGGE"、"///"が有るか確認。ないとエラーとしてKCF出力をしない。
     for (let i=0; i<lines.length; i++) {
         let line = lines[i];
         if (FLAGS.ENTRY_FLAG.test(line)) {
@@ -135,6 +144,10 @@ function checkSyntax(lines) {
     return hasEntry && hasNode && hasEdge && hasTerminal;
 }
 
+/**
+ * KCF形式をそれぞれの項目ごとに分ける関数
+ * @param lines: textareaのKCF形式を一行ごとにわけた配列
+ */
 function analyzeLines(lines) {
     let nodeLines = [];
     let edgeLines = [];
@@ -146,6 +159,7 @@ function analyzeLines(lines) {
 
     for (let i=0; i<lines.length; i++) {
         let line = lines[i];
+        //NODEの項目の処理
         if (FLAGS.NODE_FLAG.test(line)) {
             let nodeHeader = line.split(SPACE_SEPARATOR);
             let nodeSize = Number.parseInt(nodeHeader[nodeHeader.length - 1]);
@@ -153,7 +167,7 @@ function analyzeLines(lines) {
                 nodeLines.push(lines[i + j + 1]);
             }
             i += nodeSize;
-
+        //EDGEの項目の処理
         } else if (FLAGS.EDGE_FLAG.test(line)) {
             let edgeHeader = line.split(SPACE_SEPARATOR);
             let edgeSize = Number.parseInt(edgeHeader[edgeHeader.length - 1]);
@@ -161,6 +175,7 @@ function analyzeLines(lines) {
                 edgeLines.push(lines[i + j + 1]);
             }
             i += edgeSize;
+        // BRACKETの項目の処理
         } else if(FLAGS.BRACKET_FLAG.test(line)){
             for(let j = i; ;j++){
                 line = lines[j];
@@ -173,24 +188,18 @@ function analyzeLines(lines) {
                 }
             }
         }
-
     }
+    //それぞれ処理した項目ごとにオブジェクトを作成する
     let nodesObj = parseNodes(nodeLines);
     let edgesObj = parseEdges(edgeLines, nodesObj);
     let bracketObj = {};
     if(bracketLines.length != 0) {
         bracketObj = parseBracket(bracketLines);
     }
-    /*
-    let structures = null;
-    if (nodes && edges) {
-        structures = connectStructures(nodes, edges);
-    }
-    return structures;
-    */
     let nodesAry = [];
     let edgesAry = [];
     let bracketAry = [];
+    //得られたそれぞれのオブジェクトを、処理しやすいように配列に変換
     for(let i = 0; i < Object.keys(nodesObj).length; i++){
         nodesAry.push(nodesObj[Object.keys(nodesObj)[i]]);
     }
@@ -205,6 +214,12 @@ function analyzeLines(lines) {
     return [nodesAry, edgesAry, bracketAry];
 }
 
+/**
+ *NODEの項目から得られた情報からNodeクラスを作成し、
+ それを１つのオブジェクトに格納する関数
+ * @param lines:NODEの項目から得られた情報
+ * @returns :Nodeクラスを複数もつオブジェクト
+ */
 function parseNodes(lines) {
     let nodesObj = {};
     for (let i=0; i<lines.length; i++) {
@@ -229,6 +244,14 @@ function parseNodes(lines) {
     return nodesObj;
 }
 
+/**
+ * EDGEの項目から得られた情報からStructureクラスを作成し、
+ それを１つのオブジェクトに格納する関数
+ * @param lines:EDGEの項目から得られた情報
+ * @param nodeObj:parseNodesで作成した
+ Nodeクラスを複数持つオブジェクト
+ * @returns :Structureクラスを複数もつオブジェクト
+ */
 function parseEdges(lines, nodesObj) {
     let edgesObj = {};
     for (let i=0; i<lines.length; i++) {
@@ -255,7 +278,12 @@ function parseEdges(lines, nodesObj) {
     }
     return edgesObj;
 }
-
+/**
+* BRACKETの項目から得られた情報からparsedBracketsクラスを作成し、
+ それを１つのオブジェクトに格納する関数
+* @param lines:BRACKETの項目から得られた情報
+* @returns :parsedBracketsクラスを複数もつオブジェクト
+*/
 function parseBracket(lines){
     let bracketObj = {};
     for(let i = 0; i < lines.length; i++){
@@ -283,6 +311,13 @@ function parseBracket(lines){
     return bracketObj;
 }
 
+/**
+ * 作成した配列からBracketクラスを生成する関数
+ * @param nodes: NODEの項目から得られたNodeクラスの配列
+ * @param parseBrackets:BRACKETの項目から得られた一時的に
+ 情報を保存するparseBracketクラスの配列
+ * @returns :作成したBracketクラスの配列
+ */
 function analyzeBrackets(nodes, parseBrackets){
     let brackets = [];
     for(let i = 0; i < nodes.length; i++){
@@ -304,7 +339,13 @@ function analyzeBrackets(nodes, parseBrackets){
     return brackets;
 }
 
-
+/**
+ * KCF形式の、EDGEの項目で、どの値が親か子かを　判別する関数
+ * @param lToken:EDGEの項目の、結合情報を書いている場所の左側にある項目
+ * @param rToken:EDGEの項目の、結合情報を書いている場所の右側にある項目
+ * @param nodesObj:NODEの項目から得られたオブジェクト
+ * @returns {{child: 子Node, parent: 親Node, edgeInfo: 結合情報}}
+ */
 function generateConnection(lToken, rToken, nodesObj) {
     let lTokens = lToken.split(TOKEN_SEPARATOR);
     let rTokens = rToken.split(TOKEN_SEPARATOR);
@@ -367,9 +408,18 @@ function generateConnection(lToken, rToken, nodesObj) {
 }
 
 
-
+/**
+ * 得られたそれぞれの情報が入った配列から構造をcanvas上に描画していく関数
+ * @param nodes:Nodeクラスの配列
+ * @param edges:Structureクラスの配列
+ * @param brackets:Bracketクラスの配列
+ * @param canvas:HTMLのcanvas
+ * @param stage:EaselJDのstage
+ * @returns :それぞれのクラスの入った配列
+ */
 function connectStructures(nodes, edges, brackets, canvas, stage) {
     setCoordinate(nodes, edges, canvas);
+    //設定した座標を基にそれぞれのNodeやEdgeをcanvas上に可視化する
     upStage(edges, brackets, stage);
     for(let i = 0; i < nodes.length; i++){
         nodes[i].sprite.parentNode = nodes[i];
@@ -379,13 +429,19 @@ function connectStructures(nodes, edges, brackets, canvas, stage) {
 
 }
 
-
+/**
+ * 算出した座標をもとに、各Nodeや、Edgeをcanvas状に可視化する
+ * @param edges:Structureクラスの入った配列
+ * @param brackets:Bracketクラスの入った配列
+ * @param stage:EaselJSのstage
+ */
 function upStage(edges, brackets, stage){
     let line = null;
     let text = null;
     let addedNodes = [];
     let parentCounter = 0;
     let childCounter = 0;
+    //Edgeを描画
     for(let i = 0; i < edges.length; i++){
         line = new createjs.Shape();
         line.graphics.setStrokeStyle(3)
@@ -393,6 +449,7 @@ function upStage(edges, brackets, stage){
             .moveTo(edges[i].parentNode.xCood, edges[i].parentNode.yCood)
             .lineTo(edges[i].childNode.xCood, edges[i].childNode.yCood);
         edges[i].edge = line;
+        //Nodeの描画。すでに描画されていないか確認後描画している
         for(let j = 0; j < addedNodes.length; j++) {
             if (addedNodes[j] === edges[i].parentNode) {
                 parentCounter++;
@@ -410,6 +467,7 @@ function upStage(edges, brackets, stage){
             addedNodes.push(edges[i].childNode);
         }
         stageEdit.stageEdge(edges[i], stage);
+        //結合情報の描画
         text = new createjs.Text(edges[i].edgeInformationText, "12px serif", "rgb(255,0,0)");
         text.x = (line.graphics._activeInstructions[0].x + line.graphics._activeInstructions[1].x) / 2;
         text.y = (line.graphics._activeInstructions[0].y + line.graphics._activeInstructions[1].y) / 2;
@@ -420,6 +478,7 @@ function upStage(edges, brackets, stage){
         childCounter = 0;
         // addedNodes.push(edges[i].childNode);
     }
+    //Bracketの描画
     for(let i = 0; i < brackets.length; i++) {
         let resultsFourCorner = searchFourCorner(brackets[i].repeatNodes);
         let n = new createjs.Text(brackets[i].startBracket.numOfRepeatText, "20px serif", getLineColor("black"));

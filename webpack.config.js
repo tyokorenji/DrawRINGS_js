@@ -1,3 +1,4 @@
+//buildやwatchの祭の設定
 var path = require('path');
 var webpack = require('webpack');
 var bowerResolver = new webpack.ResolverPlugin(new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main']));
@@ -5,9 +6,11 @@ var bowerResolver = new webpack.ResolverPlugin(new webpack.ResolverPlugin.Direct
 module.exports = {
     entry: ['babel-polyfill', path.join(__dirname, 'src', 'main.js')],
     output: {
+        //distファイルに、bundle.jsとしてまとめたJavaScriptファイルを生成する
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
     },
+    //bundl.jsでまとめているが、デバックの、各ファイルに分割してソースを見れるようにする
     devtool: 'source-map',
     module: {
         loaders: [

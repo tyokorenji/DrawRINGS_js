@@ -1,9 +1,11 @@
+/*　bodyタグ内の設定　*/
 body{
     /*text-align: center;*/
     /*width: 1200px;*/
     margin: 0px 25px auto 25px;
 }
 
+/* 「DrawRINGS」(文字)の設定 */
 h1{
     text-align: left;
     font-size: 40px;
@@ -11,44 +13,53 @@ h1{
     font-weight: bold;
 }
 
+/* canvasとtextareaの設定 */
 #canvas,#kcf_format{
     border:1px solid gray;
 }
 
+/* canvasやtextareaの上にあるドロップダウンメニューの設定 */
 .upper-menu {
     margin-bottom: 50px;
 }
 
+/* Nodeメニューなどページ下に表示されるメニューの設定 */
 .lower-menu {
     height: 100px;
     position:absolute;
     bottom:0px;
 }
 
+/* Nodeメニューなどページ下に表示されるメニューの画面サイズsmの時の設定 */
 .lower-menu-sm {
     height: 100px;
     margin-top: 25px;
 }
 
+/* canvasのサイズの設定 */
 .draw-area {
     width: 100%;
     height: auto;
     max-height: 570px;
 }
 
+/* textareaのサイズ設定 */
 .form-control {
     min-height: 100%;
 }
 
+/* textareaを含むdivエリアのサイズの設定 */
 #KCFForm {
     min-height: 100%;
 }
 
+/* メニューの不可視設定 */
 .hidden-menu {
     display: none !important;
     visibility: hidden !important;
 }
 
+/* メニューの可視化設定 */
 .visible-menu {
     display: block !important;
     visibility: visible !important;

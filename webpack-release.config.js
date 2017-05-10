@@ -1,3 +1,4 @@
+//releaseする際の設定
 var path = require('path');
 var webpack = require('webpack');
 var bowerResolver = new webpack.ResolverPlugin(new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main']));
@@ -11,6 +12,7 @@ var uglifier = new webpack.optimize.UglifyJsPlugin({
 module.exports = {
     entry: ['babel-polyfill', path.join(__dirname, 'src', 'main.js')],
     output: {
+        //distフォルダに、JavaScriptファイルを全てまとめたbundl.jsファイルを作成する
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
     },

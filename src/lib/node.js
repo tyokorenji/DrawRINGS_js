@@ -4,7 +4,9 @@ import { getMonosaccharideColor, getLineColor, MONOSACCHARIDE_COLOR, MONOSACCHAR
 import Sugar from './sugar';
 import Modification from './Modification';
 
-
+/**
+ * 糖鎖構造のNodeの情報を表すクラス
+ */
 class Node{
     constructor(id, name, xCood, yCood){
         this.id = id;
@@ -17,6 +19,13 @@ class Node{
     }
 }
 
+/**
+ * NodeがSNFGされた単糖なのかそうでないかを判別する関数
+ * ./util/monosaccharide_helperの
+ オブジェクトを使用して検索し、一致したものがあったらSugarクラスで、なかったらModificationクラスをインスタンス化する
+ * @param name:Nodeとして描画しようとしている単糖もしくhあ修飾の名前
+ * return:SugarクラスかModificationクラス
+ */
 function nodeClass(name){
     "use strict";
     let MONOSACCHRIDESKeys = Object.keys(MONOSACCHARIDES);

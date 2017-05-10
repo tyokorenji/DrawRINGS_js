@@ -15,6 +15,7 @@ import * as jQueryUI from 'jquery-ui';
 
 import ResponsiveBootstrapToolkit from 'responsive-bootstrap-toolkit';
 
+//各JavaScriptファイルの読み込み
 import Structure from './structure';
 import Node from './node';
 import Sugar  from './sugar.js';
@@ -33,11 +34,12 @@ import { rectMove, rectUp, selectedStructureDelete, selectedMoveStructureDown, s
 import { createIUPAC } from  './util/createIUPAC';
 import { createRepeatBracket, setBracket, searchFourCorner } from './util/create_bracket';
 
-console.log(Node);
-console.log(Structure);
-console.log(Sugar);
-console.log(Modification);
+// console.log(Node);
+// console.log(Structure);
+// console.log(Sugar);
+// console.log(Modification);
 
+// main.jsで呼び出されている
 class DrawApp {
     constructor(canvas) {
         this.canvas = canvas;
@@ -48,17 +50,20 @@ class DrawApp {
 }
 
 /**
- * TODO: __run メソッドはスリム化して DrawApp#run() として定義し直す.
- * TODO: DrawApp#run() では canvas として this.canvas を使用する.
- * @param canvas
+ * 実行のメインメソッド
+ * * @param canvas
  * @private
  */
 function __run(canvas) {
     "use strict";
 
     //let canvas = this.canvas;
+    //　EaselJSのstageを作成
     const stage = new createjs.Stage(canvas);
 
+    /**
+     * 即時関数。Bootstrapのツールキットを使用してwindowの大きさを確認している
+     */
     (function($){
         let viewport = ResponsiveBootstrapToolkit;
         // Execute only after document has fully loaded
@@ -77,7 +82,8 @@ function __run(canvas) {
     })(jQuery);
 
     /**
-     * TODO: GUI
+     * 呼び出し: 上の即時関数、リサイズ
+     * 画面のサイズがsm以下かそうじゃないかでCSSを変更している
      */
     function changeFooterStyle() {
         let viewport = ResponsiveBootstrapToolkit;
@@ -166,14 +172,19 @@ function __run(canvas) {
     });
 
 
-
-
+    /**
+     * 使用しているグローバル変数の宣言
+     */
+    // マウスイベント時のX座標
     let mouseX = 0;
+    //マウスイベント時のY座標
     let mouseY = 0;
 
-// どの機能かの判別
+    //どの機能かの判別
     var mode = 0;
+    //nodeオブジェクトのid
     let nodeId = 1;
+    //structureオブジェクトのid
     let structureId = 1;
 
     let nodeHashKey;
@@ -193,7 +204,9 @@ function __run(canvas) {
     let moveStructure = [];
 
 
-
+    /**
+     * index.htmlのファイルをアップロードするタグと、textareaのタグのIDを習得している
+     */
     let fileLoadId = document.getElementById("kcfFileLoad");
     let fileLoadTextareaId = document.getElementById("kcf_format");
 
@@ -203,7 +216,6 @@ function __run(canvas) {
 
     // リサイズ処理
     /**
-     * TODO: GUI
      * Windowがリサイズしたときのcanvasの大きさをリサイズする処理
      */
     function handleResize(event) {
@@ -265,6 +277,7 @@ function __run(canvas) {
         nodeHashKey = k;
         nodeShape = 0;
     };
+    //nodeMenuがindex.htmlから見えるようにグローバル関数に設定する
     window.nodeMenu = nodeMenu;
     /**
      * 未定義のnodeや修飾を格納する関数
@@ -275,11 +288,15 @@ function __run(canvas) {
     };
     window.nodeTextMenu = nodeTextMenu;
 
+    // ユーザが選択した結合情報を変数に格納する処理
     let edgeMenu = function(k){
         edgeKey = k;
     };
     window.edgeMenu = edgeMenu;
 
+    /**
+     * ユーザが入力した結合情報を格納する処理
+     */
     let edgeTextMenu = function(){
         // if(!document.edgeForm.edgeText.value.match(/[ab][1-6][-][1-6]/g)){
         //     alert("Please write \nAnomer(a or b)" + 1 + "~" +6 + ' - ' + 1 + "~" + 6 + "\n example: a1-4");
@@ -290,6 +307,10 @@ function __run(canvas) {
     };
     window.edgeTextMenu = edgeTextMenu;
 
+    /**
+     * Steucture機能の処理
+     * @param k: ユーザが選択したStructure機能の構造
+     */
     let structureMenu = function(k){
         if(mode != 4) return;
         let coreStructureData = getCoreStructure(k);
@@ -311,6 +332,7 @@ function __run(canvas) {
     window.structureMenu = structureMenu;
 
 
+    //html上のドロップダウンの矢印をユーザが選択したものに変化させる処理
     $(function(){
         $(".dropdown-menu li button").click(function(){
             $(this).parents('.btn-group').find('.dropdown-toggle').html($(this).text() + '<span class="caret"></span>');
@@ -319,13 +341,20 @@ function __run(canvas) {
     });
 
 
+    // 各機能のメニューを不可視の状態にしておく
     $('#nodeMenu').addClass('hidden-menu');
     $('#edgeMenu').addClass('hidden-menu');
     $('#structureMenu').addClass('hidden-menu');
     $('#structureDelete').addClass('hidden-menu');
 
+
+    /**
+     * 各機能の判定と、各機能のメニューの可視化と不可視化
+     * @param edit: htmlから得られる各モードを表す数字
+     */
     let edits = function edits(edit){
         mode = edit;
+        //"Node"の機能
         if(mode === 2){
             //document.getElementById("nodemenu").style.visibility = "visible";
             $('#nodeMenu').removeClass('hidden-menu');
@@ -334,6 +363,7 @@ function __run(canvas) {
             //document.getElementById("nodemenu").style.visibility = "hidden";
             $('#nodeMenu').addClass('hidden-menu');
         }
+        //"Edge"の機能
         if(mode === 3){
             //document.getElementById("edgeMenu").style.visibility = "visible";
             $('#edgeMenu').removeClass('hidden-menu');
@@ -342,6 +372,7 @@ function __run(canvas) {
             //document.getElementById("edgeMenu").style.visibility = "hidden";
             $('#edgeMenu').addClass('hidden-menu');
         }
+        //"Structure"の機能
         if(mode === 4){
             //document.getElementById("strucureMenu").style.visibility = "visible";
             $('#structureMenu').removeClass('hidden-menu');
@@ -350,10 +381,13 @@ function __run(canvas) {
             //document.getElementById("strucureMenu").style.visibility = "hidden";
             $('#structureMenu').addClass('hidden-menu');
         }
+        //"ClearAll"の機能
         if(mode === 5){
             let res = confirm("clear ALL?");
             if(res) {
+                //clear_all.jsの関数
                 clearAll(nodes, structures, brackets, stage);
+                //削除後の初期化
                 nodes = [];
                 structures = [];
                 brackets =[];
@@ -361,43 +395,60 @@ function __run(canvas) {
                 nodeId = 1;
             }
         }
+        //"KCFTextOut"機能と"RunQuery"機能
         if(mode === 8 || mode === 9){
+            //RunQuery時に選択されるダイアログボックスの回答内容を拾得
             let kindRunQuery =  document.kindRnuQueryResult.type;
             let database = document.database.databaseSelect;
             let scoreMatrix = document.scoreMatrix.scoreSelect;
-            createKCF(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix);
+            //create_KCF.jsの関数
+            nodeId = createKCF(mode, nodes, structures, brackets, kindRunQuery, database, scoreMatrix);
         }
+        //"DrawKCF"の機能
         if(mode === 10){
+            //kcf_parser.jsのKCFparserクラス
             let parser = new KCFParser(fileLoadTextareaId.value);
+            //kcf_parserクラスのparseメソッド
             let results = parser.parse(canvas, stage);
+            //各Nodeにmousedownイベントを設定
             for(let i = 0; i < results[0].length; i++){
                 results[0][i].sprite.addEventListener("mousedown", handleDown);
                 nodes.push(results[0][i]);
             }
+            //各Edgeにclickイベントを設定
             for(let i = 0; i < results[1].length; i++){
                 results[1][i].edge.addEventListener("click", edgeClick);
                 structures.push(results[1][i]);
             }
+            //bracketを配列に入れる
             for(let i = 0; i < results[2].length; i++){
                 brackets.push(results[2][i]);
             }
         }
+        //"TextClear"機能
         if(mode === 11){
+            //text_clear,jsのtextClear関数
             textClear();
         }
+        //"IUPACTextOut"機能
         if(mode === 12){
+            //createIUPAC.jsのcreateIUPAC関数
             createIUPAC(nodes, structures, brackets);
         }
     };
 
     window.edits = edits;
 
-    // window.addEventListener("click",WindowClick);
+    /**
+     * "Select"で選択状態のNodeを普通の状態に戻す関数。
+     */
     function WindowClick() {
         if (moveStructureNodes.length != 0) {
             for (let i = 0; i < moveStructureNodes.length; i++) {
+                //Sugarクラス、ModificationクラスのreturnShapeメソッド
                 moveStructureNodes[i].returnShape(moveStructureNodes[i]);
             }
+            //Select機能で選択状態にした時の変化を元に戻す。
             canvas.addEventListener("mousedown", canvasMouseDown);
             $('#structureDelete').addClass('hidden-menu');
             canvas.removeEventListener("mousedown", WindowClick);
@@ -434,7 +485,9 @@ function __run(canvas) {
         else if(mode === 2){
             XY(e);
             let node = null;
+            //選択されたNodeが、Nodeメニューのものか、入力されたものかの判別
             if(nodeShape === 1) {
+                //node.jsのNodeクラス
                 node = new Node(nodeId, nodeHashKey, mouseX, mouseY);
                 nodeId++;
                 // node.sprite = new Modification();
@@ -444,6 +497,7 @@ function __run(canvas) {
                 nodeId++;
                 // node.sprite = new  Sugar();
             }
+            //Sugarクラス、ModificationクラスのnodeDrawメソッド
             node.sprite = node.sprite.nodeDraw(node.name, node.xCood, node.yCood, stage);
             node.sprite.parentNode = node;
             node.sprite.addEventListener("mousedown", handleDown);
@@ -454,13 +508,17 @@ function __run(canvas) {
 
     /**
      *"Select"のドラッグ時の処理
+     * EaselJSで四角を描画し、範囲を指定している
      */
     function selectMove(e){
         if(selectRange != null){
+            //すでに有る四角を削除
             stageEdit.removeStage(stage, selectRange);
             stageEdit.stageUpdate(stage);
         }
+        //座標の拾得
         XY(e);
+        //四角の作成
         selectRange = rectMove(selectX, selectY, mouseX, mouseY, stage);
     }
 
@@ -468,6 +526,7 @@ function __run(canvas) {
      * "Select" ドラッグを終了した時の処理
      */
     function selectUp(){
+        //select_function.jsのrectUp関数
         moveStructureNodes = rectUp(selectRange, selectX, selectY, mouseX, mouseY, nodes, stage);
         for(let i = 0; i < moveStructureNodes.length; i++){
             moveStructureNodes[i].addEventListener("mousedown", selectMoveStructureDown);
@@ -572,14 +631,23 @@ function __run(canvas) {
         nodes = nodes;
     }
 
-// Edge Move Node
+
+    /**
+     * "Edge"機能と"EraseNode"機能、"MoveNode"機能の時、casnvas上のNodeをクリックした時の処理
+     * @param event
+     */
     function handleDown(event) {
+        //各機能の判別
         if (mode != 3 && mode != 6 && mode != 7) return;
+        //"Edge"機能
         if (mode === 3) {
+            //"Edge"機能で起点のNodeを選択した時の処理
             if(edgeCount === 0){
+                //Sugarクラスか、ModificationクラスのedgeDraw関数
                 edgeStart = event.target.edgeDraw(event.target, edgeCount);
                 edgeCount++;
             }
+            //"Edge"機能でもう片方のNodeを選択した時の処理
             else if(edgeCount === 1){
                 let structure = event.target.edgeDraw(edgeStart, edgeCount, event.target, stage, structureId);
                 structure.edge.addEventListener("click", edgeClick);
@@ -589,13 +657,15 @@ function __run(canvas) {
                 edgeStart =null;
             }
         }
+        //"EraseNode"機能
         else if (mode === 6) {
+            //erase_node.jsのeraseNode関数
             let results = eraseNode(event.target, nodes, structures, brackets, stage);
             nodes = results[0];
             structures = results[1];
             brackets = results[2];
         }
-
+        //"MoveNode"機能。処理は"Select"機能と同じ処理をしている
         else if (mode === 7) {
             canvas.removeEventListener("mousedown",WindowClick);
             let target = event.target;
@@ -607,12 +677,21 @@ function __run(canvas) {
         }
     }
 
-// 結合情報
+    /**
+     * "Edge"機能時、Edgeをクリックすることで処理を行う関数
+     * @param event:Edgeをクリックするイベント
+     */
     let edgeClick = function(event){
         if(mode != 3) return;
+        //set_edge_tec.jsのsetEdgeText関数
         structures = setEdgeText(event.target, edgeKey, structures, stage);
     };
 
+    /**
+     * canvas上での相対座標を習得するための関数。右上を(0,0)とする。
+     * @param e：イベントを起こしたマウス
+     * @constructor
+     */
     function XY(e){
         let rect = e.target.getBoundingClientRect();
         mouseX = e.clientX - rect.left;
@@ -620,8 +699,10 @@ function __run(canvas) {
     }
 
 
-
-
+    /**
+     * CreateJSのTickerクラス。
+     * 1秒間に24回行われるtickイベントを監視する関数
+     */
     createjs.Ticker.addEventListener("tick", handleTick);
     function handleTick() {
         stage.update(); // 画面更新

@@ -2,27 +2,35 @@
 
 import { edgeInformationParser } from './edge_information_parser';
 
-
+/**
+ * 配列にある情報から糖鎖構造を組み立てるための関数
+ * @param nodes:Nodeクラスが入った配列
+ * @param edges:Structureクラスが入った配列
+ * @param canvas:HTMLのcanvas
+ */
 function setCoordinate(nodes, edges,canvas){
+    //文字列の座標を数字にしている
     for(let i = 0; i < edges.length; i++){
         edges[i].parentNode.xCood = parseInt(edges[i].parentNode.xCood);
         edges[i].parentNode.yCood = parseInt(edges[i].parentNode.yCood);
         edges[i].childNode.xCood = parseInt(edges[i].childNode.xCood);
         edges[i].childNode.yCood = parseInt(edges[i].childNode.yCood);
     }
-
+    //ルートNodeを検索
     let rootNode = edges[0].parentNode;
     for(let i = 1; i < edges.length; i++){
         if(rootNode.xCood < edges[i].parentNode.xCood){
             rootNode = edges[i].parentNode;
         }
     }
+    //それぞれの座標を0にしている
     for(let i = 0; i < edges.length; i++){
         edges[i].parentNode.xCood = 0;
         edges[i].parentNode.yCood = 0;
         edges[i].childNode.xCood = 0;
         edges[i].childNode.yCood = 0;
     }
+    //nodesとedgesを照らし合わせて、各Nodeクラスが持つ子Nodeクラスを配列に入れている
     for(let i = 0; i < nodes.length; i++){
         for(let j = 0; j < edges.length; j++){
             if(nodes[i] === edges[j].parentNode){
@@ -32,16 +40,36 @@ function setCoordinate(nodes, edges,canvas){
     }
     // let xDistance = 80;
     // let yDistance = 50;
+    //糖鎖構造のNodeとNode間の距離の設定
     let xDistance = 100;
     let yDistance = 50;
+    //再帰的に各Nodeの座標を計算する
     recursiveComputeCoordinate(rootNode, nodes, edges, xDistance, yDistance, canvas);
 }
 
+// function sortChildNodes(parentNode){
+//     edgeInformationParser();
+// }
+
+/**
+ * 再帰的に各Node間の座標を計算する関数
+ * @param rootNode:ルートNode
+ * @param nodes:Nodeクラスが入った配列
+ * @param edges:Structureクラスが入った配列
+ * @param xDistance:糖鎖構造のNodeとNode間のX座標の距離の設定
+ * @param yDistance:糖鎖構造のNodeとNode間のY座標の距離の設定
+ * @param canvas:HTMLのcanvas
+ */
 function recursiveComputeCoordinate(rootNode, nodes, edges, xDistance, yDistance, canvas){
+    //各Nodeクラスの親と子の距離を求めている
     recursiveSetCoordinate(rootNode, edges, xDistance, yDistance);
+    //セットした糖鎖構造の中央値を求めている
     let midCody = middleCoordinate(nodes);
+    //求めた中央値と、各Nodeの相対座標を求めている
     relativeCoordinate(midCody[0], midCody[1], nodes);
+    //canvasの中央値を求めて、相対座標を基に各Nodeを再配置している
     setRelativeCoordinate(nodes, canvas);
+    //再配置後、糖鎖構造がcanvas外に出てしまう場合、Distanceを小さくし、再度設定し直す
     for(let i = 0; i < nodes.length; i++){
         if(nodes[i].xCood < 10 || nodes[i].xCood > canvas.width - 10 || nodes[i].yCood < 10 || nodes[i].yCood > canvas.height - 10){
             if(xDistance === 20 || yDistance < 10){
@@ -63,6 +91,12 @@ function setRelativeCoordinate(nodes, canvas){
 
 }
 
+/**
+ * 糖鎖構造の中央値と、各Nodeの相対座標を求める関数
+ * @param midX:中央値のX座標
+ * @param midY:中央値のY座標
+ * @param nodes:Nodeクラスが入った配列
+ */
 function relativeCoordinate(midX, midY, nodes){
     for(let i = 0; i < nodes.length; i++){
         nodes[i].xCood = nodes[i].xCood - midX;
@@ -71,7 +105,14 @@ function relativeCoordinate(midX, midY, nodes){
 }
 
 
-
+/**
+ * 再帰的に各Nodeに座標をセットする関数
+ * コメントアウトしている部分は結合位置でNodeの位置をセットしていった部分である。
+ * @param parentNode:親Node
+ * @param edges:Structureクラスが入った配列
+ * @param xDistance:糖鎖構造のNodeとNode間のX座標の距離の設定
+ * @param yDistance:糖鎖構造のNodeとNode間のY座標の距離の設定
+ */
 function recursiveSetCoordinate(parentNode, edges, xDistance, yDistance) {
     //TODO: 結合位置で子供のNodeの位置を判断する。
     // let parentEdgePoint = null;
@@ -117,6 +158,7 @@ function recursiveSetCoordinate(parentNode, edges, xDistance, yDistance) {
     //     }
     // }
 
+    //それぞれの子Nodeの数で、子Nodeの座標を決めている
     if (parentNode.childNode.length === 0) {
         return;
     }
@@ -180,7 +222,11 @@ function recursiveSetCoordinate(parentNode, edges, xDistance, yDistance) {
         recursiveSetCoordinate(parentNode.childNode[4], edges, xDistance, yDistance);
     }
 }
-
+/**
+ * セットしたNodeクラスの座標から、糖鎖構造の中央値を求めている
+ * @param nodes:Nodeクラスの入った配列
+ * @returns :中央値の座標の配列
+ */
 function middleCoordinate(nodes){
     let mostRightNode = nodes[0].xCood;
     let mostLeftNode =  nodes[0].xCood;

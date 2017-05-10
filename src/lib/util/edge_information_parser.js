@@ -7,4 +7,4 @@ function edgeInformationParser(structure){
     return [RegExp.leftContext, RegExp.rightContext];
 }
 
-export { edgeInformationParser };
+export { edgeInformationParser };　

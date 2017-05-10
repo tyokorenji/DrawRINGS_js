@@ -1,3 +1,6 @@
+/**
+ * ２つのNodeとその間を結ぶEdgeで１つの構造とするためのクラス
+ */
 class Structure {
     constructor(structureId, parent, child, edgeInformation, edge) {
         this.structureId = structureId;

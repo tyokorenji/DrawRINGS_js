@@ -16,6 +16,7 @@ import { createRepeatBracket, setBracket, searchFourCorner } from './create_brac
  * @returns rect: 四角のshapeの
  */
 function rectMove(startX, startY, endX, endY, stage){
+    //四角を描画していく
     let rect = new createjs.Shape();
     rect.graphics.beginStroke(getLineColor("black"));
     rect.graphics.beginFill(MONOSACCHARIDE_COLOR.WHITE);
@@ -48,6 +49,7 @@ function rectMove(startX, startY, endX, endY, stage){
 
 function rectUp(selectRange, startX, startY, endX, endY, nodes, stage){
     let moveStructureNodes = [];
+    //四角内に入っているNodeをはいれつに入れていく
     for(let i = 0; i < nodes.length; i++){
         if(startX < endX || startY < endY) {
             if (startX < nodes[i].sprite.x && endX > nodes[i].sprite.x && startY < nodes[i].sprite.y && endY > nodes[i].sprite.y) {
@@ -78,7 +80,9 @@ function rectUp(selectRange, startX, startY, endX, endY, nodes, stage){
  * @returns [Array, Array, Boolean]: nodes: canvasに残っているNodeの全てをまとめた配列。structures: canvas方に残ったStructureを全てまとめた配列。 res: ユーザーへ問いかけへの返答
  */
 function selectedStructureDelete(moveStructureNodes, nodes, structures, stage){
+    //削除していいのかユーザに尋ねる
     let res = confirm("Do you delete Selected structure?");
+    //"ok"の場合、削除する処理
     if(res == true) {
         for(let i = 0; i < moveStructureNodes.length; i++) {
             for (let j = 0; j < nodes.length; j++) {
@@ -93,6 +97,16 @@ function selectedStructureDelete(moveStructureNodes, nodes, structures, stage){
                     stageEdit.removeStage(stage, structures[j].edgeInformation);
                     structures.splice(j, 1);
                     j--;
+                }
+            }
+            for(let j = 0; j < nodes.length;j++){
+                let node = nodes[j];
+                if(node.childNode.length != 0) {
+                    for (let l = 0; l < node.childNode.length; l++) {
+                        if (moveStructureNodes[i].parentNode === node.childNode[l]) {
+                            node.childNode.splice(l, 1);
+                        }
+                    }
                 }
             }
         }
@@ -112,6 +126,7 @@ function selectedMoveStructureDown(moveStructureNodes, structures, stage){
     let moveStructureXPoints = [];
     let moveStructureYPoints = [];
     let targetStructures = [];
+    //それぞれ選択状態の座標の元々の位置と、マウスの位置の差を保存する
     for(let i = 0; i < moveStructureNodes.length; i++){
         moveStructureXPoints.push(stage.mouseX - moveStructureNodes[i].x);
         moveStructureYPoints.push(stage.mouseY - moveStructureNodes[i].y);
@@ -145,6 +160,7 @@ function selectedMoveStructureMove(pointObj, moveStructureNodes, structures, sta
     let movePointX = null;
     let movePointY = null;
     let usedStructure = [];
+    //マウスが移動するたびに、それぞれの相対座標を計算している
     for(let i = 0; i < moveStructureNodes.length; i++) {
         movePointX = stage.mouseX - pointObj.moveStructurePoints[0][i];
         movePointY = stage.mouseY - pointObj.moveStructurePoints[1][i];

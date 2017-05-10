@@ -17,6 +17,7 @@
 <h1 class="page-header">DrawRINGS</h1>
 
 <!-- 各ツールの設定 -->
+<!-- canvasやtextareaの上のドロップダウンメニュー -->
 <div class="row upper-menu">
     <div class="btn-group col-md-6">
         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button" >File management <span class="caret"></span></button>
@@ -38,6 +39,7 @@
 
 </div>
 
+<!-- canvasを編集するメニューの設定 -->
 <div class="row">
     <div class="col-xs-12 col-md-2">
         <ul class="nav nav-pills nav-stacked" role="menu">
@@ -46,13 +48,13 @@
                     <li><button class="btn btn-success"  name="mode" data-value="select" style="width:150px;" onclick="edits(1)">Select </button></li>
                 </div>
                 <div class="col-xs-3 col-md-12">
-                    <li><button class="btn btn-success"  name="mode" data-value="node" style="width:150px;" onclick="edits(2)">Node </button></li>
+                    <li><button class="btn btn-success"  name="mode" data-value="node" style="width:150px;" onclick="edits(2)">Sugar </button></li>
                 </div>
                 <div class="col-xs-3 col-md-12">
-                    <li><button class="btn btn-success"  name="mode" data-value="edge" style="width:150px;" onclick="edits(3)">Edge </button></li>
+                    <li><button class="btn btn-success"  name="mode" data-value="edge" style="width:150px;" onclick="edits(3)">Bond </button></li>
                 </div>
                 <div class="col-xs-3 col-md-12">
-                    <li><button class="btn btn-success"  name="mode" data-value="structure" style="width:150px;" onclick="edits(4)">Structure </button></li>
+                    <li><button class="btn btn-success"  name="mode" data-value="structure" style="width:150px;" onclick="edits(4)">Common glycan </button></li>
                 </div>
             </div>
             <div class="col-xs-12 col-md-12">
@@ -60,17 +62,19 @@
                     <li><button class="btn btn-success"  name="mode" data-value="clearall" style="width:150px;" onclick="edits(5)">Clear All </button></li>
                 </div>
                 <div class="col-xs-4 col-md-12">
-                    <li><button class="btn btn-success"  name="mode" data-value="erasenode" style="width:150px;" onclick="edits(6)">Erase Node </button></li>
+                    <li><button class="btn btn-success"  name="mode" data-value="erasenode" style="width:150px;" onclick="edits(6)">Erase Sugar </button></li>
                 </div>
                 <div class="col-xs-4 col-md-12">
-                    <li><button class="btn btn-success" name="mode" data-value="movenode" style="width:150px;" onclick="edits(7)">Move Node </button></li>
+                    <li><button class="btn btn-success" name="mode" data-value="movenode" style="width:150px;" onclick="edits(7)">Move Sugar </button></li>
                 </div>
             </div>
         </ul>
     </div>
+    <!-- canvasの宣言 -->
     <div class="col-xs-12 col-md-6" id="canvasContainer">
         <canvas id ="canvas" class="draw-area" width="300px" height="300px" >このブラウザはHTML5に対応していません。</canvas>
     </div>
+    <!-- textareaの宣言 -->
     <div class="col-xs-12 col-md-4" >
         <form name="KCFform" id="KCFForm" action="">
             <textarea class="form-control" id="kcf_format">KCF-Text</textarea>
@@ -78,9 +82,10 @@
     </div>
 </div>
 
-
+<!--　Nodeメニューの設定　-->
 <div id="footer" class="row lower-menu">
     <div id="nodeMenu">
+        <!-- Hexoseグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Hexose</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -97,6 +102,7 @@
             </ul>
         </div>
 
+        <!-- HexNAcグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">HexNAc</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -113,6 +119,7 @@
             </ul>
         </div>
 
+        <!--　Hexosamineグループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Hexosamine</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -129,6 +136,7 @@
             </ul>
         </div>
 
+        <!-- Hexutonateグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Hexuronate</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -145,6 +153,7 @@
             </ul>
         </div>
 
+        <!-- Deoxyhexoseグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Deoxyhexose</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -158,6 +167,7 @@
             </ul>
         </div>
 
+        <!--　DeoxyhexNAcグループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">DeoxyhexNAc</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -169,6 +179,7 @@
             </ul>
         </div>
 
+        <!-- Di-deoxyhexoseグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Di-deoxyhexose</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -183,6 +194,7 @@
             </ul>
         </div>
 
+        <!-- Pentoseグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Pentose</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -195,6 +207,7 @@
             </ul>
         </div>
 
+        <!--　Nonulosonateグループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Nonulosonate</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -207,6 +220,7 @@
             </ul>
         </div>
 
+        <!--　Unknownグループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Unknown</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -223,6 +237,7 @@
             </ul>
         </div>
 
+        <!-- Assignedグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Assigned</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -236,13 +251,16 @@
             </ul>
         </div>
 
+        <!-- SNFGで未定義、もしくは修飾をユーザーが入力するテキストボックス -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">other</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
                 <li>
                     <form name="nodeForm" id="nodeForm" action="">
+                        <!-- テキストボックス -->
                         <input class="btn btn-success" type="text" name="nodeText"  id="nodeText" style="width:150px;" value="type nodeName"/>
+                        <!-- テキストの送信ボタン -->
                         <input class="btn btn-success" type="button" value="Exec" style="width:150px;" onclick="nodeTextMenu();"/>
                     </form>
                 </li>
@@ -251,7 +269,9 @@
     </div>
 
 
+    <!-- Edgeメニューの設定 -->
     <div id="edgeMenu">
+        <!--　「a1-」グループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">α1-</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -263,6 +283,7 @@
             </ul>
         </div>
 
+        <!-- [b1-]グループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">β1-</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -274,6 +295,7 @@
             </ul>
         </div>
 
+        <!-- 「a2-」グループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">α2-</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
@@ -284,13 +306,16 @@
             </ul>
         </div>
 
+        <!-- メニュー以外の結合情報をユーザーが入力するテキストボックス -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">other</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
                 <li>
                     <form name="edgeForm" id="edgeForm" action="">
+                        <!-- テキストボックス -->
                         <input class="btn btn-success" type="text" name="edge"  id="edgeText" style="width:150px;" value="type edgeName"/>
+                        <!-- テキストの送信ボタン -->
                         <input class="btn btn-success" type="button" value="Exec" style="width:150px;" onclick="edgeTextMenu();"/>
                     </form>
                 </li>
@@ -298,77 +323,83 @@
         </div>
     </div>
 
+    <!--  Structureメニューの設定-->
     <div id="structureMenu">
+        <!--　N-glycanグループ　-->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">N-glycan</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-righ" role="menu">
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_core.txt')">N-glycan_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_fucosylated_core.txt')">N-glycan_fucosylated_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_core.txt')">N-glycan_bisecting_core </button></li>
-                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_fucosylated_core.txt')">N-glycan_bisecting_fucosylated_core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_core.txt')">N-glycan core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_fucosylated_core.txt')">N-glycan fucosylated core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_core.txt')">N-glycan bisecting core </button></li>
+                <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('N-glycan_bisecting_fucosylated_core.txt')">N-glycan bisecting fucosylated core </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('high_mannose.txt')">high-mannose </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('hybrid.txt')">hybrid </button></li>
                 <li><button class="btn btn-success" style="width:260px;" onclick="structureMenu('complex.txt')">complex </button></li>
             </ul>
         </div>
 
+        <!-- O-glycanグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">O-glycan</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_1.txt')">O-glycan_core_1 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_2.txt')">O-glycan_core_2 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_3.txt')">O-glycan_core_3 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_4.txt')">O-glycan_core_4 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_5.txt')">O-glycan_core_5 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_6.txt')">O-glycan_core_6 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_7.txt')">O-glycan_core_7 </button></li>
-                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_8.txt')">O-glycan_core_8 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_1.txt')">O-glycan core 1 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_2.txt')">O-glycan core 2 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_3.txt')">O-glycan core 3 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_4.txt')">O-glycan core 4 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_5.txt')">O-glycan core 5 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_6.txt')">O-glycan core 6 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_7.txt')">O-glycan core 7 </button></li>
+                <li><button class="btn btn-success" style="width:150px;" onclick="structureMenu('O-glycan_core_8.txt')">O-glycan core 8 </button></li>
             </ul>
         </div>
 
+        <!-- Glycosphingolipidsグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Glycosphingolipids</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_arthro-type.txt')">GSL_core_arthro_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_gala-type.txt')">GSL_core_gala_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_ganglio-type.txt')">GSL_core_ganglio_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_globo-type.txt')">GSL_core_globo_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_isoglobo-type.txt')">GSL_core_isoglobo_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lacto-type.txt')">GSL_core_lact_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_mollu-type.txt')">GSL_core_mollu_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_muco-type.txt')">GSL_core_muco_type </button></li>
-                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_neolacto-type.txt')">GSL_core_neolacto_type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_arthro-type.txt')">GSL core arthro type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_gala-type.txt')">GSL core gala type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_ganglio-type.txt')">GSL core ganglio type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_globo-type.txt')">GSL core globo type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_isoglobo-type.txt')">GSL core isoglobo type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_lacto-type.txt')">GSL core lact type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_mollu-type.txt')">GSL core mollu type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_muco-type.txt')">GSL core muco type </button></li>
+                <li><button class="btn btn-success" style="width:200px;" onclick="structureMenu('GSL_core_neolacto-type.txt')">GSL core neolacto type </button></li>
             </ul>
         </div>
 
+        <!-- GAGsグループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">GAGs</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Hyaluronic_Acid.txt')">Hyaluronic_Acid </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4-sulfate.txt')">chondroitin_4_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_6-sulfate.txt')">chondroitin_6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_2,6-sulfate.txt')">chondroitin_2,6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4,6-sulfate.txt')">chondroitin_4,6_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Dermatan_sulfate.txt')">Dermatan_sulfate </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Keratan_sulfate.txt')">Karatan_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Hyaluronic_Acid.txt')">Hyaluronic Acid </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4-sulfate.txt')">chondroitin 4 sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_6-sulfate.txt')">chondroitin 6 sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_2,6-sulfate.txt')">chondroitin 2,6 sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Chondroitin_4,6-sulfate.txt')">chondroitin 4,6 sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Dermatan_sulfate.txt')">Dermatan sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Keratan_sulfate.txt')">Karatan sulfate </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparin.txt')">Heparin </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparan_sulfate.txt')">Heparansan_sulfate </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Heparan_sulfate.txt')">Heparansan sulfate </button></li>
             </ul>
         </div>
 
+        <!-- Motifs グループ -->
         <div class="btn-group">
             <button class="btn btn-primary" style="width:150px;">Motifs</button>
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-triangle-right"></span></button>
             <ul class="dropdown-menu test-menu pull-right" role="menu">
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('3\'sulfo_Lewis_X.txt')">3'sulfo_Lewis_X </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_A_Antigen.txt')">Blood_Group_A_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_B_Antigen.txt')">Blood_Group_B_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_H_Antigen.txt')">Blood_Group_H_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Cad_Antigen.txt')">Cad_Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('3\'sulfo_Lewis_X.txt')">3'sulfo Lewis X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_A_Antigen.txt')">Blood Group A Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_B_Antigen.txt')">Blood Group B Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Blood_Group_H_Antigen.txt')">Blood Group H Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Cad_Antigen.txt')">Cad Antigen </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1a.txt')">GD1a </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD1b.txt')">GD1b </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GD2.txt')">GD2 </button></li>
@@ -379,22 +410,23 @@
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('GM3.txt')">GM3 </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('LacDiNAc.txt')">LacDiNAc </button></li>
                 <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lactosamine.txt')">Lactosamin </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_A.txt')">Lewis_A </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_B.txt')">Lewis_B </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_C.txt')">Lewis_C </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_D.txt')">Lewis_D </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_X.txt')">Lewis_X </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_Y.txt')">Lewis_Y </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('P_Antigen.txt')">P_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Pk_Antigen.txt')">Pk_Antigen </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Poly-Lactosamine.txt')">Poly_Lactosamine </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_A.txt')">Sialy_Lewis_A </button></li>
-                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_X.txt')">Sialy_Lewis_X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_A.txt')">Lewis A </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_B.txt')">Lewis B </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_C.txt')">Lewis C </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_D.txt')">Lewis D </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_X.txt')">Lewis X </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Lewis_Y.txt')">Lewis Y </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('P_Antigen.txt')">P Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Pk_Antigen.txt')">Pk Antigen </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Poly-Lactosamine.txt')">Poly Lactosamine </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_A.txt')">Sialy Lewis A </button></li>
+                <li><button class="btn btn-success" style="width:180px;" onclick="structureMenu('Sialyl_Lewis_X.txt')">Sialy Lewis X </button></li>
             </ul>
         </div>
     </div>
 </div>
 
+<!-- Run Queryのダイアログボックス -->
 <div id="runQueryDialogBox" title="Run Query">
     <!--チェックボックスを配置-->
     <label><p>Score matrix</p>
@@ -424,6 +456,7 @@
     </form>
 </div>
 
+<!-- 繰り返し構造を作成する時のダイアログボックス -->
 <div id="numberOfRepeat" title="repeatBracket">
     <label><p>Number od repeat(If number of repeat is undefined, you input "n".)</p>
         <form name="repeat">
@@ -431,17 +464,24 @@
         </form>
     </label>
 </div>
+
+<!-- Select機能で扱うボタンの設定 -->
 <div id="structureDelete">
+    <!-- StructurDeleteぼボタン -->
     <button class="btn btn-success" style="width:180px;" onclick="selectStructureDelete()">structureDelete </button>
+    <!--　repeatBracketのボタン　-->
     <button id="repeatBracketBuuton" class="btn btn-success" style="width:180px;">repeatBracket </button>
 </div>
+<!-- ファイルをアップロードする入力ボックス -->
 <span id="fileArea">
     <input type="file" id="kcfFileLoad" style="display:none;" >
 </span>
 
 <!-- Script -->
+<!-- jQueryの読み込み -->
 <script src="./jquery.min.js"></script>
 
+<!-- 作成したJavaScriptファイルの読み込み -->
 <script src="./bundle.js"></script>
 
 </body>

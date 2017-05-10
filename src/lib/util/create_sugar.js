@@ -112,6 +112,7 @@ export let createDeoxyhexnac = function(sugar, shape, x, y, stage){
     let originPointX = 0;
     let originPointY = 0;
     shape.graphics.beginStroke(getLineColor("black"))
+                  .beginFill(getMonosaccharideColor(sugar))
                   .moveTo(originPointX, originPointY)
                   .lineTo(originPointX, originPointY-10)
                   .lineTo(originPointX+10, originPointY+10)

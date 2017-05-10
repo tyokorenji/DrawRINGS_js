@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * ２つのNode間で、どちらが親Nodeか、どちらが子Nodeかを算出する関数
+ * @param node1:一つ目のNode
+ * @param node2:二つ目のNode
+ * @returns :親Nodeが0番目、子Nodeが1番目に入った配列
+ */
 export let determineParentChild = function(node1, node2){
     let parentNode = null;
     let childNode = null;

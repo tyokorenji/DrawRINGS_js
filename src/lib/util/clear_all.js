@@ -1,7 +1,14 @@
 "used strict";
 import * as stageEdit from './edit_stage';
 
-
+/**
+ * "ClearAll"機能の処理をする関数
+ * canvas上の全てのオブジェクトを削除している
+ * @param nodes:canvas上にあるNodeの配列
+ * @param structures:canvas上にあるStructureクラスを持つ配列
+ * @param brackets:canvas上にあるBracketクラスをもつ配列
+ * @param stage:EaselJSのstageオブジェクト
+ */
 function clearAll(nodes, structures, brackets, stage){
         for(let i = 0; i < structures.length; i++){
             stageEdit.removeStage(stage, structures[i].edge);

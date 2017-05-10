@@ -1,3 +1,7 @@
+/**
+ * SNFGで定義された単糖をハッシュで宣言している
+ * @type {{101: string, 102: string, 103: string, 104: string, 105: string, 106: string, 107: string, 108: string, 109: string, 201: string, 202: string, 203: string, 204: string, 205: string, 206: string, 207: string, 208: string, 209: string, 301: string, 302: string, 303: string, 304: string, 305: string, 306: string, 307: string, 308: string, 309: string, 401: string, 402: string, 403: string, 404: string, 405: string, 406: string, 407: string, 408: string, 409: string, 501: string, 502: string, 503: string, 504: string, 505: string, 506: string, 601: string, 602: string, 603: string, 604: string, 701: string, 702: string, 703: string, 704: string, 705: string, 706: string, 707: string, 801: string, 802: string, 803: string, 804: string, 805: string, 901: string, 902: string, 903: string, 904: string, 905: string, 1001: string, 1002: string, 1003: string, 1004: string, 1005: string, 1006: string, 1007: string, 1008: string, 1009: string, 1101: string, 1102: string, 1103: string, 1104: string, 1105: string, 1106: string}}
+ */
 const NODE_HASH = {
     101: "hexose",
     102: "glc",

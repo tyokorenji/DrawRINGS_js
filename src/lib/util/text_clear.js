@@ -1,5 +1,7 @@
 "use strict";
-
+/**
+ * Textareaの値を初期化する関数
+ */
 function textClear(){
     let res = confirm("Textarea clear all?");
     if(res === true){
